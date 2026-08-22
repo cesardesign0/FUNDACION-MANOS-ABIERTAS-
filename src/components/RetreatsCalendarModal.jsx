@@ -146,7 +146,7 @@ export const RetreatsCalendarModal = ({ isOpen, onClose, initialEventId }) => {
             </button>
 
             <a
-              href="https://centrobronx.com/"
+              href={currentEvent.registrationLink || "https://centrobronx.com/events?page=1"}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand-teal to-brand-teal-dark hover:from-brand-teal-dark hover:to-teal-900 text-white font-extrabold text-xs uppercase tracking-wider px-6 py-3 rounded-full shadow-lg shadow-brand-teal/30 hover:scale-105 transition-all text-center"

@@ -5,12 +5,13 @@ import {
   Plus, Edit, Trash2, Check, X, ShieldCheck, RefreshCw, AlertCircle, 
   ArrowLeft, Lock, Mail, Phone, MapPin, DollarSign, Image as ImageIcon,
   CheckCircle2, Clock, Sparkles, User, Link as LinkIcon, Upload, CalendarDays,
-  FileText, ListPlus
+  FileText, ListPlus, Home, LayoutTemplate, Menu, Eye, BookOpen, Heart
 } from 'lucide-react';
 
 export const AdminDashboard = ({ onExitAdmin }) => {
   const {
-    events, products, missions, reviews, approvedReviews, pendingReviews, settings,
+    hero, nav, events, products, missions, reviews, approvedReviews, pendingReviews, settings,
+    updateHero, updateNav,
     addEvent, updateEvent, deleteEvent,
     addProduct, updateProduct, deleteProduct,
     addMission, updateMission, deleteMission,
@@ -23,8 +24,8 @@ export const AdminDashboard = ({ onExitAdmin }) => {
   const [loginPass, setLoginPass] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  // Active Tab: 'retreats', 'shop', 'missions', 'reviews', 'settings'
-  const [activeTab, setActiveTab] = useState('retreats');
+  // Active Tab: 'hero', 'nav', 'retreats', 'shop', 'missions', 'reviews', 'settings'
+  const [activeTab, setActiveTab] = useState('hero');
 
   // Modals & Editing states
   const [editingItem, setEditingItem] = useState(null);
@@ -34,8 +35,34 @@ export const AdminDashboard = ({ onExitAdmin }) => {
   const [tempUrlInput, setTempUrlInput] = useState('');
   const [saveSuccessNotice, setSaveSuccessNotice] = useState('');
 
+  // Local state for Hero and Nav forms
+  const [heroForm, setHeroForm] = useState(() => ({
+    tag: hero?.tag || "Fe, Ayuda Humanitaria y Sanación Espiritual",
+    handwritten: hero?.handwritten || "Ayudando a transformar vidas y su futuro",
+    title: hero?.title || "«Cada uno ponga al servicio de los demás el don recibido, como buenos servidores de la gracia de Dios»",
+    citation: hero?.citation || "— 1 Pedro 4, 10",
+    description: hero?.description || "Nacidos del Centro Carismático Católico de Nueva York y el grupo Isha Bethel, en la Fundación Manos Abiertas de Jesús y María brindamos ayuda humanitaria, acompañamiento fraterno y retiros de sanación integral.",
+    btnDonate: hero?.btnDonate || "Hacer una Donación",
+    btnVolunteer: hero?.btnVolunteer || "Únete como Voluntario",
+    btnCauses: hero?.btnCauses || "Ver Nuestras Misiones",
+    logoCardImage: hero?.logoCardImage || "/logo-manos-abiertas.png",
+    backgroundImage: hero?.backgroundImage || "https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1920&q=85"
+  }));
+
+  const [navForm, setNavForm] = useState(() => ({
+    home: nav?.home || "Inicio",
+    mission: nav?.mission || "Nuestra Misión",
+    programs: nav?.programs || "Misiones y Causas",
+    about: nav?.about || "La Casa de Ayuda",
+    retreats: nav?.retreats || "Calendario de Actividades",
+    goals: nav?.goals || "Misiones Completadas",
+    shop: nav?.shop || "Tienda Solidaria"
+  }));
+
   // Preset gallery images for quick picks
   const quickGalleryImages = [
+    { label: "Logo Oficial Fundación", url: "/logo-manos-abiertas.png" },
+    { label: "Logo El Centro Bronx", url: "/logo-el-centro.png" },
     { label: "Retiro Mujeres Isha Bethel", url: "/retreats/retiro-mujeres.jpg" },
     { label: "Retiro Primer Paso", url: "/retreats/retiro-primer-paso.jpg" },
     { label: "Retiro Matrimonios", url: "/retreats/retiro-matrimonios.jpg" },
@@ -76,6 +103,10 @@ export const AdminDashboard = ({ onExitAdmin }) => {
           setEditingItem({ ...editingItem, image: reader.result });
           setIsPhotoPickerOpen(false);
           showNotification("Foto cargada con éxito");
+        } else if (activeTab === 'hero') {
+          setHeroForm(prev => ({ ...prev, logoCardImage: reader.result }));
+          setIsPhotoPickerOpen(false);
+          showNotification("Logo / imagen de portada actualizada");
         }
       };
       reader.readAsDataURL(file);
@@ -230,7 +261,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
           </div>
           <div>
             <h1 className="font-display font-black text-base sm:text-lg text-white leading-tight">
-              Panel de Control Pastoral
+              Panel de Control Pastoral (Editor en Vivo)
             </h1>
             <p className="text-[10px] text-teal-300 font-bold uppercase tracking-wider">
               Fundación Manos Abiertas de Jesús & María
@@ -274,6 +305,39 @@ export const AdminDashboard = ({ onExitAdmin }) => {
         {/* Navigation Sidebar */}
         <aside className="w-full md:w-64 flex-shrink-0 space-y-2">
           <div className="bg-slate-950 p-2 rounded-2xl border border-slate-800 space-y-1">
+            
+            {/* NUEVA PESTAÑA: Portada & Frases de Inicio */}
+            <button
+              onClick={() => { setActiveTab('hero'); setEditingItem(null); }}
+              className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'hero'
+                  ? 'bg-brand-teal text-white shadow-md'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <Home className="w-4 h-4 text-brand-gold" />
+                <span>Página de Inicio & Frases</span>
+              </div>
+              <span className="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">Hero</span>
+            </button>
+
+            {/* NUEVA PESTAÑA: Menú de Navegación */}
+            <button
+              onClick={() => { setActiveTab('nav'); setEditingItem(null); }}
+              className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'nav'
+                  ? 'bg-brand-teal text-white shadow-md'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <Menu className="w-4 h-4" />
+                <span>Menú y Navegación</span>
+              </div>
+              <span className="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">7</span>
+            </button>
+
             <button
               onClick={() => { setActiveTab('retreats'); setEditingItem(null); }}
               className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all ${
@@ -357,7 +421,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
           <div className="p-3 bg-slate-950/60 rounded-2xl border border-slate-800/80 text-center">
             <button
               onClick={() => {
-                if (window.confirm("¿Seguro que deseas restablecer los datos a los valores iniciales oficiales?")) {
+                if (window.confirm("¿Seguro que deseas restablecer todos los datos a los valores iniciales oficiales?")) {
                   resetToDefaults();
                   showNotification("Datos restablecidos a los valores por defecto");
                 }
@@ -373,6 +437,349 @@ export const AdminDashboard = ({ onExitAdmin }) => {
         {/* Content Area */}
         <main className="flex-1 bg-slate-950 rounded-3xl border border-slate-800 p-6 sm:p-8">
           
+          {/* ========================================================================= */}
+          {/* TAB 0: PORTADA & PÁGINA DE INICIO (HERO) */}
+          {/* ========================================================================= */}
+          {activeTab === 'hero' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                <div>
+                  <h2 className="text-xl font-black text-white font-display flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-brand-gold" />
+                    <span>Personalizar Portada de Inicio (Frases, Versículos y Botones)</span>
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    Edita los textos, versículos bíblicos, imagen central y nombres de botones de la página principal.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateHero(heroForm);
+                    showNotification("¡Portada de inicio actualizada con éxito!");
+                  }}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-brand-teal to-brand-teal-dark hover:from-teal-600 hover:to-teal-700 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-brand-teal/20 hover:scale-105 transition-all"
+                >
+                  Guardar Cambios de Portada
+                </button>
+              </div>
+
+              {/* Vista Previa en Vivo */}
+              <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-brand-gold flex items-center gap-1.5">
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Vista Previa en Tiempo Real de la Portada:</span>
+                  </span>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 relative overflow-hidden space-y-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal/20 text-teal-300 text-[10px] font-black uppercase tracking-wider">
+                    ✨ {heroForm.tag}
+                  </div>
+
+                  <div className="font-handwritten text-3xl sm:text-4xl text-brand-gold font-bold">
+                    {heroForm.handwritten}
+                  </div>
+
+                  <div className="border-l-4 border-brand-gold/70 pl-3 py-1">
+                    <div className="font-serif italic text-lg sm:text-xl text-white font-medium">
+                      {heroForm.title}
+                    </div>
+                    <span className="text-amber-200 text-xs font-bold block mt-1">
+                      📖 {heroForm.citation}
+                    </span>
+                  </div>
+
+                  <p className="text-slate-300 text-xs leading-relaxed max-w-xl">
+                    {heroForm.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <span className="px-4 py-2 rounded-full bg-brand-coral text-white text-xs font-black shadow-md">
+                      ❤️ {heroForm.btnDonate}
+                    </span>
+                    <span className="px-4 py-2 rounded-full bg-white/10 text-white text-xs font-bold border border-white/20">
+                      👥 {heroForm.btnVolunteer}
+                    </span>
+                    <span className="px-4 py-2 rounded-full bg-brand-gold/20 text-brand-gold text-xs font-bold border border-brand-gold/40">
+                      {heroForm.btnCauses} →
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Formulario de Campos de Inicio */}
+              <div className="space-y-4 text-xs">
+                
+                {/* 1. Subtítulo Manuscrito & Badge */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-slate-400 font-bold mb-1">
+                      Subtítulo Manuscrito Dorado (Frase Principal)
+                    </label>
+                    <input
+                      type="text"
+                      value={heroForm.handwritten}
+                      onChange={(e) => setHeroForm({ ...heroForm, handwritten: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-brand-gold font-bold text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-400 font-bold mb-1">
+                      Etiqueta Superior (Badge de la portada)
+                    </label>
+                    <input
+                      type="text"
+                      value={heroForm.tag}
+                      onChange={(e) => setHeroForm({ ...heroForm, tag: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white"
+                    />
+                  </div>
+                </div>
+
+                {/* 2. Versículo Bíblico & Cita */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="sm:col-span-2">
+                    <label className="block text-slate-400 font-bold mb-1">
+                      Versículo Bíblico o Mensaje Central
+                    </label>
+                    <textarea
+                      rows="2"
+                      value={heroForm.title}
+                      onChange={(e) => setHeroForm({ ...heroForm, title: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-serif italic text-sm resize-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-400 font-bold mb-1">
+                      Cita del Libro Bíblico
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="— 1 Pedro 4, 10"
+                      value={heroForm.citation}
+                      onChange={(e) => setHeroForm({ ...heroForm, citation: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-amber-300 font-bold text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* 3. Párrafo Descriptivo */}
+                <div>
+                  <label className="block text-slate-400 font-bold mb-1">
+                    Párrafo Descriptivo de la Fundación en Portada
+                  </label>
+                  <textarea
+                    rows="3"
+                    value={heroForm.description}
+                    onChange={(e) => setHeroForm({ ...heroForm, description: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white leading-relaxed resize-none"
+                  />
+                </div>
+
+                {/* 4. Textos de los 3 Botones */}
+                <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                    Nombres de los 3 Botones de Acción de Portada:
+                  </span>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Botón Rojo (Donar)</label>
+                      <input
+                        type="text"
+                        value={heroForm.btnDonate}
+                        onChange={(e) => setHeroForm({ ...heroForm, btnDonate: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Botón Secundario (Voluntario)</label>
+                      <input
+                        type="text"
+                        value={heroForm.btnVolunteer}
+                        onChange={(e) => setHeroForm({ ...heroForm, btnVolunteer: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Botón Dorado (Misiones)</label>
+                      <input
+                        type="text"
+                        value={heroForm.btnCauses}
+                        onChange={(e) => setHeroForm({ ...heroForm, btnCauses: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 5. Emblema / Imagen del Logo de la Tarjeta Flotante */}
+                <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                    Imagen del Logo / Flyer en la Tarjeta Flotante Izquierda:
+                  </span>
+
+                  <div className="flex items-center gap-4">
+                    <div className="w-20 h-20 bg-white rounded-xl p-1.5 shadow-md flex items-center justify-center flex-shrink-0">
+                      <img src={heroForm.logoCardImage} alt="Logo" className="max-h-full max-w-full object-contain" />
+                    </div>
+
+                    <div className="flex-1 space-y-2">
+                      <input
+                        type="text"
+                        placeholder="Ruta o URL de la imagen (ej: /logo-manos-abiertas.png)"
+                        value={heroForm.logoCardImage}
+                        onChange={(e) => setHeroForm({ ...heroForm, logoCardImage: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-mono text-xs"
+                      />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileUpload}
+                        className="text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand-teal file:text-white hover:file:bg-brand-teal-dark cursor-pointer"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      updateHero(heroForm);
+                      showNotification("¡Portada de inicio actualizada con éxito!");
+                    }}
+                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-teal to-brand-teal-dark hover:from-teal-600 hover:to-teal-700 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-brand-teal/20 hover:scale-[1.01] transition-all"
+                  >
+                    Guardar Cambios de la Página de Inicio
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================================= */}
+          {/* TAB 0.5: MENÚ DE NAVEGACIÓN (NAVBAR) */}
+          {/* ========================================================================= */}
+          {activeTab === 'nav' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                <div>
+                  <h2 className="text-xl font-black text-white font-display flex items-center gap-2">
+                    <Menu className="w-5 h-5 text-brand-teal" />
+                    <span>Personalizar Menú de Navegación</span>
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    Cambia los nombres de cada una de las pestañas del menú superior.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateNav(navForm);
+                    showNotification("¡Nombres del menú guardados con éxito!");
+                  }}
+                  className="px-6 py-2.5 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white font-black text-xs uppercase tracking-wider shadow-md hover:scale-105 transition-all"
+                >
+                  Guardar Nombres del Menú
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div>
+                  <label className="block text-slate-400 font-bold mb-1">Enlace 1 (Inicio)</label>
+                  <input
+                    type="text"
+                    value={navForm.home}
+                    onChange={(e) => setNavForm({ ...navForm, home: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-bold mb-1">Enlace 2 (Nuestra Misión)</label>
+                  <input
+                    type="text"
+                    value={navForm.mission}
+                    onChange={(e) => setNavForm({ ...navForm, mission: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-bold mb-1">Enlace 3 (Misiones y Causas)</label>
+                  <input
+                    type="text"
+                    value={navForm.programs}
+                    onChange={(e) => setNavForm({ ...navForm, programs: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-bold mb-1">Enlace 4 (La Casa de Ayuda)</label>
+                  <input
+                    type="text"
+                    value={navForm.about}
+                    onChange={(e) => setNavForm({ ...navForm, about: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-bold mb-1">Enlace 5 (Calendario de Actividades)</label>
+                  <input
+                    type="text"
+                    value={navForm.retreats}
+                    onChange={(e) => setNavForm({ ...navForm, retreats: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-bold mb-1">Enlace 6 (Misiones Completadas)</label>
+                  <input
+                    type="text"
+                    value={navForm.goals}
+                    onChange={(e) => setNavForm({ ...navForm, goals: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-slate-400 font-bold mb-1">Enlace 7 (Tienda Solidaria)</label>
+                  <input
+                    type="text"
+                    value={navForm.shop}
+                    onChange={(e) => setNavForm({ ...navForm, shop: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateNav(navForm);
+                    showNotification("¡Nombres del menú guardados con éxito!");
+                  }}
+                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-teal to-brand-teal-dark hover:from-teal-600 hover:to-teal-700 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-brand-teal/20 hover:scale-[1.01] transition-all"
+                >
+                  Guardar Nombres del Menú
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* ========================================================================= */}
           {/* TAB 1: RETIROS Y CALENDARIO */}
           {/* ========================================================================= */}

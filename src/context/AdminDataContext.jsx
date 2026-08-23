@@ -12,7 +12,30 @@ export const AdminDataProvider = ({ children }) => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        return {
+          events: parsed.events || translations.es.retreatsModal.events,
+          products: parsed.products || translations.es.shop.products,
+          missions: parsed.missions || translations.es.programsSection.items,
+          reviews: parsed.reviews || translations.es.volunteerSection.testimonials.map((t, idx) => ({
+            id: `default-rev-${idx}`,
+            author: t.author,
+            role: t.role,
+            quote: t.quote,
+            rating: 5,
+            approved: true,
+            date: 'Testimonio Permanente'
+          })),
+          hero: parsed.hero || translations.es.hero,
+          nav: parsed.nav || translations.es.nav,
+          settings: parsed.settings || {
+            officialEmail: FOUNDATION_CONFIG.officialEmail,
+            donationsEmail: FOUNDATION_CONFIG.donationsEmail,
+            phone: FOUNDATION_CONFIG.phone,
+            address: FOUNDATION_CONFIG.address,
+            instagramUrl: FOUNDATION_CONFIG.instagramUrl
+          }
+        };
       }
     } catch (e) {
       console.error("Error loading admin data from storage", e);
@@ -31,6 +54,8 @@ export const AdminDataProvider = ({ children }) => {
         approved: true,
         date: 'Testimonio Permanente'
       })),
+      hero: translations.es.hero,
+      nav: translations.es.nav,
       settings: {
         officialEmail: FOUNDATION_CONFIG.officialEmail,
         donationsEmail: FOUNDATION_CONFIG.donationsEmail,
@@ -49,6 +74,22 @@ export const AdminDataProvider = ({ children }) => {
       console.error("Error saving admin data to storage", e);
     }
   }, [adminData]);
+
+  // =================== HERO & INICIO ===================
+  const updateHero = (updatedFields) => {
+    setAdminData(prev => ({
+      ...prev,
+      hero: { ...prev.hero, ...updatedFields }
+    }));
+  };
+
+  // =================== NAV & MENÚ ===================
+  const updateNav = (updatedFields) => {
+    setAdminData(prev => ({
+      ...prev,
+      nav: { ...prev.nav, ...updatedFields }
+    }));
+  };
 
   // =================== RETREATS / EVENTS ===================
   const addEvent = (newEvent) => {
@@ -174,6 +215,8 @@ export const AdminDataProvider = ({ children }) => {
         approved: true,
         date: 'Testimonio Permanente'
       })),
+      hero: translations.es.hero,
+      nav: translations.es.nav,
       settings: {
         officialEmail: FOUNDATION_CONFIG.officialEmail,
         donationsEmail: FOUNDATION_CONFIG.donationsEmail,
@@ -188,6 +231,8 @@ export const AdminDataProvider = ({ children }) => {
     <AdminDataContext.Provider
       value={{
         adminData,
+        hero: adminData.hero,
+        nav: adminData.nav,
         events: adminData.events,
         products: adminData.products,
         missions: adminData.missions,
@@ -195,6 +240,8 @@ export const AdminDataProvider = ({ children }) => {
         approvedReviews: adminData.reviews.filter(r => r.approved),
         pendingReviews: adminData.reviews.filter(r => !r.approved),
         settings: adminData.settings,
+        updateHero,
+        updateNav,
         addEvent,
         updateEvent,
         deleteEvent,

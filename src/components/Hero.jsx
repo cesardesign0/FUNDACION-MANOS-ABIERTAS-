@@ -1,9 +1,13 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useAdminData } from '../context/AdminDataContext';
 import { Heart, Users, ArrowRight, Sparkles, HeartHandshake, HandHeart, Sun, Calendar, ChevronRight, BookOpen } from 'lucide-react';
 
 export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpenRetreats }) => {
   const { t } = useLanguage();
+  const { hero } = useAdminData();
+
+  const heroData = hero || t.hero;
 
   const getIcon = (id) => {
     switch (id) {
@@ -37,45 +41,54 @@ export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpen
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-700 scale-105"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1920&q=85')`,
+          backgroundImage: `url('${heroData.backgroundImage || "https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1920&q=85"}')`,
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-900/85 to-slate-950/70" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-slate-950/70" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/80" />
       </div>
 
-      {/* Floating Accent Warmth Elements */}
-      <div className="absolute -top-24 -left-24 w-96 h-96 bg-brand-coral/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 -right-20 w-80 h-80 bg-brand-teal/20 rounded-full blur-3xl pointer-events-none" />
+      {/* Glowing Ambient Light Orbs */}
+      <div className="absolute -top-24 left-1/4 w-96 h-96 bg-brand-gold/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 -right-24 w-96 h-96 bg-brand-teal/20 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Main Hero Content - Split into 2 Columns (Logo on LEFT + Text on RIGHT) */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 lg:pt-16 pb-8 flex-1 flex flex-col justify-center">
+      {/* Main Hero Content Area */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 w-full my-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           
-          {/* Left Column: Big Prominent Official Logo Card (Clickable to Nuestra Misión) */}
+          {/* Left Column: Catholic Non-Profit Emblem & Identity Badge */}
           <div className="lg:col-span-5 flex justify-center lg:justify-start order-2 lg:order-1">
             <button
               onClick={handleScrollToMission}
-              title="Haz clic para conocer nuestra misión e historia"
-              className="relative bg-white/95 rounded-3xl p-6 sm:p-8 shadow-2xl border-4 border-white/60 backdrop-blur-xl hover:scale-105 transition-all duration-500 max-w-sm sm:max-w-md w-full flex flex-col items-center text-center cursor-pointer group text-left"
+              className="group relative block w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 hover:scale-[1.03] border-2 border-white/20 text-left focus:outline-none focus:ring-4 focus:ring-brand-teal/40"
+              title="Conoce nuestra historia y misión"
             >
-              {/* Outer decorative ambient aura */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-brand-coral via-brand-gold to-brand-teal rounded-3xl blur-lg opacity-40 group-hover:opacity-70 transition duration-700 pointer-events-none" />
+              {/* Outer Glow */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-brand-coral via-brand-gold to-brand-teal rounded-3xl blur-xl opacity-60 group-hover:opacity-100 transition-opacity" />
               
-              <img
-                src="/logo-manos-abiertas.png"
-                alt="Fundación Manos Abiertas de Jesús & María"
-                className="relative z-10 w-full h-auto object-contain max-h-56 sm:max-h-64 drop-shadow-md group-hover:scale-105 transition-transform"
-              />
+              {/* Card Surface */}
+              <div className="relative bg-gradient-to-b from-white/95 to-slate-100/95 backdrop-blur-xl p-8 rounded-3xl border border-white flex flex-col items-center text-center text-slate-900 shadow-2xl">
+                
+                {/* Official Logo */}
+                <div className="w-full flex justify-center mb-4">
+                  <img
+                    src={heroData.logoCardImage || "/logo-manos-abiertas.png"}
+                    alt="Fundación Manos Abiertas de Jesús & María"
+                    className="h-32 sm:h-36 w-auto object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
 
-              <div className="relative z-10 mt-4 pt-3.5 border-t border-slate-200 w-full text-center">
-                <span className="font-display font-extrabold text-xs uppercase tracking-widest text-slate-800 block">
+                <div className="w-12 h-1 bg-gradient-to-r from-brand-coral to-brand-teal rounded-full mb-3" />
+
+                <span className="text-[11px] font-black uppercase tracking-widest text-slate-500">
                   Fundación Benéfica Católica
                 </span>
-                <p className="text-[11px] text-[#8B1C1C] font-black mt-0.5 uppercase tracking-wide">
+                
+                <h3 className="font-display font-black text-xs sm:text-sm text-brand-coral uppercase tracking-wider mt-1">
                   Centro Carismático Católico • NY & Bronx
-                </p>
-                <div className="mt-2 text-[10px] text-brand-teal font-extrabold flex items-center justify-center gap-1 group-hover:underline">
+                </h3>
+
+                <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-brand-teal group-hover:text-brand-teal-dark transition-colors">
                   <span>Conoce Nuestra Misión</span>
                   <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -88,28 +101,28 @@ export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpen
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/20 border border-brand-teal/40 text-brand-teal-light text-xs font-bold uppercase tracking-wider backdrop-blur-md">
               <Sparkles className="w-3.5 h-3.5 text-brand-gold" />
-              <span>{t.hero.tag}</span>
+              <span>{heroData.tag}</span>
             </div>
 
             {/* Handwritten Subheading */}
             <div className="font-handwritten text-4xl sm:text-5xl lg:text-6xl text-brand-gold font-bold tracking-wide drop-shadow-lg rotate-[-1deg] leading-tight">
-              {t.hero.handwritten}
+              {heroData.handwritten}
             </div>
 
             {/* Versículo Bíblico Católico de Servicio */}
             <div className="border-l-4 border-brand-gold/70 pl-4 py-1">
               <h1 className="font-serif italic text-2xl sm:text-3xl lg:text-4xl text-white font-medium tracking-tight leading-snug drop-shadow-md">
-                {t.hero.title}
+                {heroData.title}
               </h1>
               <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-gold/20 text-amber-200 text-xs sm:text-sm font-bold border border-brand-gold/40">
                 <BookOpen className="w-3.5 h-3.5 text-brand-gold" />
-                <span>{t.hero.citation}</span>
+                <span>{heroData.citation}</span>
               </div>
             </div>
 
             {/* Description */}
             <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl">
-              {t.hero.description}
+              {heroData.description}
             </p>
 
             {/* 3 Botones de Acción Principales */}
@@ -120,7 +133,7 @@ export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpen
                 className="inline-flex items-center gap-2 bg-brand-coral hover:bg-brand-coral-dark text-white font-extrabold px-6 sm:px-7 py-3.5 sm:py-4 rounded-full shadow-xl shadow-brand-coral/40 hover:scale-105 transition-all text-sm sm:text-base"
               >
                 <Heart className="w-5 h-5 fill-white" />
-                <span>{t.hero.btnDonate}</span>
+                <span>{heroData.btnDonate}</span>
               </button>
 
               {/* Botón 2: Voluntariado */}
@@ -129,7 +142,7 @@ export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpen
                 className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-bold px-6 sm:px-7 py-3.5 sm:py-4 rounded-full backdrop-blur-md border border-white/30 hover:border-white transition-all text-sm sm:text-base"
               >
                 <Users className="w-5 h-5 text-brand-teal" />
-                <span>{t.hero.btnVolunteer}</span>
+                <span>{heroData.btnVolunteer}</span>
               </button>
 
               {/* Botón 3: Ver Nuestras Misiones */}
@@ -137,8 +150,8 @@ export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpen
                 href="#programs"
                 className="inline-flex items-center gap-2 bg-brand-gold/20 hover:bg-brand-gold/30 text-brand-gold hover:text-white border border-brand-gold/50 font-bold px-6 sm:px-7 py-3.5 sm:py-4 rounded-full backdrop-blur-md shadow-lg hover:scale-105 transition-all text-sm sm:text-base group"
               >
-                <span>{t.hero.btnCauses}</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <span>{heroData.btnCauses}</span>
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </a>
             </div>
           </div>

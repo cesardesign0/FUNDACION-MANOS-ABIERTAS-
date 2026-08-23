@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useAdminData } from '../context/AdminDataContext';
 import { Menu, X, Heart, Globe, ShoppingBag, Instagram } from 'lucide-react';
 
 export const Navbar = ({ onOpenDonate, onOpenVolunteer, onOpenCart, cartItemCount = 0 }) => {
   const { language, toggleLanguage, t } = useLanguage();
+  const { nav } = useAdminData();
+
+  const navData = nav || t.nav;
+
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -20,13 +25,13 @@ export const Navbar = ({ onOpenDonate, onOpenVolunteer, onOpenCart, cartItemCoun
   }, []);
 
   const navLinks = [
-    { label: t.nav.home, href: '#home' },
-    { label: t.nav.mission, href: '#mission' },
-    { label: t.nav.programs, href: '#programs' },
-    { label: t.nav.about, href: '#about' },
-    { label: t.nav.retreats || 'Calendario de Actividades', href: '#retreats' },
-    { label: t.nav.goals || 'Misiones Completadas', href: '#goals' },
-    { label: t.nav.shop, href: '#shop' },
+    { label: navData.home || t.nav.home, href: '#home' },
+    { label: navData.mission || t.nav.mission, href: '#mission' },
+    { label: navData.programs || t.nav.programs, href: '#programs' },
+    { label: navData.about || t.nav.about, href: '#about' },
+    { label: navData.retreats || t.nav.retreats || 'Calendario de Actividades', href: '#retreats' },
+    { label: navData.goals || t.nav.goals || 'Misiones Completadas', href: '#goals' },
+    { label: navData.shop || t.nav.shop, href: '#shop' },
   ];
 
   return (

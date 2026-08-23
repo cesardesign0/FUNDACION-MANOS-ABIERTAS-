@@ -121,20 +121,37 @@ export const MissionDetailModal = ({ isOpen, onClose, mission, onDonate, onVolun
               <h4 className="font-display font-black text-lg text-slate-900">
                 ¿De qué se trata esta misión solidaria?
               </h4>
-              <p className="text-slate-600">
-                {mission.desc}
+              <p className="text-slate-700 font-medium">
+                {mission.fullStory || mission.desc}
               </p>
-              <p className="text-slate-600">
+              {mission.fullStory && mission.desc && mission.fullStory !== mission.desc && (
+                <p className="text-slate-600">
+                  {mission.desc}
+                </p>
+              )}
+              <p className="text-slate-600 text-xs leading-relaxed">
                 Esta causa responde directamente al llamado del Evangelio de asistir al desamparado. Coordinada por la pastoral social del Centro Carismático Católico y la comunidad Isha Bethel, garantizamos que cada ayuda llegue a las manos correctas sin intermediarios.
               </p>
 
-              <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 text-amber-900 text-xs space-y-1">
-                <strong className="block font-bold text-amber-950">📋 Necesidades Inmediatas en esta Causa:</strong>
-                <ul className="list-disc list-inside space-y-0.5 text-amber-900">
-                  <li>Fondos para provisión directa de insumos de primera necesidad.</li>
-                  <li>Voluntarios para clasificación, embalaje y entrega comunitaria.</li>
-                  <li>Acompañamiento espiritual y apoyo fraterno a los beneficiarios.</li>
-                </ul>
+              <div className="p-4 rounded-2xl bg-amber-50/90 border border-amber-200 text-amber-950 text-xs space-y-2">
+                <strong className="block font-bold text-amber-950 text-sm">📋 Necesidades Inmediatas en esta Causa:</strong>
+                {typeof mission.needs === 'string' ? (
+                  <div className="whitespace-pre-line text-amber-900 leading-relaxed font-medium">
+                    {mission.needs}
+                  </div>
+                ) : Array.isArray(mission.needs) ? (
+                  <ul className="list-disc list-inside space-y-1 text-amber-900">
+                    {mission.needs.map((n, i) => (
+                      <li key={i}>{n}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <ul className="list-disc list-inside space-y-1 text-amber-900">
+                    <li>Fondos para provisión directa de insumos de primera necesidad.</li>
+                    <li>Voluntarios para clasificación, embalaje y entrega comunitaria.</li>
+                    <li>Acompañamiento espiritual y apoyo fraterno a los beneficiarios.</li>
+                  </ul>
+                )}
               </div>
             </div>
           )}

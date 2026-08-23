@@ -4,7 +4,8 @@ import {
   Calendar, ShoppingBag, Target, Star, Settings, LogOut, ExternalLink, 
   Plus, Edit, Trash2, Check, X, ShieldCheck, RefreshCw, AlertCircle, 
   ArrowLeft, Lock, Mail, Phone, MapPin, DollarSign, Image as ImageIcon,
-  CheckCircle2, Clock, Sparkles, User, Link as LinkIcon
+  CheckCircle2, Clock, Sparkles, User, Link as LinkIcon, Upload, CalendarDays,
+  FileText, ListPlus
 } from 'lucide-react';
 
 export const AdminDashboard = ({ onExitAdmin }) => {
@@ -27,8 +28,27 @@ export const AdminDashboard = ({ onExitAdmin }) => {
 
   // Modals & Editing states
   const [editingItem, setEditingItem] = useState(null);
-  const [isNewItemModalOpen, setIsNewItemModalOpen] = useState(false);
+  const [editingType, setEditingType] = useState(''); // 'retreat', 'product', 'mission'
+  const [isPhotoPickerOpen, setIsPhotoPickerOpen] = useState(false);
+  const [photoPickerMode, setPhotoPickerMode] = useState('upload'); // 'upload', 'url', 'gallery'
+  const [tempUrlInput, setTempUrlInput] = useState('');
   const [saveSuccessNotice, setSaveSuccessNotice] = useState('');
+
+  // Preset gallery images for quick picks
+  const quickGalleryImages = [
+    { label: "Retiro Mujeres Isha Bethel", url: "/retreats/retiro-mujeres.jpg" },
+    { label: "Retiro Primer Paso", url: "/retreats/retiro-primer-paso.jpg" },
+    { label: "Retiro Matrimonios", url: "/retreats/retiro-matrimonios.jpg" },
+    { label: "Seminario Espíritu", url: "/retreats/seminario-espiritu.jpg" },
+    { label: "Retiro Jóvenes", url: "/retreats/retiro-jovenes.jpg" },
+    { label: "Rosario Madera Olivo", url: "/shop/rosario-olivo.jpg" },
+    { label: "Biblia de Estudio", url: "/shop/biblia-catolica.jpg" },
+    { label: "Denario de Plata", url: "/shop/denario-plata.jpg" },
+    { label: "Virgen de Guadalupe", url: "/shop/virgen-guadalupe.jpg" },
+    { label: "Sagrado Corazón", url: "/shop/sagrado-corazon.jpg" },
+    { label: "Comedores y Alimentos", url: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80" },
+    { label: "Familias y Techo", url: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80" }
+  ];
 
   const showNotification = (msg) => {
     setSaveSuccessNotice(msg);
@@ -43,6 +63,47 @@ export const AdminDashboard = ({ onExitAdmin }) => {
       setLoginError('');
     } else {
       setLoginError('Contraseña incorrecta. (Prueba con: manosabiertas2026)');
+    }
+  };
+
+  // Handle Local Image Upload (FileReader to base64)
+  const handleFileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (editingItem) {
+          setEditingItem({ ...editingItem, image: reader.result });
+          setIsPhotoPickerOpen(false);
+          showNotification("Foto cargada con éxito");
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Handle Calendar Date Picker change for retreats
+  const handleDatePickerChange = (e) => {
+    const selectedDateStr = e.target.value; // "YYYY-MM-DD"
+    if (!selectedDateStr) return;
+    
+    const parts = selectedDateStr.split('-');
+    const year = parts[0];
+    const monthIndex = parseInt(parts[1], 10) - 1;
+    const day = parseInt(parts[2], 10);
+    
+    const monthsEs = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    
+    const formatted = `${day} de ${monthsEs[monthIndex]}, ${year}`;
+    if (editingItem) {
+      setEditingItem({
+        ...editingItem,
+        date: formatted,
+        rawCalendarDate: selectedDateStr
+      });
     }
   };
 
@@ -253,7 +314,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
             >
               <div className="flex items-center gap-2.5">
                 <Target className="w-4 h-4" />
-                <span>Misiones y Metas</span>
+                <span>Misiones y Casos</span>
               </div>
               <span className="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">{missions.length}</span>
             </button>
@@ -332,19 +393,20 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                     const newRetreat = {
                       id: `ret-${Date.now()}`,
                       title: "Nuevo Retiro Espiritual",
-                      date: "Próximo Fin de Semana",
+                      date: "24 – 26 de Octubre, 2026",
                       schedule: "Viernes 6:30 PM a Domingo 3:00 PM",
                       cost: "$50 USD",
                       type: "Retiro Espiritual",
                       category: "Retiro General",
                       location: "Centro Carismático Católico (826 E. 166th St., Bronx, NY)",
-                      desc: "Descripción del retiro...",
+                      desc: "Descripción del retiro vivencial...",
                       image: "/retreats/retiro-mujeres.jpg",
                       period: "current",
                       registrationLink: "https://tickets.centrobronx.com"
                     };
                     addEvent(newRetreat);
                     setEditingItem(newRetreat);
+                    setEditingType('retreat');
                     showNotification("Nuevo retiro agregado a la lista");
                   }}
                   className="inline-flex items-center gap-2 bg-brand-coral hover:bg-brand-coral-dark text-white text-xs font-black px-4 py-2.5 rounded-xl shadow-md hover:scale-105 transition-all"
@@ -376,7 +438,10 @@ export const AdminDashboard = ({ onExitAdmin }) => {
 
                     <div className="pt-2 border-t border-slate-800 flex items-center justify-between gap-2">
                       <button
-                        onClick={() => setEditingItem(ev)}
+                        onClick={() => {
+                          setEditingItem(ev);
+                          setEditingType('retreat');
+                        }}
                         className="flex-1 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white flex items-center justify-center gap-1.5 transition-colors"
                       >
                         <Edit className="w-3.5 h-3.5 text-brand-teal" />
@@ -399,126 +464,6 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                   </div>
                 ))}
               </div>
-
-              {/* Retreat Edit Drawer / Form */}
-              {editingItem && editingItem.id?.startsWith('ret-') && (
-                <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-                  <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-4 shadow-2xl">
-                    <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                      <h3 className="font-bold text-lg text-white">Editar Retiro Espiritual</h3>
-                      <button onClick={() => setEditingItem(null)} className="p-1 hover:bg-slate-800 rounded-lg text-slate-400">
-                        <X className="w-5 h-5" />
-                      </button>
-                    </div>
-
-                    <div className="space-y-3 text-xs">
-                      <div>
-                        <label className="block text-slate-400 font-bold mb-1">Nombre del Retiro</label>
-                        <input
-                          type="text"
-                          value={editingItem.title}
-                          onChange={(e) => setEditingItem({ ...editingItem, title: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-slate-400 font-bold mb-1">Fecha</label>
-                          <input
-                            type="text"
-                            value={editingItem.date}
-                            onChange={(e) => setEditingItem({ ...editingItem, date: e.target.value })}
-                            className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-slate-400 font-bold mb-1">Costo / Inversión</label>
-                          <input
-                            type="text"
-                            value={editingItem.cost}
-                            onChange={(e) => setEditingItem({ ...editingItem, cost: e.target.value })}
-                            className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-slate-400 font-bold mb-1">Horario</label>
-                          <input
-                            type="text"
-                            value={editingItem.schedule}
-                            onChange={(e) => setEditingItem({ ...editingItem, schedule: e.target.value })}
-                            className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-slate-400 font-bold mb-1">Categoría / Periodo</label>
-                          <select
-                            value={editingItem.period}
-                            onChange={(e) => setEditingItem({ ...editingItem, period: e.target.value })}
-                            className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                          >
-                            <option value="current">Este Mes</option>
-                            <option value="next">El Próximo Mes</option>
-                            <option value="future">Otras Próximas Actividades</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-slate-400 font-bold mb-1">Enlace de Compra de Tickets</label>
-                        <input
-                          type="text"
-                          value={editingItem.registrationLink}
-                          onChange={(e) => setEditingItem({ ...editingItem, registrationLink: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-mono"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-slate-400 font-bold mb-1">Ruta o URL de la Imagen</label>
-                        <input
-                          type="text"
-                          value={editingItem.image}
-                          onChange={(e) => setEditingItem({ ...editingItem, image: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-mono"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-slate-400 font-bold mb-1">Descripción</label>
-                        <textarea
-                          rows="3"
-                          value={editingItem.desc}
-                          onChange={(e) => setEditingItem({ ...editingItem, desc: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white resize-none"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="pt-3 border-t border-slate-800 flex justify-end gap-2">
-                      <button
-                        onClick={() => setEditingItem(null)}
-                        className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold"
-                      >
-                        Cancelar
-                      </button>
-                      <button
-                        onClick={() => {
-                          updateEvent(editingItem.id, editingItem);
-                          setEditingItem(null);
-                          showNotification("Cambios guardados en el retiro");
-                        }}
-                        className="px-5 py-2 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white text-xs font-black"
-                      >
-                        Guardar Cambios
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           )}
 
@@ -552,6 +497,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                     };
                     addProduct(newProd);
                     setEditingItem(newProd);
+                    setEditingType('product');
                     showNotification("Nuevo producto agregado");
                   }}
                   className="inline-flex items-center gap-2 bg-brand-coral hover:bg-brand-coral-dark text-white text-xs font-black px-4 py-2.5 rounded-xl shadow-md hover:scale-105 transition-all"
@@ -569,7 +515,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                       <img
                         src={prod.image}
                         alt={prod.name}
-                        className="w-18 h-18 rounded-xl object-cover flex-shrink-0 border border-slate-700"
+                        className="w-20 h-20 rounded-xl object-cover flex-shrink-0 border border-slate-700"
                       />
                       <div className="space-y-1">
                         <span className="text-[10px] font-black text-brand-gold uppercase tracking-wider bg-brand-gold/10 px-2 py-0.5 rounded-md">
@@ -587,7 +533,10 @@ export const AdminDashboard = ({ onExitAdmin }) => {
 
                     <div className="pt-2 border-t border-slate-800 flex items-center justify-between gap-2">
                       <button
-                        onClick={() => setEditingItem(prod)}
+                        onClick={() => {
+                          setEditingItem(prod);
+                          setEditingType('product');
+                        }}
                         className="flex-1 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white flex items-center justify-center gap-1.5 transition-colors"
                       >
                         <Edit className="w-3.5 h-3.5 text-brand-teal" />
@@ -609,116 +558,21 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                   </div>
                 ))}
               </div>
-
-              {/* Product Edit Modal */}
-              {editingItem && editingItem.id?.startsWith('prod-') && (
-                <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-                  <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
-                    <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                      <h3 className="font-bold text-lg text-white">Editar Artículo de Tienda</h3>
-                      <button onClick={() => setEditingItem(null)} className="p-1 hover:bg-slate-800 rounded-lg text-slate-400">
-                        <X className="w-5 h-5" />
-                      </button>
-                    </div>
-
-                    <div className="space-y-3 text-xs">
-                      <div>
-                        <label className="block text-slate-400 font-bold mb-1">Nombre del Producto</label>
-                        <input
-                          type="text"
-                          value={editingItem.name}
-                          onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-slate-400 font-bold mb-1">Precio Actual ($ USD)</label>
-                          <input
-                            type="number"
-                            step="0.5"
-                            value={editingItem.price}
-                            onChange={(e) => setEditingItem({ ...editingItem, price: Number(e.target.value) })}
-                            className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-slate-400 font-bold mb-1">Precio Original / Tachado</label>
-                          <input
-                            type="number"
-                            step="0.5"
-                            value={editingItem.originalPrice || ''}
-                            onChange={(e) => setEditingItem({ ...editingItem, originalPrice: Number(e.target.value) })}
-                            className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-slate-400 font-bold mb-1">URL de la Foto</label>
-                        <input
-                          type="text"
-                          value={editingItem.image}
-                          onChange={(e) => setEditingItem({ ...editingItem, image: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-mono"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-slate-400 font-bold mb-1">Etiqueta / Tag (Ej: Devoción Mariana)</label>
-                        <input
-                          type="text"
-                          value={editingItem.tag}
-                          onChange={(e) => setEditingItem({ ...editingItem, tag: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-slate-400 font-bold mb-1">Descripción</label>
-                        <textarea
-                          rows="3"
-                          value={editingItem.desc}
-                          onChange={(e) => setEditingItem({ ...editingItem, desc: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white resize-none"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="pt-3 border-t border-slate-800 flex justify-end gap-2">
-                      <button onClick={() => setEditingItem(null)} className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">
-                        Cancelar
-                      </button>
-                      <button
-                        onClick={() => {
-                          updateProduct(editingItem.id, editingItem);
-                          setEditingItem(null);
-                          showNotification("Producto actualizado exitosamente");
-                        }}
-                        className="px-5 py-2 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white text-xs font-black"
-                      >
-                        Guardar Cambios
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           )}
 
           {/* ========================================================================= */}
-          {/* TAB 3: MISIONES Y METAS */}
+          {/* TAB 3: MISIONES Y CASOS COMPLETOS */}
           {/* ========================================================================= */}
           {activeTab === 'missions' && (
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
                 <div>
                   <h2 className="text-xl font-black text-white font-display">
-                    Misiones y Metas de Recaudación
+                    Misiones, Metas y Casos en Detalle
                   </h2>
                   <p className="text-xs text-slate-400">
-                    Actualiza las barras de progreso, metas y montos recaudados de las obras sociales.
+                    Modifica los textos del caso, necesidades inmediatas, montos recaudados y metas.
                   </p>
                 </div>
 
@@ -727,7 +581,9 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                     const newMiss = {
                       id: Date.now(),
                       title: "Nueva Misión de Emergencia",
-                      desc: "Detalle de la causa comunitaria...",
+                      desc: "Distribución de ayuda y acompañamiento a familias...",
+                      fullStory: "Esta causa responde directamente al llamado del Evangelio de asistir al desamparado.",
+                      needs: "• Fondos para suministros\n• Voluntarios para reparto\n• Acompañamiento espiritual",
                       raisedAmount: "$0",
                       goalAmount: "$20,000",
                       percentage: 0,
@@ -735,12 +591,13 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                     };
                     addMission(newMiss);
                     setEditingItem(newMiss);
+                    setEditingType('mission');
                     showNotification("Nueva misión creada");
                   }}
                   className="inline-flex items-center gap-2 bg-brand-coral hover:bg-brand-coral-dark text-white text-xs font-black px-4 py-2.5 rounded-xl shadow-md hover:scale-105 transition-all"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Crear Misión</span>
+                  <span>Crear Nueva Misión</span>
                 </button>
               </div>
 
@@ -748,33 +605,43 @@ export const AdminDashboard = ({ onExitAdmin }) => {
               <div className="space-y-4">
                 {missions.map((m) => (
                   <div key={m.id} className="bg-slate-900 rounded-2xl border border-slate-800 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div className="space-y-1.5 flex-1">
-                      <h4 className="font-bold text-base text-white">{m.title}</h4>
-                      <p className="text-xs text-slate-400 max-w-xl">{m.desc}</p>
-                      
-                      {/* Progress bar */}
-                      <div className="flex items-center gap-3 pt-1">
-                        <div className="flex-1 max-w-md h-2.5 bg-slate-800 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-to-r from-brand-teal to-emerald-400 rounded-full"
-                            style={{ width: `${m.percentage}%` }}
-                          />
+                    <div className="flex items-center gap-4 flex-1">
+                      <img
+                        src={m.image}
+                        alt={m.title}
+                        className="w-20 h-20 rounded-xl object-cover flex-shrink-0 border border-slate-700"
+                      />
+                      <div className="space-y-1.5 flex-1">
+                        <h4 className="font-bold text-base text-white">{m.title}</h4>
+                        <p className="text-xs text-slate-400 max-w-xl line-clamp-2">{m.desc}</p>
+                        
+                        {/* Progress bar */}
+                        <div className="flex items-center gap-3 pt-1">
+                          <div className="flex-1 max-w-md h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-brand-teal to-emerald-400 rounded-full"
+                              style={{ width: `${m.percentage}%` }}
+                            />
+                          </div>
+                          <span className="text-xs font-black text-emerald-400">{m.percentage}%</span>
                         </div>
-                        <span className="text-xs font-black text-emerald-400">{m.percentage}%</span>
-                      </div>
 
-                      <div className="text-xs text-slate-300 font-semibold">
-                        Recaudado: <strong className="text-brand-gold">{m.raisedAmount}</strong> de {m.goalAmount}
+                        <div className="text-xs text-slate-300 font-semibold">
+                          Recaudado: <strong className="text-brand-gold">{m.raisedAmount}</strong> de {m.goalAmount}
+                        </div>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2 w-full sm:w-auto">
                       <button
-                        onClick={() => setEditingItem(m)}
-                        className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white flex items-center justify-center gap-1.5"
+                        onClick={() => {
+                          setEditingItem(m);
+                          setEditingType('mission');
+                        }}
+                        className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white flex items-center justify-center gap-1.5 shadow-sm"
                       >
                         <Edit className="w-3.5 h-3.5 text-brand-teal" />
-                        <span>Actualizar Meta</span>
+                        <span>Editar Caso & Metas</span>
                       </button>
 
                       <button
@@ -784,7 +651,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                             showNotification("Causa eliminada");
                           }
                         }}
-                        className="p-2 rounded-xl bg-red-950/40 hover:bg-red-900 text-red-400"
+                        className="p-2.5 rounded-xl bg-red-950/40 hover:bg-red-900 text-red-400"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -792,81 +659,6 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                   </div>
                 ))}
               </div>
-
-              {/* Mission Edit Modal */}
-              {editingItem && !editingItem.id?.toString().startsWith('prod-') && !editingItem.id?.toString().startsWith('ret-') && (
-                <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-                  <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-                    <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                      <h3 className="font-bold text-lg text-white">Actualizar Misión</h3>
-                      <button onClick={() => setEditingItem(null)} className="p-1 hover:bg-slate-800 rounded-lg text-slate-400">
-                        <X className="w-5 h-5" />
-                      </button>
-                    </div>
-
-                    <div className="space-y-3 text-xs">
-                      <div>
-                        <label className="block text-slate-400 font-bold mb-1">Título de la Causa</label>
-                        <input
-                          type="text"
-                          value={editingItem.title}
-                          onChange={(e) => setEditingItem({ ...editingItem, title: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-slate-400 font-bold mb-1">Monto Recaudado ($)</label>
-                          <input
-                            type="text"
-                            value={editingItem.raisedAmount}
-                            onChange={(e) => setEditingItem({ ...editingItem, raisedAmount: e.target.value })}
-                            className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-slate-400 font-bold mb-1">Meta Total ($)</label>
-                          <input
-                            type="text"
-                            value={editingItem.goalAmount}
-                            onChange={(e) => setEditingItem({ ...editingItem, goalAmount: e.target.value })}
-                            className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-slate-400 font-bold mb-1">Porcentaje de Avance (0 a 100%)</label>
-                        <input
-                          type="number"
-                          min="0"
-                          max="100"
-                          value={editingItem.percentage}
-                          onChange={(e) => setEditingItem({ ...editingItem, percentage: Number(e.target.value) })}
-                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="pt-3 border-t border-slate-800 flex justify-end gap-2">
-                      <button onClick={() => setEditingItem(null)} className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">
-                        Cancelar
-                      </button>
-                      <button
-                        onClick={() => {
-                          updateMission(editingItem.id, editingItem);
-                          setEditingItem(null);
-                          showNotification("Meta actualizada exitosamente");
-                        }}
-                        className="px-5 py-2 rounded-xl bg-brand-teal text-white text-xs font-black"
-                      >
-                        Guardar Cambios
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           )}
 
@@ -1039,6 +831,468 @@ export const AdminDashboard = ({ onExitAdmin }) => {
 
         </main>
       </div>
+
+      {/* ========================================================================= */}
+      {/* GLOBAL UNIVERSAL EDIT MODAL CON PREVISUALIZADOR Y SUBIDOR DE FOTO */}
+      {/* ========================================================================= */}
+      {editingItem && (
+        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto p-6 sm:p-8 space-y-5 shadow-2xl animate-fadeIn">
+            
+            {/* Header del Modal */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <span className="p-2 rounded-xl bg-brand-teal/20 text-brand-teal">
+                  {editingType === 'retreat' && <Calendar className="w-5 h-5" />}
+                  {editingType === 'product' && <ShoppingBag className="w-5 h-5" />}
+                  {editingType === 'mission' && <Target className="w-5 h-5" />}
+                </span>
+                <div>
+                  <h3 className="font-display font-bold text-lg text-white">
+                    {editingType === 'retreat' && 'Editar Retiro Espiritual'}
+                    {editingType === 'product' && 'Editar Artículo de Tienda'}
+                    {editingType === 'mission' && 'Editar Misión y Caso Completo'}
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Cambia la foto, fechas o textos. Los cambios se reflejarán de inmediato en la web.
+                  </p>
+                </div>
+              </div>
+              
+              <button
+                onClick={() => {
+                  setEditingItem(null);
+                  setIsPhotoPickerOpen(false);
+                }}
+                className="p-1.5 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* FOTO ACTUAL CON BOTÓN DE CAMBIAR / CARGAR FOTO */}
+            <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                Foto del {editingType === 'retreat' ? 'Retiro' : editingType === 'product' ? 'Artículo' : 'Caso'}
+              </span>
+
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="relative w-32 h-32 rounded-2xl overflow-hidden border-2 border-brand-teal/40 flex-shrink-0 bg-slate-900 group">
+                  <img
+                    src={editingItem.image || '/retreats/retiro-mujeres.jpg'}
+                    alt="Vista previa"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                    <ImageIcon className="w-6 h-6 text-white" />
+                  </div>
+                </div>
+
+                <div className="flex-1 space-y-2 text-center sm:text-left w-full">
+                  <p className="text-xs text-slate-300 font-medium">
+                    Puedes cargar una foto nueva desde tu computadora/celular o pegar el link.
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsPhotoPickerOpen(!isPhotoPickerOpen)}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white text-xs font-black shadow-md hover:scale-105 transition-all"
+                  >
+                    <Upload className="w-4 h-4" />
+                    <span>📷 Cambiar Foto / Subir Imagen o Link</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* RECUADRO DESPLEGABLE PARA CAMBIAR FOTO */}
+              {isPhotoPickerOpen && (
+                <div className="mt-3 p-4 rounded-2xl bg-slate-900 border border-brand-teal/30 space-y-3 animate-fadeIn">
+                  <div className="flex border-b border-slate-800 pb-2 gap-3 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => setPhotoPickerMode('upload')}
+                      className={`pb-1 font-bold ${photoPickerMode === 'upload' ? 'text-brand-teal border-b-2 border-brand-teal' : 'text-slate-400'}`}
+                    >
+                      Subir Archivo
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPhotoPickerMode('url')}
+                      className={`pb-1 font-bold ${photoPickerMode === 'url' ? 'text-brand-teal border-b-2 border-brand-teal' : 'text-slate-400'}`}
+                    >
+                      Pegar Link / URL
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPhotoPickerMode('gallery')}
+                      className={`pb-1 font-bold ${photoPickerMode === 'gallery' ? 'text-brand-teal border-b-2 border-brand-teal' : 'text-slate-400'}`}
+                    >
+                      Galería Rápida
+                    </button>
+                  </div>
+
+                  {/* Mode 1: Subir Archivo local */}
+                  {photoPickerMode === 'upload' && (
+                    <div className="space-y-2">
+                      <label className="block text-xs text-slate-300">
+                        Selecciona una foto desde tu dispositivo:
+                      </label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileUpload}
+                        className="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-teal file:text-white hover:file:bg-brand-teal-dark cursor-pointer"
+                      />
+                    </div>
+                  )}
+
+                  {/* Mode 2: Pegar URL */}
+                  {photoPickerMode === 'url' && (
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder="https://images.unsplash.com/..."
+                        value={tempUrlInput}
+                        onChange={(e) => setTempUrlInput(e.target.value)}
+                        className="flex-1 px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (tempUrlInput) {
+                            setEditingItem({ ...editingItem, image: tempUrlInput });
+                            setIsPhotoPickerOpen(false);
+                            setTempUrlInput('');
+                            showNotification("Foto actualizada por URL");
+                          }
+                        }}
+                        className="px-4 py-2 rounded-xl bg-brand-teal text-white text-xs font-bold"
+                      >
+                        Aplicar
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Mode 3: Galería Rápida */}
+                  {photoPickerMode === 'gallery' && (
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-40 overflow-y-auto p-1">
+                      {quickGalleryImages.map((imgItem, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => {
+                            setEditingItem({ ...editingItem, image: imgItem.url });
+                            setIsPhotoPickerOpen(false);
+                            showNotification(`Foto seleccionada: ${imgItem.label}`);
+                          }}
+                          className="group relative rounded-xl overflow-hidden border border-slate-700 hover:border-brand-teal transition-all text-left"
+                        >
+                          <img src={imgItem.url} alt={imgItem.label} className="w-full h-14 object-cover" />
+                          <span className="text-[9px] text-slate-300 block p-1 truncate bg-slate-950/80">
+                            {imgItem.label}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* FORMULARIO ESPECÍFICO SEGÚN TIPO */}
+
+            {/* 1. CAMPOS DE RETIRO */}
+            {editingType === 'retreat' && (
+              <div className="space-y-4 text-xs">
+                <div>
+                  <label className="block text-slate-400 font-bold mb-1">Nombre del Retiro</label>
+                  <input
+                    type="text"
+                    value={editingItem.title || ''}
+                    onChange={(e) => setEditingItem({ ...editingItem, title: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold text-sm"
+                  />
+                </div>
+
+                {/* SELECTOR DE FECHA CON CALENDARIO + TEXTO LIBRE */}
+                <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+                  <div className="flex items-center gap-2 text-brand-gold font-bold">
+                    <CalendarDays className="w-4 h-4" />
+                    <span>Seleccionar Fecha del Retiro:</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {/* Selector tipo Calendario */}
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Elegir en Calendario 📅</label>
+                      <input
+                        type="date"
+                        onChange={handleDatePickerChange}
+                        className="w-full px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white cursor-pointer"
+                      />
+                    </div>
+
+                    {/* Texto visible de la fecha */}
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Texto de la Fecha (Editable)</label>
+                      <input
+                        type="text"
+                        placeholder="Ej: 24 – 26 de Octubre, 2026"
+                        value={editingItem.date || ''}
+                        onChange={(e) => setEditingItem({ ...editingItem, date: e.target.value })}
+                        className="w-full px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-mono"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-slate-400 font-bold mb-1">Costo / Inversión ($ USD)</label>
+                    <input
+                      type="text"
+                      placeholder="Ej: $65 USD"
+                      value={editingItem.cost || ''}
+                      onChange={(e) => setEditingItem({ ...editingItem, cost: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-400 font-bold mb-1">Horario del Encuentro</label>
+                    <input
+                      type="text"
+                      placeholder="Ej: Viernes 6:30 PM – Domingo 3:00 PM"
+                      value={editingItem.schedule || ''}
+                      onChange={(e) => setEditingItem({ ...editingItem, schedule: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-slate-400 font-bold mb-1">Periodo en el Calendario</label>
+                    <select
+                      value={editingItem.period || 'current'}
+                      onChange={(e) => setEditingItem({ ...editingItem, period: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
+                    >
+                      <option value="current">Este Mes (Actual)</option>
+                      <option value="next">El Próximo Mes</option>
+                      <option value="future">Otras Próximas Actividades</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-400 font-bold mb-1">Enlace de Tickets / Registro</label>
+                    <input
+                      type="text"
+                      placeholder="https://tickets.centrobronx.com"
+                      value={editingItem.registrationLink || ''}
+                      onChange={(e) => setEditingItem({ ...editingItem, registrationLink: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-bold mb-1">Descripción del Retiro</label>
+                  <textarea
+                    rows="3"
+                    value={editingItem.desc || ''}
+                    onChange={(e) => setEditingItem({ ...editingItem, desc: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white resize-none"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* 2. CAMPOS DE TIENDA */}
+            {editingType === 'product' && (
+              <div className="space-y-4 text-xs">
+                <div>
+                  <label className="block text-slate-400 font-bold mb-1">Nombre del Producto / Artículo</label>
+                  <input
+                    type="text"
+                    value={editingItem.name || ''}
+                    onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold text-sm"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-slate-400 font-bold mb-1">Precio Actual ($ USD)</label>
+                    <input
+                      type="number"
+                      step="0.5"
+                      value={editingItem.price || ''}
+                      onChange={(e) => setEditingItem({ ...editingItem, price: Number(e.target.value) })}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-400 font-bold mb-1">Precio Original (Opcional)</label>
+                    <input
+                      type="number"
+                      step="0.5"
+                      value={editingItem.originalPrice || ''}
+                      onChange={(e) => setEditingItem({ ...editingItem, originalPrice: Number(e.target.value) })}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-bold mb-1">Etiqueta / Tag (Ej: Devoción Mariana)</label>
+                  <input
+                    type="text"
+                    value={editingItem.tag || ''}
+                    onChange={(e) => setEditingItem({ ...editingItem, tag: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-bold mb-1">Descripción del Artículo</label>
+                  <textarea
+                    rows="3"
+                    value={editingItem.desc || ''}
+                    onChange={(e) => setEditingItem({ ...editingItem, desc: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white resize-none"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* 3. CAMPOS DE MISIÓN Y DETALLE COMPLETO DEL CASO */}
+            {editingType === 'mission' && (
+              <div className="space-y-4 text-xs">
+                <div>
+                  <label className="block text-slate-400 font-bold mb-1">Título de la Misión o Caso</label>
+                  <input
+                    type="text"
+                    value={editingItem.title || ''}
+                    onChange={(e) => setEditingItem({ ...editingItem, title: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold text-sm"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-slate-400 font-bold mb-1">Recaudado Actual ($)</label>
+                    <input
+                      type="text"
+                      placeholder="Ej: $38,400"
+                      value={editingItem.raisedAmount || ''}
+                      onChange={(e) => setEditingItem({ ...editingItem, raisedAmount: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-brand-gold font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-400 font-bold mb-1">Meta Necesaria ($)</label>
+                    <input
+                      type="text"
+                      placeholder="Ej: $50,000"
+                      value={editingItem.goalAmount || ''}
+                      onChange={(e) => setEditingItem({ ...editingItem, goalAmount: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-400 font-bold mb-1">% Financiado</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={editingItem.percentage || 0}
+                      onChange={(e) => setEditingItem({ ...editingItem, percentage: Number(e.target.value) })}
+                      className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-emerald-400 font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-bold mb-1">Descripción Breve (Visible en la Tarjeta)</label>
+                  <textarea
+                    rows="2"
+                    value={editingItem.desc || ''}
+                    onChange={(e) => setEditingItem({ ...editingItem, desc: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white resize-none"
+                  />
+                </div>
+
+                {/* DETALLE COMPLETO DEL CASO (Modal 'Ver Caso') */}
+                <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+                  <div className="flex items-center gap-2 text-brand-teal font-bold">
+                    <FileText className="w-4 h-4" />
+                    <span>Detalle Completo del Caso (Pestaña 'Detalles del Caso'):</span>
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-400 font-bold mb-1">¿De qué se trata esta misión solidaria? (Historia completa)</label>
+                    <textarea
+                      rows="3"
+                      placeholder="Explica la historia completa del caso para los donantes..."
+                      value={editingItem.fullStory || editingItem.desc || ''}
+                      onChange={(e) => setEditingItem({ ...editingItem, fullStory: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white resize-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-400 font-bold mb-1">📋 Necesidades Inmediatas en esta Causa</label>
+                    <textarea
+                      rows="3"
+                      placeholder="• Fondos para provisión de víveres&#10;• Voluntarios para reparto&#10;• Acompañamiento espiritual"
+                      value={editingItem.needs || '• Fondos para insumos directos\n• Voluntarios de distribución\n• Apoyo pastoral y fraterno'}
+                      onChange={(e) => setEditingItem({ ...editingItem, needs: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-amber-300 font-mono text-[11px] resize-none"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* BOTONES DE ACCIÓN DEL MODAL */}
+            <div className="pt-4 border-t border-slate-800 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingItem(null);
+                  setIsPhotoPickerOpen(false);
+                }}
+                className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-colors"
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (editingType === 'retreat') {
+                    updateEvent(editingItem.id, editingItem);
+                    showNotification("¡Retiro guardado exitosamente!");
+                  } else if (editingType === 'product') {
+                    updateProduct(editingItem.id, editingItem);
+                    showNotification("¡Producto guardado exitosamente!");
+                  } else if (editingType === 'mission') {
+                    updateMission(editingItem.id, editingItem);
+                    showNotification("¡Misión y caso completo guardados exitosamente!");
+                  }
+                  setEditingItem(null);
+                  setIsPhotoPickerOpen(false);
+                }}
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-brand-teal to-brand-teal-dark hover:from-teal-600 hover:to-teal-700 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-brand-teal/20 hover:scale-105 transition-all"
+              >
+                Guardar Cambios
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
 
     </div>
   );

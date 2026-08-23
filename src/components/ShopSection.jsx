@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useAdminData } from '../context/AdminDataContext';
 import { ShoppingBag, Star, Sparkles, Heart, Check, Plus, ArrowRight, ShieldCheck, Tag, Cross } from 'lucide-react';
 
 export const ShopSection = ({ onAddToCart, onOpenCart, onBuyNow }) => {
   const { t } = useLanguage();
   const { shop } = t;
+  const { products } = useAdminData();
+
+  const activeProducts = products && products.length > 0 ? products : shop.products;
 
   const [activeCategory, setActiveCategory] = useState('all');
   const [recentlyAdded, setRecentlyAdded] = useState(null);
@@ -18,8 +22,8 @@ export const ShopSection = ({ onAddToCart, onOpenCart, onBuyNow }) => {
   ];
 
   const filteredProducts = activeCategory === 'all'
-    ? shop.products
-    : shop.products.filter(p => p.category === activeCategory);
+    ? activeProducts
+    : activeProducts.filter(p => p.category === activeCategory);
 
   const handleAddToCart = (product) => {
     onAddToCart(product);

@@ -1,121 +1,133 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { HandHeart, Heart, Send, CheckCircle2, MapPin, Mail, Phone, Instagram, Facebook, Twitter, Youtube } from 'lucide-react';
+import { Heart, Mail, Phone, MapPin, Send, Instagram, Facebook, Globe, ShieldCheck, Lock } from 'lucide-react';
+import { FOUNDATION_CONFIG } from '../config/foundationConfig';
 
-export const Footer = ({ onOpenDonate, onOpenVolunteer }) => {
-  const { t } = useLanguage();
-  const { footer, topbar } = t;
+export const Footer = ({ onOpenDonate, onOpenVolunteer, onOpenAdmin }) => {
+  const { language, t } = useLanguage();
+  const { footer } = t;
 
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
   const handleNewsletter = (e) => {
     e.preventDefault();
-    if (newsletterEmail) {
-      setSubscribed(true);
-      setNewsletterEmail('');
-    }
+    setSubscribed(true);
   };
 
   return (
-    <footer id="footer" className="bg-slate-950 text-slate-400 pt-16 pb-12 border-t border-slate-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="bg-slate-950 text-slate-400 border-t border-slate-900 pt-16 pb-12 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Top 4 Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-slate-800">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-900">
           
-          {/* Col 1: Brand Info (5 cols) */}
-          <div className="lg:col-span-5 space-y-4">
+          {/* Col 1: Identity & Church link */}
+          <div className="space-y-4">
             <div className="flex items-center gap-3">
               <img
                 src="/logo-manos-abiertas.png"
-                alt="Fundación Manos Abiertas de Jesús & María"
+                alt="Fundación Manos Abiertas"
                 className="h-14 w-auto object-contain bg-white rounded-xl p-1 shadow-md"
               />
               <div>
-                <span className="font-display font-extrabold text-base tracking-tight text-white block leading-tight">
-                  MANOS <span className="text-brand-teal">ABIERTAS</span>
+                <span className="font-display font-black text-sm text-white tracking-tight block">
+                  MANOS ABIERTAS
                 </span>
-                <span className="text-[11px] tracking-wider uppercase text-brand-coral font-bold block">
+                <span className="text-[10px] font-bold text-brand-coral uppercase tracking-wider block">
                   de Jesús & María
                 </span>
               </div>
             </div>
 
-            <p className="text-sm text-slate-400 leading-relaxed max-w-md">
+            <p className="text-xs text-slate-400 leading-relaxed">
               {footer.aboutText}
             </p>
 
             <div className="flex items-center gap-3 pt-2">
-              <a href="#" className="w-9 h-9 rounded-full bg-slate-900 hover:bg-brand-teal text-slate-300 hover:text-white flex items-center justify-center transition-colors">
-                <Facebook className="w-4 h-4" />
-              </a>
-              <a href="#" className="w-9 h-9 rounded-full bg-slate-900 hover:bg-brand-coral text-slate-300 hover:text-white flex items-center justify-center transition-colors">
+              <a
+                href={FOUNDATION_CONFIG.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-slate-900 hover:bg-pink-600 text-slate-300 hover:text-white flex items-center justify-center transition-colors border border-slate-800"
+                title="Instagram"
+              >
                 <Instagram className="w-4 h-4" />
               </a>
-              <a href="#" className="w-9 h-9 rounded-full bg-slate-900 hover:bg-sky-500 text-slate-300 hover:text-white flex items-center justify-center transition-colors">
-                <Twitter className="w-4 h-4" />
+              <a
+                href={FOUNDATION_CONFIG.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-slate-900 hover:bg-blue-600 text-slate-300 hover:text-white flex items-center justify-center transition-colors border border-slate-800"
+                title="Facebook"
+              >
+                <Facebook className="w-4 h-4" />
               </a>
-              <a href="#" className="w-9 h-9 rounded-full bg-slate-900 hover:bg-red-600 text-slate-300 hover:text-white flex items-center justify-center transition-colors">
-                <Youtube className="w-4 h-4" />
+              <a
+                href="https://centrobronx.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-slate-900 hover:bg-brand-teal text-slate-300 hover:text-white flex items-center justify-center transition-colors border border-slate-800"
+                title="Sitio Oficial Centro Carismático"
+              >
+                <Globe className="w-4 h-4" />
               </a>
             </div>
           </div>
 
-          {/* Col 2: Quick Links (2 cols) */}
-          <div className="lg:col-span-2 space-y-3">
-            <h4 className="font-display font-bold text-white text-sm uppercase tracking-wider">
+          {/* Col 2: Quick Links */}
+          <div className="space-y-3">
+            <h4 className="font-display font-bold text-sm text-white uppercase tracking-wider">
               {footer.quickLinksTitle}
             </h4>
-            <ul className="space-y-2 text-sm">
-              <li><a href="#home" className="hover:text-brand-teal transition-colors">Inicio</a></li>
-              <li><a href="#mission" className="hover:text-brand-teal transition-colors">Nuestra Misión</a></li>
-              <li><a href="#programs" className="hover:text-brand-teal transition-colors">Programas</a></li>
-              <li><a href="#goals" className="hover:text-brand-teal transition-colors">Metas e Impacto</a></li>
-              <li><a href="#about" className="hover:text-brand-teal transition-colors">La Casa de Ayuda</a></li>
-              <li><a href="#shop" className="hover:text-brand-gold text-brand-gold font-semibold transition-colors">Tienda Solidaria</a></li>
-              <li>
-                <button onClick={onOpenVolunteer} className="hover:text-brand-teal transition-colors text-left">
-                  Ser Voluntario
-                </button>
-              </li>
+            <ul className="space-y-2 text-xs">
+              <li><a href="#home" className="hover:text-white transition-colors">Inicio</a></li>
+              <li><a href="#mission" className="hover:text-white transition-colors">Nuestra Misión</a></li>
+              <li><a href="#programs" className="hover:text-white transition-colors">Misiones y Causas</a></li>
+              <li><a href="#about" className="hover:text-white transition-colors">La Casa de Ayuda (Centro Bronx)</a></li>
+              <li><a href="#retreats" className="hover:text-white transition-colors">Calendario de Actividades</a></li>
+              <li><a href="#shop" className="hover:text-white transition-colors">Tienda Solidaria</a></li>
             </ul>
           </div>
 
-          {/* Col 3: Contact Info (2 cols) */}
-          <div className="lg:col-span-2 space-y-3">
-            <h4 className="font-display font-bold text-white text-sm uppercase tracking-wider">
-              Contacto
+          {/* Col 3: Contact & Address */}
+          <div className="space-y-3">
+            <h4 className="font-display font-bold text-sm text-white uppercase tracking-wider">
+              Casa de Ayuda & Contacto
             </h4>
-            <ul className="space-y-2.5 text-xs text-slate-400">
-              <li className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-brand-teal flex-shrink-0 mt-0.5" />
-                <span>{topbar.address}</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-brand-teal flex-shrink-0" />
-                <a href={`mailto:${topbar.email}`} className="hover:underline">{topbar.email}</a>
-              </li>
-              <li className="flex items-center gap-2">
+            <div className="space-y-2.5 text-xs text-slate-400">
+              <div className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-brand-coral flex-shrink-0 mt-0.5" />
+                <span>{FOUNDATION_CONFIG.address}</span>
+              </div>
+              <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-brand-teal flex-shrink-0" />
-                <span>{topbar.phone}</span>
-              </li>
-            </ul>
+                <a href={`tel:${FOUNDATION_CONFIG.phone}`} className="hover:text-white transition-colors">{FOUNDATION_CONFIG.phone}</a>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-brand-gold flex-shrink-0" />
+                <a href={`mailto:${FOUNDATION_CONFIG.officialEmail}`} className="hover:text-white transition-colors">{FOUNDATION_CONFIG.officialEmail}</a>
+              </div>
+              <div className="pt-2">
+                <span className="text-[11px] text-emerald-400 font-bold flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Obra Respaldada Pastoralmente</span>
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* Col 4: Newsletter (3 cols) */}
-          <div className="lg:col-span-3 space-y-3">
-            <h4 className="font-display font-bold text-white text-sm uppercase tracking-wider">
+          {/* Col 4: Newsletter & Action */}
+          <div className="space-y-3">
+            <h4 className="font-display font-bold text-sm text-white uppercase tracking-wider">
               {footer.newsletterTitle}
             </h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-slate-400">
               {footer.newsletterDesc}
             </p>
 
             {subscribed ? (
-              <div className="p-3 rounded-xl bg-emerald-950/60 border border-emerald-800 text-emerald-300 text-xs flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                <span>{footer.subscribeSuccess}</span>
+              <div className="p-3 bg-emerald-950/50 border border-emerald-500/30 rounded-xl text-xs text-emerald-300 font-bold">
+                {footer.subscribeSuccess}
               </div>
             ) : (
               <form onSubmit={handleNewsletter} className="space-y-2">
@@ -154,12 +166,21 @@ export const Footer = ({ onOpenDonate, onOpenVolunteer }) => {
         {/* Bottom Rights */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <div>
-            © {new Date().getFullYear()} Manos Amigas Non-Profit Org. {footer.rights}
+            © {new Date().getFullYear()} Fundación Manos Abiertas de Jesús & María. {footer.rights}
           </div>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-slate-300 transition-colors">{footer.privacy}</a>
             <a href="#" className="hover:text-slate-300 transition-colors">{footer.terms}</a>
-            <a href="#" className="hover:text-slate-300 transition-colors">501(c)(3) Status</a>
+            
+            {/* Shortcut al panel /admin */}
+            <button
+              onClick={onOpenAdmin}
+              className="hover:text-brand-gold transition-colors flex items-center gap-1 text-slate-400 font-bold"
+              title="Acceso exclusivo para la administración pastoral"
+            >
+              <Lock className="w-3 h-3" />
+              <span>Acceso Pastoral / Admin</span>
+            </button>
           </div>
         </div>
 

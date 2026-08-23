@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
+import { AdminDataProvider, useAdminData } from './context/AdminDataContext';
 import { TopBar } from './components/TopBar';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -22,11 +23,32 @@ import { MissionDetailModal } from './components/MissionDetailModal';
 import { CompletedMissionsModal } from './components/CompletedMissionsModal';
 import { ReviewModal } from './components/ReviewModal';
 import { ChatAssistantModal } from './components/ChatAssistantModal';
-import { Heart, ShoppingBag, PlusCircle, MessageSquare, X } from 'lucide-react';
-import { FOUNDATION_CONFIG } from './config/foundationConfig';
+import { AdminDashboard } from './components/admin/AdminDashboard';
+import { Heart, ShoppingBag, PlusCircle, MessageSquare, X, Lock } from 'lucide-react';
 
 const MainLayout = () => {
   const { language, t } = useLanguage();
+  const { events, products, missions, approvedReviews, addReviewForModeration } = useAdminData();
+
+  // Admin View state (Triggered by /admin, #admin, or footer link)
+  const [isAdminView, setIsAdminView] = useState(() => {
+    return window.location.pathname.includes('/admin') || window.location.hash.includes('admin');
+  });
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash.includes('admin') || window.location.pathname.includes('/admin')) {
+        setIsAdminView(true);
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handleHashChange);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handleHashChange);
+    };
+  }, []);
+
   const [isDonateOpen, setIsDonateOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isHumanitarianOpen, setIsHumanitarianOpen] = useState(false);
@@ -38,26 +60,9 @@ const MainLayout = () => {
   const [isFabOpen, setIsFabOpen] = useState(false);
   const [selectedMissionDetail, setSelectedMissionDetail] = useState(null);
   const [selectedCause, setSelectedCause] = useState('all');
-  
-  // Custom Reviews submitted by visitors (stored in localStorage)
-  const [customReviews, setCustomReviews] = useState(() => {
-    try {
-      const saved = localStorage.getItem('manos_amigas_reviews');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
 
   const handleReviewSubmitted = (newReview) => {
-    // When a review is submitted, it is recorded and can be displayed
-    const updated = [newReview, ...customReviews];
-    setCustomReviews(updated);
-    try {
-      localStorage.setItem('manos_amigas_reviews', JSON.stringify(updated));
-    } catch (e) {
-      console.error(e);
-    }
+    addReviewForModeration(newReview);
   };
 
   // Featured Retreat for Frontpage Bubbles
@@ -67,7 +72,7 @@ const MainLayout = () => {
     setFeaturedRetreatId((prev) => (prev === id ? null : id));
   };
 
-  const featuredRetreat = t.retreatsModal.events.find((e) => e.id === featuredRetreatId);
+  const featuredRetreat = events.find((e) => e.id === featuredRetreatId) || events[0];
 
   // Shopping Cart state with localStorage persistence
   const [cart, setCart] = useState(() => {
@@ -150,6 +155,18 @@ const MainLayout = () => {
 
   const totalCartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
+  // If user navigated to /admin or clicked Admin Access, render the Admin Panel
+  if (isAdminView) {
+    return (
+      <AdminDashboard
+        onExitAdmin={() => {
+          setIsAdminView(false);
+          window.location.hash = '#home';
+        }}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-[#faf9f6] selection:bg-brand-teal selection:text-white">
       {/* Top Contact & Language Bar */}
@@ -222,7 +239,7 @@ const MainLayout = () => {
         <VolunteerSection
           onOpenVolunteer={() => handleOpenVolunteer('volunteer')}
           onOpenReviewModal={() => setIsReviewOpen(true)}
-          customReviews={customReviews}
+          customReviews={approvedReviews}
         />
       </main>
 
@@ -230,6 +247,7 @@ const MainLayout = () => {
       <Footer
         onOpenDonate={() => handleOpenDonate('all')}
         onOpenVolunteer={() => handleOpenVolunteer('volunteer')}
+        onOpenAdmin={() => setIsAdminView(true)}
       />
 
       {/* Floating Action Menu with Cross (Speed Dial) */}
@@ -398,7 +416,9 @@ const MainLayout = () => {
 export default function App() {
   return (
     <LanguageProvider>
-      <MainLayout />
+      <AdminDataProvider>
+        <MainLayout />
+      </AdminDataProvider>
     </LanguageProvider>
   );
 }

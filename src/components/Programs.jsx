@@ -1,10 +1,14 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useAdminData } from '../context/AdminDataContext';
 import { Heart, Target, TrendingUp, Sparkles, HandHeart, CheckCircle2, PlusCircle, ArrowRight, Eye, Trophy } from 'lucide-react';
 
 export const Programs = ({ onSelectCauseAndDonate, onOpenNewMission, onOpenMissionDetail, onOpenCompletedMissions }) => {
   const { language, t } = useLanguage();
   const { programsSection } = t;
+  const { missions } = useAdminData();
+
+  const activeMissions = missions && missions.length > 0 ? missions : programsSection.items;
 
   return (
     <section id="programs" className="py-24 relative overflow-hidden bg-slate-950 text-white">
@@ -61,7 +65,7 @@ export const Programs = ({ onSelectCauseAndDonate, onOpenNewMission, onOpenMissi
 
         {/* Program Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {programsSection.items.map((program) => (
+          {activeMissions.map((program) => (
             <div
               key={program.id}
               className="group bg-white rounded-3xl overflow-hidden shadow-2xl border border-white/20 transition-all duration-500 flex flex-col justify-between hover:-translate-y-2.5 hover:shadow-brand-teal/20"

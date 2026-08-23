@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useAdminData } from '../context/AdminDataContext';
 import { Calendar, Clock, MapPin, Sparkles, UserCheck, Star, ExternalLink, Info, CheckCircle2, ChevronDown, ChevronUp, Layers, RefreshCw, Radio } from 'lucide-react';
 import { CENTRO_BRONX_SOURCE_URL, CENTRO_BRONX_TICKETS_URL, syncCentroBronxEvents, getLastSyncTime } from '../services/centroBronxSync';
 
 export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId, onToggleFeaturedRetreat }) => {
   const { language, t } = useLanguage();
   const { retreatsModal } = t;
+  const { events } = useAdminData();
+
+  // Active events list (dynamic from admin data or fallback)
+  const activeEvents = events && events.length > 0 ? events : retreatsModal.events;
 
   // Filter: 'all', 'current', 'next', 'future'
   const [selectedPeriod, setSelectedPeriod] = useState('current');
@@ -20,13 +25,13 @@ export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId, onTogg
 
   const handleSync = async () => {
     setIsSyncing(true);
-    await syncCentroBronxEvents(retreatsModal.events);
+    await syncCentroBronxEvents(activeEvents);
     setLastSync(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' (' + new Date().toLocaleDateString() + ')');
     setTimeout(() => setIsSyncing(false), 800);
   };
 
   // Filter events based on selected period
-  const filteredEvents = retreatsModal.events.filter((event) => {
+  const filteredEvents = activeEvents.filter((event) => {
     if (selectedPeriod === 'all') return true;
     return event.period === selectedPeriod;
   });

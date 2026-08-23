@@ -12,9 +12,9 @@ export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId, onTogg
   // Active events list (dynamic from admin data or fallback)
   const activeEvents = events && events.length > 0 ? events : retreatsModal.events;
 
-  // Filter: 'all', 'current', 'next', 'future'
-  const [selectedPeriod, setSelectedPeriod] = useState('current');
-  const [isExpandedAll, setIsExpandedAll] = useState(false);
+  // Filter: 'all' (por defecto), 'current', 'next', 'future'
+  const [selectedPeriod, setSelectedPeriod] = useState('all');
+  const [isExpandedAll, setIsExpandedAll] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSync, setLastSync] = useState(getLastSyncTime());
 
@@ -36,10 +36,8 @@ export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId, onTogg
     return event.period === selectedPeriod;
   });
 
-  // Events to display
-  const displayedEvents = isExpandedAll 
-    ? filteredEvents 
-    : (selectedPeriod === 'all' ? filteredEvents.slice(0, 4) : filteredEvents);
+  // Events to display (shows all matching events)
+  const displayedEvents = filteredEvents;
 
   return (
     <section id="retreats" className="py-24 bg-gradient-to-b from-white via-[#fcfbf9] to-[#faf8f5] relative overflow-hidden border-t border-slate-200/80">

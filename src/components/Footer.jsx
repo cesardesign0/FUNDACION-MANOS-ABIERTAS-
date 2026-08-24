@@ -163,11 +163,27 @@ export const Footer = ({ onOpenDonate, onOpenVolunteer, onOpenAdmin }) => {
 
         </div>
 
-        {/* Bottom Rights */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <div>
-            © {new Date().getFullYear()} Fundación Manos Abiertas de Jesús & María. {footer.rights}
+        {/* Bottom Rights & Author Credits */}
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
+            <span>
+              © {new Date().getFullYear()} Fundación Manos Abiertas de Jesús & María. {footer.rights}
+            </span>
+            <span className="hidden sm:inline text-slate-700">•</span>
+            <span className="inline-flex items-center gap-1.5 text-slate-400">
+              <span>Diseño & Desarrollo por</span>
+              <a
+                href="https://www.instagram.com/cdesign01/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-black text-brand-gold hover:text-amber-300 transition-colors uppercase tracking-wider underline-offset-4 hover:underline"
+                title="Visitar perfil oficial de CDESIGN en Instagram"
+              >
+                CDESIGN
+              </a>
+            </span>
           </div>
+
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-slate-300 transition-colors">{footer.privacy}</a>
             <a href="#" className="hover:text-slate-300 transition-colors">{footer.terms}</a>

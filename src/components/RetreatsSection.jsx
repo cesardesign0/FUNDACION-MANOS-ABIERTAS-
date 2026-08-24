@@ -6,8 +6,8 @@ import { CENTRO_BRONX_SOURCE_URL, CENTRO_BRONX_TICKETS_URL, syncCentroBronxEvent
 
 export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId, onToggleFeaturedRetreat }) => {
   const { language, t } = useLanguage();
-  const { retreatsModal } = t;
-  const { events } = useAdminData();
+  const { events, retreatsModal: adminRetreatsModal } = useAdminData();
+  const retreatsModal = { ...t.retreatsModal, ...(adminRetreatsModal || {}) };
 
   // Active events list (dynamic from admin data or fallback)
   const activeEvents = events && events.length > 0 ? events : retreatsModal.events;

@@ -1,10 +1,12 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useAdminData } from '../context/AdminDataContext';
 import { Users, Heart, Star, Sparkles, MessageCircle, PenLine, ShieldCheck } from 'lucide-react';
 
 export const VolunteerSection = ({ onOpenVolunteer, onOpenReviewModal, customReviews = [] }) => {
   const { language, t } = useLanguage();
-  const { volunteerSection } = t;
+  const { volunteerSection: adminVolunteerSection } = useAdminData();
+  const volunteerSection = { ...t.volunteerSection, ...(adminVolunteerSection || {}) };
 
   // Combine default testimonials with approved custom reviews
   const allTestimonials = [...volunteerSection.testimonials, ...customReviews];

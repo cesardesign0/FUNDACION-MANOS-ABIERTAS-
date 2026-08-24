@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useAdminData } from '../context/AdminDataContext';
 import { Heart, Users, Handshake, Mail, ArrowRight, Sparkles, ShoppingBag, Church, PlusCircle, Calendar, Star } from 'lucide-react';
 
 export const MissionHeart = ({ 
@@ -14,7 +15,8 @@ export const MissionHeart = ({
   featuredRetreat
 }) => {
   const { t } = useLanguage();
-  const { mission } = t;
+  const { missionHeart } = useAdminData();
+  const mission = { ...t.mission, ...(missionHeart || {}) };
 
   const handleActionClick = (id) => {
     if (id === 'donate') {
@@ -105,7 +107,7 @@ export const MissionHeart = ({
               <div className="relative w-72 h-72 sm:w-84 sm:h-84 rounded-full bg-white shadow-2xl border-4 border-white flex flex-col items-center justify-center p-8 group z-10 hover:scale-105 transition-transform duration-500 ring-4 ring-brand-teal/20">
                 <div className="absolute -inset-1 bg-gradient-to-tr from-brand-coral via-brand-gold to-brand-teal rounded-full blur-md opacity-30 group-hover:opacity-60 transition duration-700 pointer-events-none" />
                 <img
-                  src="/logo-manos-abiertas.png"
+                  src={mission.centerLogoImage || "/logo-manos-abiertas.png"}
                   alt="Fundación Manos Abiertas de Jesús & María"
                   className="relative z-10 w-full h-auto object-contain max-h-48 drop-shadow-md"
                 />
@@ -121,7 +123,7 @@ export const MissionHeart = ({
                 className="absolute -top-3 right-0 sm:right-4 w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden shadow-xl border-4 border-white z-20 group hover:scale-110 transition-transform duration-300 cursor-pointer focus:outline-none ring-2 ring-brand-teal/30 hover:ring-brand-teal"
               >
                 <img
-                  src="https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80"
+                  src={mission.bubble1Image || "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80"}
                   alt="Ayuda Humanitaria"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
@@ -138,7 +140,7 @@ export const MissionHeart = ({
                 className="absolute -bottom-4 right-2 sm:right-6 w-32 h-32 sm:w-36 sm:h-36 rounded-full overflow-hidden shadow-2xl border-4 border-white z-20 group hover:scale-110 transition-transform duration-300 cursor-pointer focus:outline-none ring-2 ring-brand-coral/30 hover:ring-brand-coral"
               >
                 <img
-                  src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80"
+                  src={mission.bubbleIshaImage || "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80"}
                   alt="Comunidad Isha Bethel"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
@@ -155,7 +157,7 @@ export const MissionHeart = ({
                 className="absolute -bottom-6 -left-4 sm:-left-6 w-36 h-36 sm:w-44 sm:h-44 rounded-full overflow-hidden shadow-2xl border-4 border-white z-20 group hover:scale-105 transition-transform duration-300 cursor-pointer focus:outline-none ring-4 ring-brand-gold/40 hover:ring-brand-gold"
               >
                 <img
-                  src="https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=600&q=80"
+                  src={mission.bubbleRetreatsImage || "https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=600&q=80"}
                   alt="Calendario de Actividades y Retiros"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />

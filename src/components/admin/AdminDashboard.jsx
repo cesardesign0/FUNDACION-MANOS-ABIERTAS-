@@ -5,13 +5,15 @@ import {
   Plus, Edit, Trash2, Check, X, ShieldCheck, RefreshCw, AlertCircle, 
   ArrowLeft, Lock, Mail, Phone, MapPin, DollarSign, Image as ImageIcon,
   CheckCircle2, Clock, Sparkles, User, Link as LinkIcon, Upload, CalendarDays,
-  FileText, ListPlus, Home, LayoutTemplate, Menu, Eye, BookOpen, Heart
+  FileText, ListPlus, Home, LayoutTemplate, Menu, Eye, BookOpen, Heart,
+  Church, Users, HandHeart, Layers, Palette, ChevronRight
 } from 'lucide-react';
 
 export const AdminDashboard = ({ onExitAdmin }) => {
   const {
-    hero, nav, events, products, missions, reviews, approvedReviews, pendingReviews, settings,
-    updateHero, updateNav,
+    hero, nav, about, programsSection, volunteerSection, retreatsModal, shopHeader, missionHeart, footer,
+    events, products, missions, reviews, approvedReviews, pendingReviews, settings,
+    updateHero, updateNav, updateAbout, updateProgramsHeader, updateVolunteerHeader, updateRetreatsHeader, updateShopHeader, updateMissionHeart, updateFooter,
     addEvent, updateEvent, deleteEvent,
     addProduct, updateProduct, deleteProduct,
     addMission, updateMission, deleteMission,
@@ -24,18 +26,22 @@ export const AdminDashboard = ({ onExitAdmin }) => {
   const [loginPass, setLoginPass] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  // Active Tab: 'hero', 'nav', 'retreats', 'shop', 'missions', 'reviews', 'settings'
-  const [activeTab, setActiveTab] = useState('hero');
+  // Active Tab in Sidebar: 'sections', 'retreats', 'shop', 'missions', 'reviews', 'settings'
+  const [activeTab, setActiveTab] = useState('sections');
+  
+  // Active Sub-Section inside 'sections': 'hero', 'mission', 'programs', 'about', 'retreatsHeader', 'shopHeader', 'volunteerHeader', 'nav', 'footer'
+  const [activeSection, setActiveSection] = useState('hero');
 
-  // Modals & Editing states
+  // Modals & Editing states for retreats/products/missions
   const [editingItem, setEditingItem] = useState(null);
   const [editingType, setEditingType] = useState(''); // 'retreat', 'product', 'mission'
   const [isPhotoPickerOpen, setIsPhotoPickerOpen] = useState(false);
   const [photoPickerMode, setPhotoPickerMode] = useState('upload'); // 'upload', 'url', 'gallery'
   const [tempUrlInput, setTempUrlInput] = useState('');
+  const [photoPickerTarget, setPhotoPickerTarget] = useState(null); // { section: 'about', field: 'collageImg1' }
   const [saveSuccessNotice, setSaveSuccessNotice] = useState('');
 
-  // Local state for Hero and Nav forms
+  // =================== SECTION FORMS LOCAL STATES ===================
   const [heroForm, setHeroForm] = useState(() => ({
     tag: hero?.tag || "Fe, Ayuda Humanitaria y Sanación Espiritual",
     handwritten: hero?.handwritten || "Ayudando a transformar vidas y su futuro",
@@ -49,6 +55,63 @@ export const AdminDashboard = ({ onExitAdmin }) => {
     backgroundImage: hero?.backgroundImage || "https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1920&q=85"
   }));
 
+  const [missionHeartForm, setMissionHeartForm] = useState(() => ({
+    badge: missionHeart?.badge || "NUESTRA RAZÓN DE SER",
+    title: missionHeart?.title || "Amor, Fe y Ayuda en Acción",
+    paragraph1: missionHeart?.paragraph1 || "Nuestra labor humanitaria nace, se sustenta y se nutre en el Centro Carismático Católico de la Ciudad de Nueva York y el Bronx...",
+    paragraph2: missionHeart?.paragraph2 || "Cada plato de comida caliente, cada abrigo entregado y cada retiro representa la misericordia y la gracia viva de Dios.",
+    btnMore: missionHeart?.btnMore || "Conocer la Casa de Ayuda",
+    donateLinkText: missionHeart?.donateLinkText || "¿Deseas hacer un aporte económico directo? Haz clic aquí",
+    centerLogoImage: missionHeart?.centerLogoImage || "/logo-manos-abiertas.png",
+    bubble1Image: missionHeart?.bubble1Image || "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80",
+    bubbleIshaImage: missionHeart?.bubbleIshaImage || "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80",
+    bubbleRetreatsImage: missionHeart?.bubbleRetreatsImage || "https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=600&q=80"
+  }));
+
+  const [aboutForm, setAboutForm] = useState(() => ({
+    badge: about?.badge || "NUESTRA CASA DE AYUDA Y CUNA",
+    title: about?.title || "CENTRO CARISMÁTICO CATÓLICO DE NUEVA YORK & EL BRONX",
+    subtitle: about?.subtitle || "El corazón y cuna espiritual donde nace la fundación Manos Abiertas de Jesús y María",
+    paragraph1: about?.paragraph1 || "Nuestra labor humanitaria nace, se sustenta y se nutre en el Centro Carismático Católico de la Ciudad de Nueva York y el Bronx, a través del grupo de fraternidad y oración Isha Bethel...",
+    paragraph2: about?.paragraph2 || "El Centro Carismático Católico es verdaderamente nuestra Casa de Ayuda: el hogar sagrado donde recibimos el impulso pastoral...",
+    quote: about?.quote || "Unidos como hermanos en la fe en el grupo Isha Bethel y el Centro Carismático Católico, llevamos una mano amiga y el amor vivo de Cristo a quienes más lo necesitan.",
+    founderName: about?.founderName || "Grupo Isha Bethel & Movimiento Carismático Católico",
+    founderRole: about?.founderRole || "Centro Carismático Católico • Arquidiócesis de Nueva York",
+    address: about?.address || "826 E. 166th St., Bronx, NY 10459 (Junto a St. Anthony of Padua)",
+    phone: about?.phone || "(718) 378-1734",
+    websiteBtn: about?.websiteBtn || "Visitar Sitio Web Oficial (centrobronx.com)",
+    collageImg1: about?.collageImg1 || "/retreats/seminario-espiritu.jpg",
+    collageImg2: about?.collageImg2 || "/retreats/retiro-mujeres.jpg",
+    collageImg3: about?.collageImg3 || "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80"
+  }));
+
+  const [programsHeaderForm, setProgramsHeaderForm] = useState(() => ({
+    badge: programsSection?.badge || "NUESTRAS MISIONES",
+    title: programsSection?.title || "Misiones y Causas Activas que Necesitan tu Apoyo",
+    subtitle: programsSection?.subtitle || "Descubre cómo cada iniciativa inspirada en el Evangelio crea un impacto duradero en la comunidad.",
+    btnProposeMission: programsSection?.btnProposeMission || "Proponer una Nueva Misión / Causa"
+  }));
+
+  const [retreatsHeaderForm, setRetreatsHeaderForm] = useState(() => ({
+    badge: retreatsModal?.badge || "CENTRO CARISMÁTICO CATÓLICO NY & GRUPO ISHA BETHEL",
+    title: retreatsModal?.title || "Calendario de Retiros y Actividades Espirituales",
+    subtitle: retreatsModal?.subtitle || "Espacios de sanación interior, fortaleza mental, oración carismática y renovación profunda en el Espíritu Santo.",
+    venueNotice: retreatsModal?.venueNotice || "📍 Lugar: Centro Carismático Católico (826 E. 166th St., Bronx, NY) y Casas de Retiro aliadas."
+  }));
+
+  const [shopHeaderForm, setShopHeaderForm] = useState(() => ({
+    badge: shopHeader?.badge || "TIENDA SOLIDARIA CATÓLICA",
+    title: shopHeader?.title || "Artículos de Fe, Devoción y Formación Cristiana",
+    subtitle: shopHeader?.subtitle || "El 100% de cada compra se destina directamente a financiar las obras de ayuda humanitaria y retiros espirituales.",
+    supportCallout: shopHeader?.supportCallout || "El 100% de los fondos financia alimentos para familias y retiros de sanación"
+  }));
+
+  const [volunteerHeaderForm, setVolunteerHeaderForm] = useState(() => ({
+    tag: volunteerSection?.tag || "ÚNETE A NUESTRA FAMILIA EN CRISTO",
+    title: volunteerSection?.title || "Tus Manos Pueden Ser Instrumento de Dios para Salvar Vidas",
+    desc: volunteerSection?.desc || "Ya sea sirviendo en las misiones comunitarias, organizando donaciones, apoyando en retiros o intercediendo en oración, tu presencia es vital."
+  }));
+
   const [navForm, setNavForm] = useState(() => ({
     home: nav?.home || "Inicio",
     mission: nav?.mission || "Nuestra Misión",
@@ -57,6 +120,13 @@ export const AdminDashboard = ({ onExitAdmin }) => {
     retreats: nav?.retreats || "Calendario de Actividades",
     goals: nav?.goals || "Misiones Completadas",
     shop: nav?.shop || "Tienda Solidaria"
+  }));
+
+  const [footerForm, setFooterForm] = useState(() => ({
+    aboutText: footer?.aboutText || "La Fundación Manos Abiertas de Jesús & María es una obra social y espiritual nacida del Centro Carismático Católico de la Ciudad de Nueva York y el Bronx...",
+    newsletterTitle: footer?.newsletterTitle || "Mantente en Contacto",
+    newsletterDesc: footer?.newsletterDesc || "Suscríbete para recibir testimonios, novedades de retiros espirituales y reportes de ayuda humanitaria.",
+    rights: footer?.rights || "Todos los derechos reservados."
   }));
 
   // Preset gallery images for quick picks
@@ -93,21 +163,42 @@ export const AdminDashboard = ({ onExitAdmin }) => {
     }
   };
 
+  // Open photo picker for a target
+  const openPhotoPickerFor = (section, field) => {
+    setPhotoPickerTarget({ section, field });
+    setIsPhotoPickerOpen(true);
+  };
+
+  // Assign image URL to the active target
+  const applyImageSelection = (imageUrl) => {
+    if (photoPickerTarget) {
+      const { section, field } = photoPickerTarget;
+      if (section === 'hero') setHeroForm(prev => ({ ...prev, [field]: imageUrl }));
+      else if (section === 'mission') setMissionHeartForm(prev => ({ ...prev, [field]: imageUrl }));
+      else if (section === 'about') setAboutForm(prev => ({ ...prev, [field]: imageUrl }));
+      else if (section === 'programs') setProgramsHeaderForm(prev => ({ ...prev, [field]: imageUrl }));
+      else if (section === 'retreatsHeader') setRetreatsHeaderForm(prev => ({ ...prev, [field]: imageUrl }));
+      else if (section === 'shopHeader') setShopHeaderForm(prev => ({ ...prev, [field]: imageUrl }));
+      else if (section === 'volunteerHeader') setVolunteerHeaderForm(prev => ({ ...prev, [field]: imageUrl }));
+      else if (section === 'footer') setFooterForm(prev => ({ ...prev, [field]: imageUrl }));
+      
+      showNotification("Foto actualizada con éxito");
+    } else if (editingItem) {
+      setEditingItem({ ...editingItem, image: imageUrl });
+      showNotification("Foto del elemento actualizada");
+    }
+    setIsPhotoPickerOpen(false);
+    setPhotoPickerTarget(null);
+    setTempUrlInput('');
+  };
+
   // Handle Local Image Upload (FileReader to base64)
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        if (editingItem) {
-          setEditingItem({ ...editingItem, image: reader.result });
-          setIsPhotoPickerOpen(false);
-          showNotification("Foto cargada con éxito");
-        } else if (activeTab === 'hero') {
-          setHeroForm(prev => ({ ...prev, logoCardImage: reader.result }));
-          setIsPhotoPickerOpen(false);
-          showNotification("Logo / imagen de portada actualizada");
-        }
+        applyImageSelection(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -260,10 +351,11 @@ export const AdminDashboard = ({ onExitAdmin }) => {
             <img src="/logo-manos-abiertas.png" alt="Logo" className="h-9 w-auto object-contain" />
           </div>
           <div>
-            <h1 className="font-display font-black text-base sm:text-lg text-white leading-tight">
-              Panel de Control Pastoral (Editor en Vivo)
+            <h1 className="font-display font-black text-base sm:text-lg text-white leading-tight flex items-center gap-2">
+              <span>Panel de Control Pastoral</span>
+              <span className="bg-brand-gold text-slate-950 text-[10px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider">Editor Completo Wix</span>
             </h1>
-            <p className="text-[10px] text-teal-300 font-bold uppercase tracking-wider">
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
               Fundación Manos Abiertas de Jesús & María
             </p>
           </div>
@@ -306,38 +398,23 @@ export const AdminDashboard = ({ onExitAdmin }) => {
         <aside className="w-full md:w-64 flex-shrink-0 space-y-2">
           <div className="bg-slate-950 p-2 rounded-2xl border border-slate-800 space-y-1">
             
-            {/* NUEVA PESTAÑA: Portada & Frases de Inicio */}
+            {/* PESTAÑA PRINCIPAL: EDITOR DE TODAS LAS SECCIONES */}
             <button
-              onClick={() => { setActiveTab('hero'); setEditingItem(null); }}
+              onClick={() => { setActiveTab('sections'); setEditingItem(null); }}
               className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'hero'
-                  ? 'bg-brand-teal text-white shadow-md'
+                activeTab === 'sections'
+                  ? 'bg-gradient-to-r from-brand-teal to-brand-teal-dark text-white shadow-md'
                   : 'text-slate-400 hover:text-white hover:bg-slate-900'
               }`}
             >
               <div className="flex items-center gap-2.5">
-                <Home className="w-4 h-4 text-brand-gold" />
-                <span>Página de Inicio & Frases</span>
+                <Palette className="w-4 h-4 text-brand-gold" />
+                <span>Editor de Secciones</span>
               </div>
-              <span className="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">Hero</span>
+              <span className="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">9 paneles</span>
             </button>
 
-            {/* NUEVA PESTAÑA: Menú de Navegación */}
-            <button
-              onClick={() => { setActiveTab('nav'); setEditingItem(null); }}
-              className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'nav'
-                  ? 'bg-brand-teal text-white shadow-md'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-900'
-              }`}
-            >
-              <div className="flex items-center gap-2.5">
-                <Menu className="w-4 h-4" />
-                <span>Menú y Navegación</span>
-              </div>
-              <span className="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">7</span>
-            </button>
-
+            {/* PESTAÑA 2: RETIROS Y CALENDARIO (GESTIÓN COMPLETA) */}
             <button
               onClick={() => { setActiveTab('retreats'); setEditingItem(null); }}
               className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all ${
@@ -348,11 +425,12 @@ export const AdminDashboard = ({ onExitAdmin }) => {
             >
               <div className="flex items-center gap-2.5">
                 <Calendar className="w-4 h-4" />
-                <span>Retiros y Calendario</span>
+                <span>Retiros (Lista y CRUD)</span>
               </div>
               <span className="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">{events.length}</span>
             </button>
 
+            {/* PESTAÑA 3: TIENDA SOLIDARIA (GESTIÓN DE PRODUCTOS) */}
             <button
               onClick={() => { setActiveTab('shop'); setEditingItem(null); }}
               className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all ${
@@ -363,11 +441,12 @@ export const AdminDashboard = ({ onExitAdmin }) => {
             >
               <div className="flex items-center gap-2.5">
                 <ShoppingBag className="w-4 h-4" />
-                <span>Tienda Solidaria</span>
+                <span>Tienda (Productos)</span>
               </div>
               <span className="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">{products.length}</span>
             </button>
 
+            {/* PESTAÑA 4: MISIONES Y CASOS */}
             <button
               onClick={() => { setActiveTab('missions'); setEditingItem(null); }}
               className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all ${
@@ -378,11 +457,12 @@ export const AdminDashboard = ({ onExitAdmin }) => {
             >
               <div className="flex items-center gap-2.5">
                 <Target className="w-4 h-4" />
-                <span>Misiones y Casos</span>
+                <span>Misiones & Metas</span>
               </div>
               <span className="bg-black/30 px-2 py-0.5 rounded-full text-[10px]">{missions.length}</span>
             </button>
 
+            {/* PESTAÑA 5: RESEÑAS Y TESTIMONIOS */}
             <button
               onClick={() => { setActiveTab('reviews'); setEditingItem(null); }}
               className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all ${
@@ -393,7 +473,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
             >
               <div className="flex items-center gap-2.5">
                 <Star className="w-4 h-4" />
-                <span>Reseñas y Testimonios</span>
+                <span>Testimonios y Reseñas</span>
               </div>
               {pendingReviews.length > 0 ? (
                 <span className="bg-brand-coral text-white px-2 py-0.5 rounded-full text-[10px] font-black animate-pulse">
@@ -404,6 +484,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
               )}
             </button>
 
+            {/* PESTAÑA 6: CONFIGURACIÓN GENERAL */}
             <button
               onClick={() => { setActiveTab('settings'); setEditingItem(null); }}
               className={`w-full flex items-center gap-2.5 px-4 py-3 rounded-xl text-xs font-bold transition-all ${
@@ -438,350 +519,993 @@ export const AdminDashboard = ({ onExitAdmin }) => {
         <main className="flex-1 bg-slate-950 rounded-3xl border border-slate-800 p-6 sm:p-8">
           
           {/* ========================================================================= */}
-          {/* TAB 0: PORTADA & PÁGINA DE INICIO (HERO) */}
+          {/* TAB 1: EDITOR DE SECCIONES (WIX STYLE COMPLETO) */}
           {/* ========================================================================= */}
-          {activeTab === 'hero' && (
+          {activeTab === 'sections' && (
             <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+              
+              {/* Top Sub-Navigation Selector */}
+              <div className="pb-4 border-b border-slate-800 space-y-3">
                 <div>
                   <h2 className="text-xl font-black text-white font-display flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-brand-gold" />
-                    <span>Personalizar Portada de Inicio (Frases, Versículos y Botones)</span>
+                    <Palette className="w-5 h-5 text-brand-gold" />
+                    <span>Personalizador Visual de Secciones (Estilo Wix)</span>
                   </h2>
                   <p className="text-xs text-slate-400">
-                    Edita los textos, versículos bíblicos, imagen central y nombres de botones de la página principal.
+                    Cambia frases, versículos, títulos, fotos y botones de cada sección con vista previa en vivo.
                   </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    updateHero(heroForm);
-                    showNotification("¡Portada de inicio actualizada con éxito!");
-                  }}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-brand-teal to-brand-teal-dark hover:from-teal-600 hover:to-teal-700 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-brand-teal/20 hover:scale-105 transition-all"
-                >
-                  Guardar Cambios de Portada
-                </button>
-              </div>
-
-              {/* Vista Previa en Vivo */}
-              <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-brand-gold flex items-center gap-1.5">
-                    <Eye className="w-3.5 h-3.5" />
-                    <span>Vista Previa en Tiempo Real de la Portada:</span>
-                  </span>
-                </div>
-
-                <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 relative overflow-hidden space-y-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal/20 text-teal-300 text-[10px] font-black uppercase tracking-wider">
-                    ✨ {heroForm.tag}
-                  </div>
-
-                  <div className="font-handwritten text-3xl sm:text-4xl text-brand-gold font-bold">
-                    {heroForm.handwritten}
-                  </div>
-
-                  <div className="border-l-4 border-brand-gold/70 pl-3 py-1">
-                    <div className="font-serif italic text-lg sm:text-xl text-white font-medium">
-                      {heroForm.title}
-                    </div>
-                    <span className="text-amber-200 text-xs font-bold block mt-1">
-                      📖 {heroForm.citation}
-                    </span>
-                  </div>
-
-                  <p className="text-slate-300 text-xs leading-relaxed max-w-xl">
-                    {heroForm.description}
-                  </p>
-
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    <span className="px-4 py-2 rounded-full bg-brand-coral text-white text-xs font-black shadow-md">
-                      ❤️ {heroForm.btnDonate}
-                    </span>
-                    <span className="px-4 py-2 rounded-full bg-white/10 text-white text-xs font-bold border border-white/20">
-                      👥 {heroForm.btnVolunteer}
-                    </span>
-                    <span className="px-4 py-2 rounded-full bg-brand-gold/20 text-brand-gold text-xs font-bold border border-brand-gold/40">
-                      {heroForm.btnCauses} →
-                    </span>
-                  </div>
+                {/* Sub-Pills */}
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {[
+                    { id: 'hero', label: '1. Portada / Inicio', icon: Home },
+                    { id: 'mission', label: '2. Nuestra Misión', icon: Heart },
+                    { id: 'programs', label: '3. Misiones & Causas', icon: Target },
+                    { id: 'about', label: '4. La Casa de Ayuda (Bronx)', icon: Church },
+                    { id: 'retreatsHeader', label: '5. Calendario de Retiros', icon: Calendar },
+                    { id: 'shopHeader', label: '6. Tienda Solidaria', icon: ShoppingBag },
+                    { id: 'volunteerHeader', label: '7. Voluntariado', icon: Users },
+                    { id: 'nav', label: '8. Menú Superior', icon: Menu },
+                    { id: 'footer', label: '9. Pie de Página', icon: FileText },
+                  ].map((sec) => {
+                    const IconComponent = sec.icon;
+                    const isActive = activeSection === sec.id;
+                    return (
+                      <button
+                        key={sec.id}
+                        type="button"
+                        onClick={() => setActiveSection(sec.id)}
+                        className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+                          isActive
+                            ? 'bg-brand-gold text-slate-950 font-black shadow-md scale-105'
+                            : 'bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800'
+                        }`}
+                      >
+                        <IconComponent className="w-3.5 h-3.5" />
+                        <span>{sec.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Formulario de Campos de Inicio */}
-              <div className="space-y-4 text-xs">
-                
-                {/* 1. Subtítulo Manuscrito & Badge */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-slate-400 font-bold mb-1">
-                      Subtítulo Manuscrito Dorado (Frase Principal)
-                    </label>
-                    <input
-                      type="text"
-                      value={heroForm.handwritten}
-                      onChange={(e) => setHeroForm({ ...heroForm, handwritten: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-brand-gold font-bold text-sm"
-                    />
+              {/* ========================================================================= */}
+              {/* 1. PORTADA HERO */}
+              {/* ========================================================================= */}
+              {activeSection === 'hero' && (
+                <div className="space-y-6 animate-fadeIn">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <h3 className="font-bold text-base text-white flex items-center gap-2">
+                      <Home className="w-4 h-4 text-brand-gold" />
+                      <span>Personalizar Portada de Inicio (Hero)</span>
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateHero(heroForm);
+                        showNotification("¡Portada guardada con éxito!");
+                      }}
+                      className="px-6 py-2.5 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white font-black text-xs uppercase tracking-wider shadow-md hover:scale-105 transition-all"
+                    >
+                      Guardar Portada
+                    </button>
                   </div>
 
-                  <div>
-                    <label className="block text-slate-400 font-bold mb-1">
-                      Etiqueta Superior (Badge de la portada)
-                    </label>
-                    <input
-                      type="text"
-                      value={heroForm.tag}
-                      onChange={(e) => setHeroForm({ ...heroForm, tag: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                    />
+                  {/* VISTA PREVIA EN VIVO */}
+                  <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-brand-gold flex items-center gap-1.5">
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Vista Previa en Tiempo Real:</span>
+                    </span>
+
+                    <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal/20 text-teal-300 text-[10px] font-black uppercase tracking-wider">
+                        ✨ {heroForm.tag}
+                      </div>
+
+                      <div className="font-handwritten text-3xl sm:text-4xl text-brand-gold font-bold">
+                        {heroForm.handwritten}
+                      </div>
+
+                      <div className="border-l-4 border-brand-gold/70 pl-3 py-1">
+                        <div className="font-serif italic text-lg sm:text-xl text-white font-medium">
+                          {heroForm.title}
+                        </div>
+                        <span className="text-amber-200 text-xs font-bold block mt-1">
+                          📖 {heroForm.citation}
+                        </span>
+                      </div>
+
+                      <p className="text-slate-300 text-xs leading-relaxed max-w-xl">
+                        {heroForm.description}
+                      </p>
+
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        <span className="px-4 py-2 rounded-full bg-brand-coral text-white text-xs font-black shadow-md">
+                          ❤️ {heroForm.btnDonate}
+                        </span>
+                        <span className="px-4 py-2 rounded-full bg-white/10 text-white text-xs font-bold border border-white/20">
+                          👥 {heroForm.btnVolunteer}
+                        </span>
+                        <span className="px-4 py-2 rounded-full bg-brand-gold/20 text-brand-gold text-xs font-bold border border-brand-gold/40">
+                          {heroForm.btnCauses} →
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
 
-                {/* 2. Versículo Bíblico & Cita */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="sm:col-span-2">
-                    <label className="block text-slate-400 font-bold mb-1">
-                      Versículo Bíblico o Mensaje Central
-                    </label>
-                    <textarea
-                      rows="2"
-                      value={heroForm.title}
-                      onChange={(e) => setHeroForm({ ...heroForm, title: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-serif italic text-sm resize-none"
-                    />
-                  </div>
+                  {/* FORMULARIO */}
+                  <div className="space-y-4 text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Subtítulo Manuscrito Dorado</label>
+                        <input
+                          type="text"
+                          value={heroForm.handwritten}
+                          onChange={(e) => setHeroForm({ ...heroForm, handwritten: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-brand-gold font-bold text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Etiqueta Superior (Badge)</label>
+                        <input
+                          type="text"
+                          value={heroForm.tag}
+                          onChange={(e) => setHeroForm({ ...heroForm, tag: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white"
+                        />
+                      </div>
+                    </div>
 
-                  <div>
-                    <label className="block text-slate-400 font-bold mb-1">
-                      Cita del Libro Bíblico
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="— 1 Pedro 4, 10"
-                      value={heroForm.citation}
-                      onChange={(e) => setHeroForm({ ...heroForm, citation: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-amber-300 font-bold text-sm"
-                    />
-                  </div>
-                </div>
-
-                {/* 3. Párrafo Descriptivo */}
-                <div>
-                  <label className="block text-slate-400 font-bold mb-1">
-                    Párrafo Descriptivo de la Fundación en Portada
-                  </label>
-                  <textarea
-                    rows="3"
-                    value={heroForm.description}
-                    onChange={(e) => setHeroForm({ ...heroForm, description: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white leading-relaxed resize-none"
-                  />
-                </div>
-
-                {/* 4. Textos de los 3 Botones */}
-                <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Nombres de los 3 Botones de Acción de Portada:
-                  </span>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div>
-                      <label className="block text-slate-400 font-bold mb-1">Botón Rojo (Donar)</label>
-                      <input
-                        type="text"
-                        value={heroForm.btnDonate}
-                        onChange={(e) => setHeroForm({ ...heroForm, btnDonate: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
-                      />
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="sm:col-span-2">
+                        <label className="block text-slate-400 font-bold mb-1">Versículo Bíblico Principal</label>
+                        <textarea
+                          rows="2"
+                          value={heroForm.title}
+                          onChange={(e) => setHeroForm({ ...heroForm, title: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-serif italic text-sm resize-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Cita Bíblica</label>
+                        <input
+                          type="text"
+                          value={heroForm.citation}
+                          onChange={(e) => setHeroForm({ ...heroForm, citation: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-amber-300 font-bold text-sm"
+                        />
+                      </div>
                     </div>
 
                     <div>
-                      <label className="block text-slate-400 font-bold mb-1">Botón Secundario (Voluntario)</label>
-                      <input
-                        type="text"
-                        value={heroForm.btnVolunteer}
-                        onChange={(e) => setHeroForm({ ...heroForm, btnVolunteer: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
+                      <label className="block text-slate-400 font-bold mb-1">Párrafo Descriptivo</label>
+                      <textarea
+                        rows="3"
+                        value={heroForm.description}
+                        onChange={(e) => setHeroForm({ ...heroForm, description: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white leading-relaxed resize-none"
+                      />
+                    </div>
+
+                    {/* FOTO / LOGO DE LA PORTADA */}
+                    <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                        Logo o Flyer de la Tarjeta Flotante Izquierda:
+                      </span>
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 bg-white rounded-xl p-1 shadow-md flex items-center justify-center flex-shrink-0">
+                          <img src={heroForm.logoCardImage} alt="Logo" className="max-h-full max-w-full object-contain" />
+                        </div>
+                        <div className="flex-1 space-y-1">
+                          <input
+                            type="text"
+                            value={heroForm.logoCardImage}
+                            onChange={(e) => setHeroForm({ ...heroForm, logoCardImage: e.target.value })}
+                            className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-mono"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => openPhotoPickerFor('hero', 'logoCardImage')}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-teal text-white font-bold text-xs shadow-sm hover:scale-105 transition-all"
+                          >
+                            <Upload className="w-3.5 h-3.5" />
+                            <span>📷 Cambiar Foto / Subir Imagen</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-slate-900 rounded-2xl border border-slate-800">
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Botón Donar</label>
+                        <input
+                          type="text"
+                          value={heroForm.btnDonate}
+                          onChange={(e) => setHeroForm({ ...heroForm, btnDonate: e.target.value })}
+                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Botón Voluntario</label>
+                        <input
+                          type="text"
+                          value={heroForm.btnVolunteer}
+                          onChange={(e) => setHeroForm({ ...heroForm, btnVolunteer: e.target.value })}
+                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Botón Misiones</label>
+                        <input
+                          type="text"
+                          value={heroForm.btnCauses}
+                          onChange={(e) => setHeroForm({ ...heroForm, btnCauses: e.target.value })}
+                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ========================================================================= */}
+              {/* 2. NUESTRA MISIÓN (MISSIONHEART & BURBUJAS) */}
+              {/* ========================================================================= */}
+              {activeSection === 'mission' && (
+                <div className="space-y-6 animate-fadeIn">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <h3 className="font-bold text-base text-white flex items-center gap-2">
+                      <Heart className="w-4 h-4 text-brand-coral" />
+                      <span>Personalizar Sección «Nuestra Misión & Corazón»</span>
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateMissionHeart(missionHeartForm);
+                        showNotification("¡Sección Nuestra Misión guardada con éxito!");
+                      }}
+                      className="px-6 py-2.5 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white font-black text-xs uppercase tracking-wider shadow-md hover:scale-105 transition-all"
+                    >
+                      Guardar Misión
+                    </button>
+                  </div>
+
+                  {/* VISTA PREVIA */}
+                  <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-brand-coral flex items-center gap-1.5">
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Vista Previa de la Misión:</span>
+                    </span>
+
+                    <div className="p-6 rounded-2xl bg-white text-slate-900 border border-slate-200 space-y-3 shadow-md">
+                      <span className="inline-block px-3 py-1 rounded-full bg-red-100 text-brand-coral font-bold text-[10px] uppercase">
+                        {missionHeartForm.badge}
+                      </span>
+                      <h4 className="text-xl font-black text-slate-900">{missionHeartForm.title}</h4>
+                      <p className="text-xs text-slate-600 leading-relaxed">{missionHeartForm.paragraph1}</p>
+                      <p className="text-xs text-slate-600 leading-relaxed">{missionHeartForm.paragraph2}</p>
+                      <div className="flex items-center gap-3 pt-1">
+                        <span className="px-4 py-2 rounded-full bg-brand-coral text-white text-xs font-bold">
+                          {missionHeartForm.btnMore} →
+                        </span>
+                        <span className="text-xs font-bold text-brand-coral underline">
+                          {missionHeartForm.donateLinkText}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* FOTOS DE LAS BURBUJAS */}
+                  <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3 text-xs">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                      📷 Fotos de las 3 Burbujas Interactivas:
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2 text-center">
+                        <img src={missionHeartForm.bubble1Image} alt="Ayuda" className="w-16 h-16 rounded-full mx-auto object-cover border-2 border-brand-teal" />
+                        <span className="text-[10px] font-bold block text-slate-300">Burbuja 1: Ayuda</span>
+                        <button
+                          type="button"
+                          onClick={() => openPhotoPickerFor('mission', 'bubble1Image')}
+                          className="px-2.5 py-1 rounded-lg bg-brand-teal text-white text-[10px] font-bold"
+                        >
+                          Cambiar Foto
+                        </button>
+                      </div>
+
+                      <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2 text-center">
+                        <img src={missionHeartForm.bubbleIshaImage} alt="Isha Bethel" className="w-16 h-16 rounded-full mx-auto object-cover border-2 border-brand-coral" />
+                        <span className="text-[10px] font-bold block text-slate-300">Burbuja 2: Isha Bethel</span>
+                        <button
+                          type="button"
+                          onClick={() => openPhotoPickerFor('mission', 'bubbleIshaImage')}
+                          className="px-2.5 py-1 rounded-lg bg-brand-teal text-white text-[10px] font-bold"
+                        >
+                          Cambiar Foto
+                        </button>
+                      </div>
+
+                      <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2 text-center">
+                        <img src={missionHeartForm.bubbleRetreatsImage} alt="Retiros" className="w-16 h-16 rounded-full mx-auto object-cover border-2 border-brand-gold" />
+                        <span className="text-[10px] font-bold block text-slate-300">Burbuja 3: Calendario</span>
+                        <button
+                          type="button"
+                          onClick={() => openPhotoPickerFor('mission', 'bubbleRetreatsImage')}
+                          className="px-2.5 py-1 rounded-lg bg-brand-teal text-white text-[10px] font-bold"
+                        >
+                          Cambiar Foto
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CAMPOS DE TEXTO */}
+                  <div className="space-y-4 text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Etiqueta Superior (Badge)</label>
+                        <input
+                          type="text"
+                          value={missionHeartForm.badge}
+                          onChange={(e) => setMissionHeartForm({ ...missionHeartForm, badge: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Título de la Sección</label>
+                        <input
+                          type="text"
+                          value={missionHeartForm.title}
+                          onChange={(e) => setMissionHeartForm({ ...missionHeartForm, title: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Primer Párrafo</label>
+                      <textarea
+                        rows="2"
+                        value={missionHeartForm.paragraph1}
+                        onChange={(e) => setMissionHeartForm({ ...missionHeartForm, paragraph1: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white leading-relaxed resize-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-slate-400 font-bold mb-1">Botón Dorado (Misiones)</label>
+                      <label className="block text-slate-400 font-bold mb-1">Segundo Párrafo</label>
+                      <textarea
+                        rows="2"
+                        value={missionHeartForm.paragraph2}
+                        onChange={(e) => setMissionHeartForm({ ...missionHeartForm, paragraph2: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white leading-relaxed resize-none"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Texto Botón Conocer</label>
+                        <input
+                          type="text"
+                          value={missionHeartForm.btnMore}
+                          onChange={(e) => setMissionHeartForm({ ...missionHeartForm, btnMore: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Frase Enlace de Donación</label>
+                        <input
+                          type="text"
+                          value={missionHeartForm.donateLinkText}
+                          onChange={(e) => setMissionHeartForm({ ...missionHeartForm, donateLinkText: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-brand-coral font-bold"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ========================================================================= */}
+              {/* 3. MISIONES Y CAUSAS */}
+              {/* ========================================================================= */}
+              {activeSection === 'programs' && (
+                <div className="space-y-6 animate-fadeIn">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <h3 className="font-bold text-base text-white flex items-center gap-2">
+                      <Target className="w-4 h-4 text-brand-teal" />
+                      <span>Cabecera de «Misiones y Causas Activas»</span>
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateProgramsHeader(programsHeaderForm);
+                        showNotification("¡Cabecera de Misiones guardada con éxito!");
+                      }}
+                      className="px-6 py-2.5 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white font-black text-xs uppercase tracking-wider shadow-md hover:scale-105 transition-all"
+                    >
+                      Guardar Cabecera
+                    </button>
+                  </div>
+
+                  <div className="space-y-4 text-xs">
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Etiqueta Superior (Badge)</label>
                       <input
                         type="text"
-                        value={heroForm.btnCauses}
-                        onChange={(e) => setHeroForm({ ...heroForm, btnCauses: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
+                        value={programsHeaderForm.badge}
+                        onChange={(e) => setProgramsHeaderForm({ ...programsHeaderForm, badge: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Título de la Sección de Misiones</label>
+                      <input
+                        type="text"
+                        value={programsHeaderForm.title}
+                        onChange={(e) => setProgramsHeaderForm({ ...programsHeaderForm, title: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold text-sm"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Subtítulo Descriptivo</label>
+                      <textarea
+                        rows="2"
+                        value={programsHeaderForm.subtitle}
+                        onChange={(e) => setProgramsHeaderForm({ ...programsHeaderForm, subtitle: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white leading-relaxed resize-none"
+                      />
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-center">
+                      <p className="text-slate-400 text-xs mb-2">
+                        ¿Deseas editar los casos individuales, montos recaudados y metas?
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab('missions')}
+                        className="px-4 py-2 rounded-xl bg-brand-teal/20 text-teal-300 hover:bg-brand-teal hover:text-white font-bold text-xs transition-colors"
+                      >
+                        👉 Ir a la Pestaña «Misiones & Metas» para editar casos y montos
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ========================================================================= */}
+              {/* 4. LA CASA DE AYUDA (CENTRO CARISMÁTICO DEL BRONX) */}
+              {/* ========================================================================= */}
+              {activeSection === 'about' && (
+                <div className="space-y-6 animate-fadeIn">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <h3 className="font-bold text-base text-white flex items-center gap-2">
+                      <Church className="w-4 h-4 text-brand-gold" />
+                      <span>Personalizar «La Casa de Ayuda (Centro Bronx & Isha Bethel)»</span>
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateAbout(aboutForm);
+                        showNotification("¡Sección La Casa de Ayuda guardada con éxito!");
+                      }}
+                      className="px-6 py-2.5 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white font-black text-xs uppercase tracking-wider shadow-md hover:scale-105 transition-all"
+                    >
+                      Guardar Casa de Ayuda
+                    </button>
+                  </div>
+
+                  {/* FOTOS DEL COLLAGE DE LA CASA DE AYUDA */}
+                  <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3 text-xs">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-brand-gold block">
+                      📷 3 Fotos del Collage Comunitario:
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2 text-center">
+                        <img src={aboutForm.collageImg1} alt="Asamblea" className="w-full h-20 rounded-lg object-cover border border-slate-700" />
+                        <span className="text-[10px] font-bold block text-slate-300">Foto 1: Altar / Asamblea</span>
+                        <button
+                          type="button"
+                          onClick={() => openPhotoPickerFor('about', 'collageImg1')}
+                          className="px-3 py-1 rounded-lg bg-brand-teal text-white text-[10px] font-bold"
+                        >
+                          Cambiar Foto
+                        </button>
+                      </div>
+
+                      <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2 text-center">
+                        <img src={aboutForm.collageImg2} alt="Isha Bethel" className="w-full h-20 rounded-lg object-cover border border-slate-700" />
+                        <span className="text-[10px] font-bold block text-slate-300">Foto 2: Mujeres Isha Bethel</span>
+                        <button
+                          type="button"
+                          onClick={() => openPhotoPickerFor('about', 'collageImg2')}
+                          className="px-3 py-1 rounded-lg bg-brand-teal text-white text-[10px] font-bold"
+                        >
+                          Cambiar Foto
+                        </button>
+                      </div>
+
+                      <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2 text-center">
+                        <img src={aboutForm.collageImg3} alt="Alimentos" className="w-full h-20 rounded-lg object-cover border border-slate-700" />
+                        <span className="text-[10px] font-bold block text-slate-300">Foto 3: Alimentos y Caridad</span>
+                        <button
+                          type="button"
+                          onClick={() => openPhotoPickerFor('about', 'collageImg3')}
+                          className="px-3 py-1 rounded-lg bg-brand-teal text-white text-[10px] font-bold"
+                        >
+                          Cambiar Foto
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CAMPOS DE TEXTO */}
+                  <div className="space-y-4 text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Etiqueta Superior (Badge)</label>
+                        <input
+                          type="text"
+                          value={aboutForm.badge}
+                          onChange={(e) => setAboutForm({ ...aboutForm, badge: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Título de la Casa Matriz</label>
+                        <input
+                          type="text"
+                          value={aboutForm.title}
+                          onChange={(e) => setAboutForm({ ...aboutForm, title: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Subtítulo</label>
+                      <input
+                        type="text"
+                        value={aboutForm.subtitle}
+                        onChange={(e) => setAboutForm({ ...aboutForm, subtitle: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-brand-coral font-bold"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Párrafo 1 (Historia)</label>
+                        <textarea
+                          rows="3"
+                          value={aboutForm.paragraph1}
+                          onChange={(e) => setAboutForm({ ...aboutForm, paragraph1: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white leading-relaxed resize-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Párrafo 2 (Misión Pastoral)</label>
+                        <textarea
+                          rows="3"
+                          value={aboutForm.paragraph2}
+                          onChange={(e) => setAboutForm({ ...aboutForm, paragraph2: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white leading-relaxed resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Frase / Cita de Fraternidad</label>
+                      <textarea
+                        rows="2"
+                        value={aboutForm.quote}
+                        onChange={(e) => setAboutForm({ ...aboutForm, quote: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-amber-300 italic resize-none"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-slate-900 rounded-2xl border border-slate-800">
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Comunidad / Autor</label>
+                        <input
+                          type="text"
+                          value={aboutForm.founderName}
+                          onChange={(e) => setAboutForm({ ...aboutForm, founderName: e.target.value })}
+                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Dirección</label>
+                        <input
+                          type="text"
+                          value={aboutForm.address}
+                          onChange={(e) => setAboutForm({ ...aboutForm, address: e.target.value })}
+                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Teléfono</label>
+                        <input
+                          type="text"
+                          value={aboutForm.phone}
+                          onChange={(e) => setAboutForm({ ...aboutForm, phone: e.target.value })}
+                          className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-mono"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ========================================================================= */}
+              {/* 5. CALENDARIO DE RETIROS HEADER */}
+              {/* ========================================================================= */}
+              {activeSection === 'retreatsHeader' && (
+                <div className="space-y-6 animate-fadeIn">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <h3 className="font-bold text-base text-white flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-brand-gold" />
+                      <span>Cabecera del «Calendario de Retiros y Actividades»</span>
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateRetreatsHeader(retreatsHeaderForm);
+                        showNotification("¡Cabecera de Retiros guardada con éxito!");
+                      }}
+                      className="px-6 py-2.5 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white font-black text-xs uppercase tracking-wider shadow-md hover:scale-105 transition-all"
+                    >
+                      Guardar Cabecera
+                    </button>
+                  </div>
+
+                  <div className="space-y-4 text-xs">
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Etiqueta Superior (Badge)</label>
+                      <input
+                        type="text"
+                        value={retreatsHeaderForm.badge}
+                        onChange={(e) => setRetreatsHeaderForm({ ...retreatsHeaderForm, badge: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Título del Calendario</label>
+                      <input
+                        type="text"
+                        value={retreatsHeaderForm.title}
+                        onChange={(e) => setRetreatsHeaderForm({ ...retreatsHeaderForm, title: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold text-sm"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Subtítulo Descriptivo</label>
+                      <textarea
+                        rows="2"
+                        value={retreatsHeaderForm.subtitle}
+                        onChange={(e) => setRetreatsHeaderForm({ ...retreatsHeaderForm, subtitle: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white leading-relaxed resize-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Aviso del Lugar Oficial</label>
+                      <input
+                        type="text"
+                        value={retreatsHeaderForm.venueNotice}
+                        onChange={(e) => setRetreatsHeaderForm({ ...retreatsHeaderForm, venueNotice: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white"
+                      />
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-center">
+                      <p className="text-slate-400 text-xs mb-2">
+                        ¿Deseas agregar nuevos retiros, editar fechas o subir imágenes de retiros?
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab('retreats')}
+                        className="px-4 py-2 rounded-xl bg-brand-teal/20 text-teal-300 hover:bg-brand-teal hover:text-white font-bold text-xs transition-colors"
+                      >
+                        👉 Ir a la Pestaña «Retiros (Lista y CRUD)» para gestionar fechas y tickets
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ========================================================================= */}
+              {/* 6. TIENDA SOLIDARIA HEADER */}
+              {/* ========================================================================= */}
+              {activeSection === 'shopHeader' && (
+                <div className="space-y-6 animate-fadeIn">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <h3 className="font-bold text-base text-white flex items-center gap-2">
+                      <ShoppingBag className="w-4 h-4 text-amber-500" />
+                      <span>Cabecera de la «Tienda Solidaria Católica»</span>
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateShopHeader(shopHeaderForm);
+                        showNotification("¡Cabecera de Tienda guardada con éxito!");
+                      }}
+                      className="px-6 py-2.5 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white font-black text-xs uppercase tracking-wider shadow-md hover:scale-105 transition-all"
+                    >
+                      Guardar Cabecera
+                    </button>
+                  </div>
+
+                  <div className="space-y-4 text-xs">
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Etiqueta Superior (Badge)</label>
+                      <input
+                        type="text"
+                        value={shopHeaderForm.badge}
+                        onChange={(e) => setShopHeaderForm({ ...shopHeaderForm, badge: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Título de la Tienda</label>
+                      <input
+                        type="text"
+                        value={shopHeaderForm.title}
+                        onChange={(e) => setShopHeaderForm({ ...shopHeaderForm, title: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold text-sm"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Subtítulo</label>
+                      <textarea
+                        rows="2"
+                        value={shopHeaderForm.subtitle}
+                        onChange={(e) => setShopHeaderForm({ ...shopHeaderForm, subtitle: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white leading-relaxed resize-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Frase del Banner de Impacto Social</label>
+                      <input
+                        type="text"
+                        value={shopHeaderForm.supportCallout}
+                        onChange={(e) => setShopHeaderForm({ ...shopHeaderForm, supportCallout: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-amber-300 font-bold"
+                      />
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-center">
+                      <p className="text-slate-400 text-xs mb-2">
+                        ¿Deseas agregar artículos, cambiar precios o subir fotos de rosarios y libros?
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab('shop')}
+                        className="px-4 py-2 rounded-xl bg-brand-teal/20 text-teal-300 hover:bg-brand-teal hover:text-white font-bold text-xs transition-colors"
+                      >
+                        👉 Ir a la Pestaña «Tienda (Productos)» para editar precios y fotos
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ========================================================================= */}
+              {/* 7. VOLUNTARIADO HEADER */}
+              {/* ========================================================================= */}
+              {activeSection === 'volunteerHeader' && (
+                <div className="space-y-6 animate-fadeIn">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <h3 className="font-bold text-base text-white flex items-center gap-2">
+                      <Users className="w-4 h-4 text-brand-teal" />
+                      <span>Cabecera de «Voluntariado y Testimonios»</span>
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateVolunteerHeader(volunteerHeaderForm);
+                        showNotification("¡Cabecera de Voluntariado guardada con éxito!");
+                      }}
+                      className="px-6 py-2.5 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white font-black text-xs uppercase tracking-wider shadow-md hover:scale-105 transition-all"
+                    >
+                      Guardar Voluntariado
+                    </button>
+                  </div>
+
+                  <div className="space-y-4 text-xs">
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Etiqueta Superior (Tag)</label>
+                      <input
+                        type="text"
+                        value={volunteerHeaderForm.tag}
+                        onChange={(e) => setVolunteerHeaderForm({ ...volunteerHeaderForm, tag: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Título Principal de Voluntariado</label>
+                      <input
+                        type="text"
+                        value={volunteerHeaderForm.title}
+                        onChange={(e) => setVolunteerHeaderForm({ ...volunteerHeaderForm, title: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold text-sm"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Párrafo Motivacional</label>
+                      <textarea
+                        rows="3"
+                        value={volunteerHeaderForm.desc}
+                        onChange={(e) => setVolunteerHeaderForm({ ...volunteerHeaderForm, desc: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white leading-relaxed resize-none"
                       />
                     </div>
                   </div>
                 </div>
+              )}
 
-                {/* 5. Emblema / Imagen del Logo de la Tarjeta Flotante */}
-                <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Imagen del Logo / Flyer en la Tarjeta Flotante Izquierda:
-                  </span>
+              {/* ========================================================================= */}
+              {/* 8. MENÚ DE NAVEGACIÓN */}
+              {/* ========================================================================= */}
+              {activeSection === 'nav' && (
+                <div className="space-y-6 animate-fadeIn">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <h3 className="font-bold text-base text-white flex items-center gap-2">
+                      <Menu className="w-4 h-4 text-brand-teal" />
+                      <span>Nombres de los 7 Enlaces del Menú Superior</span>
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateNav(navForm);
+                        showNotification("¡Nombres del menú guardados con éxito!");
+                      }}
+                      className="px-6 py-2.5 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white font-black text-xs uppercase tracking-wider shadow-md hover:scale-105 transition-all"
+                    >
+                      Guardar Menú
+                    </button>
+                  </div>
 
-                  <div className="flex items-center gap-4">
-                    <div className="w-20 h-20 bg-white rounded-xl p-1.5 shadow-md flex items-center justify-center flex-shrink-0">
-                      <img src={heroForm.logoCardImage} alt="Logo" className="max-h-full max-w-full object-contain" />
-                    </div>
-
-                    <div className="flex-1 space-y-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Enlace 1 (Inicio)</label>
                       <input
                         type="text"
-                        placeholder="Ruta o URL de la imagen (ej: /logo-manos-abiertas.png)"
-                        value={heroForm.logoCardImage}
-                        onChange={(e) => setHeroForm({ ...heroForm, logoCardImage: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-mono text-xs"
+                        value={navForm.home}
+                        onChange={(e) => setNavForm({ ...navForm, home: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
                       />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Enlace 2 (Nuestra Misión)</label>
                       <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileUpload}
-                        className="text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand-teal file:text-white hover:file:bg-brand-teal-dark cursor-pointer"
+                        type="text"
+                        value={navForm.mission}
+                        onChange={(e) => setNavForm({ ...navForm, mission: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Enlace 3 (Misiones y Causas)</label>
+                      <input
+                        type="text"
+                        value={navForm.programs}
+                        onChange={(e) => setNavForm({ ...navForm, programs: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Enlace 4 (La Casa de Ayuda)</label>
+                      <input
+                        type="text"
+                        value={navForm.about}
+                        onChange={(e) => setNavForm({ ...navForm, about: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Enlace 5 (Calendario de Actividades)</label>
+                      <input
+                        type="text"
+                        value={navForm.retreats}
+                        onChange={(e) => setNavForm({ ...navForm, retreats: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Enlace 6 (Misiones Completadas)</label>
+                      <input
+                        type="text"
+                        value={navForm.goals}
+                        onChange={(e) => setNavForm({ ...navForm, goals: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
+                      />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label className="block text-slate-400 font-bold mb-1">Enlace 7 (Tienda Solidaria)</label>
+                      <input
+                        type="text"
+                        value={navForm.shop}
+                        onChange={(e) => setNavForm({ ...navForm, shop: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
                       />
                     </div>
                   </div>
                 </div>
+              )}
 
-                <div className="pt-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      updateHero(heroForm);
-                      showNotification("¡Portada de inicio actualizada con éxito!");
-                    }}
-                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-teal to-brand-teal-dark hover:from-teal-600 hover:to-teal-700 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-brand-teal/20 hover:scale-[1.01] transition-all"
-                  >
-                    Guardar Cambios de la Página de Inicio
-                  </button>
+              {/* ========================================================================= */}
+              {/* 9. PIE DE PÁGINA (FOOTER) */}
+              {/* ========================================================================= */}
+              {activeSection === 'footer' && (
+                <div className="space-y-6 animate-fadeIn">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <h3 className="font-bold text-base text-white flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-brand-gold" />
+                      <span>Personalizar Pie de Página (Footer)</span>
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateFooter(footerForm);
+                        showNotification("¡Pie de página guardado con éxito!");
+                      }}
+                      className="px-6 py-2.5 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white font-black text-xs uppercase tracking-wider shadow-md hover:scale-105 transition-all"
+                    >
+                      Guardar Footer
+                    </button>
+                  </div>
+
+                  <div className="space-y-4 text-xs">
+                    <div>
+                      <label className="block text-slate-400 font-bold mb-1">Texto Acerca de la Fundación</label>
+                      <textarea
+                        rows="3"
+                        value={footerForm.aboutText}
+                        onChange={(e) => setFooterForm({ ...footerForm, aboutText: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white leading-relaxed resize-none"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Título del Boletín (Newsletter)</label>
+                        <input
+                          type="text"
+                          value={footerForm.newsletterTitle}
+                          onChange={(e) => setFooterForm({ ...footerForm, newsletterTitle: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-400 font-bold mb-1">Texto de Derechos</label>
+                        <input
+                          type="text"
+                          value={footerForm.rights}
+                          onChange={(e) => setFooterForm({ ...footerForm, rights: e.target.value })}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
+
             </div>
           )}
 
           {/* ========================================================================= */}
-          {/* TAB 0.5: MENÚ DE NAVEGACIÓN (NAVBAR) */}
-          {/* ========================================================================= */}
-          {activeTab === 'nav' && (
-            <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
-                <div>
-                  <h2 className="text-xl font-black text-white font-display flex items-center gap-2">
-                    <Menu className="w-5 h-5 text-brand-teal" />
-                    <span>Personalizar Menú de Navegación</span>
-                  </h2>
-                  <p className="text-xs text-slate-400">
-                    Cambia los nombres de cada una de las pestañas del menú superior.
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    updateNav(navForm);
-                    showNotification("¡Nombres del menú guardados con éxito!");
-                  }}
-                  className="px-6 py-2.5 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white font-black text-xs uppercase tracking-wider shadow-md hover:scale-105 transition-all"
-                >
-                  Guardar Nombres del Menú
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div>
-                  <label className="block text-slate-400 font-bold mb-1">Enlace 1 (Inicio)</label>
-                  <input
-                    type="text"
-                    value={navForm.home}
-                    onChange={(e) => setNavForm({ ...navForm, home: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-400 font-bold mb-1">Enlace 2 (Nuestra Misión)</label>
-                  <input
-                    type="text"
-                    value={navForm.mission}
-                    onChange={(e) => setNavForm({ ...navForm, mission: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-400 font-bold mb-1">Enlace 3 (Misiones y Causas)</label>
-                  <input
-                    type="text"
-                    value={navForm.programs}
-                    onChange={(e) => setNavForm({ ...navForm, programs: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-400 font-bold mb-1">Enlace 4 (La Casa de Ayuda)</label>
-                  <input
-                    type="text"
-                    value={navForm.about}
-                    onChange={(e) => setNavForm({ ...navForm, about: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-400 font-bold mb-1">Enlace 5 (Calendario de Actividades)</label>
-                  <input
-                    type="text"
-                    value={navForm.retreats}
-                    onChange={(e) => setNavForm({ ...navForm, retreats: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-slate-400 font-bold mb-1">Enlace 6 (Misiones Completadas)</label>
-                  <input
-                    type="text"
-                    value={navForm.goals}
-                    onChange={(e) => setNavForm({ ...navForm, goals: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
-                  />
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-slate-400 font-bold mb-1">Enlace 7 (Tienda Solidaria)</label>
-                  <input
-                    type="text"
-                    value={navForm.shop}
-                    onChange={(e) => setNavForm({ ...navForm, shop: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold"
-                  />
-                </div>
-              </div>
-
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    updateNav(navForm);
-                    showNotification("¡Nombres del menú guardados con éxito!");
-                  }}
-                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-teal to-brand-teal-dark hover:from-teal-600 hover:to-teal-700 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-brand-teal/20 hover:scale-[1.01] transition-all"
-                >
-                  Guardar Nombres del Menú
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* ========================================================================= */}
-          {/* TAB 1: RETIROS Y CALENDARIO */}
+          {/* TAB 2: RETIROS Y CALENDARIO */}
           {/* ========================================================================= */}
           {activeTab === 'retreats' && (
             <div className="space-y-6">
@@ -875,7 +1599,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
           )}
 
           {/* ========================================================================= */}
-          {/* TAB 2: TIENDA SOLIDARIA */}
+          {/* TAB 3: TIENDA SOLIDARIA */}
           {/* ========================================================================= */}
           {activeTab === 'shop' && (
             <div className="space-y-6">
@@ -969,7 +1693,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
           )}
 
           {/* ========================================================================= */}
-          {/* TAB 3: MISIONES Y CASOS COMPLETOS */}
+          {/* TAB 4: MISIONES Y CASOS COMPLETOS */}
           {/* ========================================================================= */}
           {activeTab === 'missions' && (
             <div className="space-y-6">
@@ -1070,7 +1794,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
           )}
 
           {/* ========================================================================= */}
-          {/* TAB 4: MODERACIÓN DE RESEÑAS */}
+          {/* TAB 5: MODERACIÓN DE RESEÑAS */}
           {/* ========================================================================= */}
           {activeTab === 'reviews' && (
             <div className="space-y-6">
@@ -1168,7 +1892,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
           )}
 
           {/* ========================================================================= */}
-          {/* TAB 5: CONFIGURACIÓN GENERAL */}
+          {/* TAB 6: CONFIGURACIÓN GENERAL */}
           {/* ========================================================================= */}
           {activeTab === 'settings' && (
             <div className="space-y-6">
@@ -1240,7 +1964,117 @@ export const AdminDashboard = ({ onExitAdmin }) => {
       </div>
 
       {/* ========================================================================= */}
-      {/* GLOBAL UNIVERSAL EDIT MODAL CON PREVISUALIZADOR Y SUBIDOR DE FOTO */}
+      {/* UNIVERSAL PHOTO PICKER / UPLOADER MODAL (FOR SECTIONS & ELEMENTS) */}
+      {/* ========================================================================= */}
+      {isPhotoPickerOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl animate-fadeIn">
+            
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <h3 className="font-bold text-sm text-white flex items-center gap-2">
+                <ImageIcon className="w-4 h-4 text-brand-teal" />
+                <span>Cargar o Cambiar Imagen</span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsPhotoPickerOpen(false);
+                  setPhotoPickerTarget(null);
+                }}
+                className="p-1 rounded-lg text-slate-400 hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="flex border-b border-slate-800 pb-2 gap-3 text-xs">
+              <button
+                type="button"
+                onClick={() => setPhotoPickerMode('upload')}
+                className={`pb-1 font-bold ${photoPickerMode === 'upload' ? 'text-brand-teal border-b-2 border-brand-teal' : 'text-slate-400'}`}
+              >
+                Subir Archivo
+              </button>
+              <button
+                type="button"
+                onClick={() => setPhotoPickerMode('url')}
+                className={`pb-1 font-bold ${photoPickerMode === 'url' ? 'text-brand-teal border-b-2 border-brand-teal' : 'text-slate-400'}`}
+              >
+                Pegar Link / URL
+              </button>
+              <button
+                type="button"
+                onClick={() => setPhotoPickerMode('gallery')}
+                className={`pb-1 font-bold ${photoPickerMode === 'gallery' ? 'text-brand-teal border-b-2 border-brand-teal' : 'text-slate-400'}`}
+              >
+                Galería Rápida
+              </button>
+            </div>
+
+            {/* Mode 1: Subir Archivo local */}
+            {photoPickerMode === 'upload' && (
+              <div className="space-y-3 py-2">
+                <label className="block text-xs text-slate-300">
+                  Selecciona una foto desde tu dispositivo:
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-teal file:text-white hover:file:bg-brand-teal-dark cursor-pointer"
+                />
+              </div>
+            )}
+
+            {/* Mode 2: Pegar URL */}
+            {photoPickerMode === 'url' && (
+              <div className="flex gap-2 py-2">
+                <input
+                  type="text"
+                  placeholder="https://images.unsplash.com/..."
+                  value={tempUrlInput}
+                  onChange={(e) => setTempUrlInput(e.target.value)}
+                  className="flex-1 px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (tempUrlInput) {
+                      applyImageSelection(tempUrlInput);
+                    }
+                  }}
+                  className="px-4 py-2 rounded-xl bg-brand-teal text-white text-xs font-bold"
+                >
+                  Aplicar
+                </button>
+              </div>
+            )}
+
+            {/* Mode 3: Galería Rápida */}
+            {photoPickerMode === 'gallery' && (
+              <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto p-1">
+                {quickGalleryImages.map((imgItem, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => applyImageSelection(imgItem.url)}
+                    className="group relative rounded-xl overflow-hidden border border-slate-700 hover:border-brand-teal transition-all text-left"
+                  >
+                    <img src={imgItem.url} alt={imgItem.label} className="w-full h-14 object-cover" />
+                    <span className="text-[9px] text-slate-300 block p-1 truncate bg-slate-950/80">
+                      {imgItem.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* GLOBAL UNIVERSAL EDIT MODAL FOR CRUD ITEMS */}
       {/* ========================================================================= */}
       {editingItem && (
         <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
@@ -1267,32 +2101,26 @@ export const AdminDashboard = ({ onExitAdmin }) => {
               </div>
               
               <button
-                onClick={() => {
-                  setEditingItem(null);
-                  setIsPhotoPickerOpen(false);
-                }}
+                onClick={() => setEditingItem(null)}
                 className="p-1.5 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-white transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* FOTO ACTUAL CON BOTÓN DE CAMBIAR / CARGAR FOTO */}
+            {/* FOTO ACTUAL */}
             <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
                 Foto del {editingType === 'retreat' ? 'Retiro' : editingType === 'product' ? 'Artículo' : 'Caso'}
               </span>
 
               <div className="flex flex-col sm:flex-row items-center gap-4">
-                <div className="relative w-32 h-32 rounded-2xl overflow-hidden border-2 border-brand-teal/40 flex-shrink-0 bg-slate-900 group">
+                <div className="relative w-32 h-32 rounded-2xl overflow-hidden border-2 border-brand-teal/40 flex-shrink-0 bg-slate-900">
                   <img
                     src={editingItem.image || '/retreats/retiro-mujeres.jpg'}
                     alt="Vista previa"
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                    <ImageIcon className="w-6 h-6 text-white" />
-                  </div>
                 </div>
 
                 <div className="flex-1 space-y-2 text-center sm:text-left w-full">
@@ -1302,7 +2130,10 @@ export const AdminDashboard = ({ onExitAdmin }) => {
 
                   <button
                     type="button"
-                    onClick={() => setIsPhotoPickerOpen(!isPhotoPickerOpen)}
+                    onClick={() => {
+                      setPhotoPickerTarget(null);
+                      setIsPhotoPickerOpen(true);
+                    }}
                     className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-teal hover:bg-brand-teal-dark text-white text-xs font-black shadow-md hover:scale-105 transition-all"
                   >
                     <Upload className="w-4 h-4" />
@@ -1310,103 +2141,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                   </button>
                 </div>
               </div>
-
-              {/* RECUADRO DESPLEGABLE PARA CAMBIAR FOTO */}
-              {isPhotoPickerOpen && (
-                <div className="mt-3 p-4 rounded-2xl bg-slate-900 border border-brand-teal/30 space-y-3 animate-fadeIn">
-                  <div className="flex border-b border-slate-800 pb-2 gap-3 text-xs">
-                    <button
-                      type="button"
-                      onClick={() => setPhotoPickerMode('upload')}
-                      className={`pb-1 font-bold ${photoPickerMode === 'upload' ? 'text-brand-teal border-b-2 border-brand-teal' : 'text-slate-400'}`}
-                    >
-                      Subir Archivo
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPhotoPickerMode('url')}
-                      className={`pb-1 font-bold ${photoPickerMode === 'url' ? 'text-brand-teal border-b-2 border-brand-teal' : 'text-slate-400'}`}
-                    >
-                      Pegar Link / URL
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPhotoPickerMode('gallery')}
-                      className={`pb-1 font-bold ${photoPickerMode === 'gallery' ? 'text-brand-teal border-b-2 border-brand-teal' : 'text-slate-400'}`}
-                    >
-                      Galería Rápida
-                    </button>
-                  </div>
-
-                  {/* Mode 1: Subir Archivo local */}
-                  {photoPickerMode === 'upload' && (
-                    <div className="space-y-2">
-                      <label className="block text-xs text-slate-300">
-                        Selecciona una foto desde tu dispositivo:
-                      </label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileUpload}
-                        className="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-teal file:text-white hover:file:bg-brand-teal-dark cursor-pointer"
-                      />
-                    </div>
-                  )}
-
-                  {/* Mode 2: Pegar URL */}
-                  {photoPickerMode === 'url' && (
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        placeholder="https://images.unsplash.com/..."
-                        value={tempUrlInput}
-                        onChange={(e) => setTempUrlInput(e.target.value)}
-                        className="flex-1 px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs text-white"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (tempUrlInput) {
-                            setEditingItem({ ...editingItem, image: tempUrlInput });
-                            setIsPhotoPickerOpen(false);
-                            setTempUrlInput('');
-                            showNotification("Foto actualizada por URL");
-                          }
-                        }}
-                        className="px-4 py-2 rounded-xl bg-brand-teal text-white text-xs font-bold"
-                      >
-                        Aplicar
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Mode 3: Galería Rápida */}
-                  {photoPickerMode === 'gallery' && (
-                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-40 overflow-y-auto p-1">
-                      {quickGalleryImages.map((imgItem, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          onClick={() => {
-                            setEditingItem({ ...editingItem, image: imgItem.url });
-                            setIsPhotoPickerOpen(false);
-                            showNotification(`Foto seleccionada: ${imgItem.label}`);
-                          }}
-                          className="group relative rounded-xl overflow-hidden border border-slate-700 hover:border-brand-teal transition-all text-left"
-                        >
-                          <img src={imgItem.url} alt={imgItem.label} className="w-full h-14 object-cover" />
-                          <span className="text-[9px] text-slate-300 block p-1 truncate bg-slate-950/80">
-                            {imgItem.label}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
-
-            {/* FORMULARIO ESPECÍFICO SEGÚN TIPO */}
 
             {/* 1. CAMPOS DE RETIRO */}
             {editingType === 'retreat' && (
@@ -1421,7 +2156,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                   />
                 </div>
 
-                {/* SELECTOR DE FECHA CON CALENDARIO + TEXTO LIBRE */}
+                {/* SELECTOR DE FECHA CON CALENDARIO */}
                 <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
                   <div className="flex items-center gap-2 text-brand-gold font-bold">
                     <CalendarDays className="w-4 h-4" />
@@ -1429,7 +2164,6 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {/* Selector tipo Calendario */}
                     <div>
                       <label className="block text-slate-400 font-bold mb-1">Elegir en Calendario 📅</label>
                       <input
@@ -1438,8 +2172,6 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                         className="w-full px-3.5 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white cursor-pointer"
                       />
                     </div>
-
-                    {/* Texto visible de la fecha */}
                     <div>
                       <label className="block text-slate-400 font-bold mb-1">Texto de la Fecha (Editable)</label>
                       <input
@@ -1455,7 +2187,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-400 font-bold mb-1">Costo / Inversión ($ USD)</label>
+                    <label className="block text-slate-400 font-bold mb-1">Costo ($ USD)</label>
                     <input
                       type="text"
                       placeholder="Ej: $65 USD"
@@ -1479,7 +2211,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-400 font-bold mb-1">Periodo en el Calendario</label>
+                    <label className="block text-slate-400 font-bold mb-1">Periodo</label>
                     <select
                       value={editingItem.period || 'current'}
                       onChange={(e) => setEditingItem({ ...editingItem, period: e.target.value })}
@@ -1519,7 +2251,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
             {editingType === 'product' && (
               <div className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-slate-400 font-bold mb-1">Nombre del Producto / Artículo</label>
+                  <label className="block text-slate-400 font-bold mb-1">Nombre del Artículo</label>
                   <input
                     type="text"
                     value={editingItem.name || ''}
@@ -1573,7 +2305,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
               </div>
             )}
 
-            {/* 3. CAMPOS DE MISIÓN Y DETALLE COMPLETO DEL CASO */}
+            {/* 3. CAMPOS DE MISIÓN */}
             {editingType === 'mission' && (
               <div className="space-y-4 text-xs">
                 <div>
@@ -1621,7 +2353,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 font-bold mb-1">Descripción Breve (Visible en la Tarjeta)</label>
+                  <label className="block text-slate-400 font-bold mb-1">Descripción Breve</label>
                   <textarea
                     rows="2"
                     value={editingItem.desc || ''}
@@ -1630,18 +2362,17 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                   />
                 </div>
 
-                {/* DETALLE COMPLETO DEL CASO (Modal 'Ver Caso') */}
+                {/* DETALLE COMPLETO */}
                 <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
                   <div className="flex items-center gap-2 text-brand-teal font-bold">
                     <FileText className="w-4 h-4" />
-                    <span>Detalle Completo del Caso (Pestaña 'Detalles del Caso'):</span>
+                    <span>Detalle Completo del Caso (Pestaña 'Ver Caso'):</span>
                   </div>
 
                   <div>
-                    <label className="block text-slate-400 font-bold mb-1">¿De qué se trata esta misión solidaria? (Historia completa)</label>
+                    <label className="block text-slate-400 font-bold mb-1">Historia Completa</label>
                     <textarea
                       rows="3"
-                      placeholder="Explica la historia completa del caso para los donantes..."
                       value={editingItem.fullStory || editingItem.desc || ''}
                       onChange={(e) => setEditingItem({ ...editingItem, fullStory: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white resize-none"
@@ -1649,10 +2380,9 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                   </div>
 
                   <div>
-                    <label className="block text-slate-400 font-bold mb-1">📋 Necesidades Inmediatas en esta Causa</label>
+                    <label className="block text-slate-400 font-bold mb-1">📋 Necesidades Inmediatas</label>
                     <textarea
                       rows="3"
-                      placeholder="• Fondos para provisión de víveres&#10;• Voluntarios para reparto&#10;• Acompañamiento espiritual"
                       value={editingItem.needs || '• Fondos para insumos directos\n• Voluntarios de distribución\n• Apoyo pastoral y fraterno'}
                       onChange={(e) => setEditingItem({ ...editingItem, needs: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-amber-300 font-mono text-[11px] resize-none"
@@ -1666,10 +2396,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
             <div className="pt-4 border-t border-slate-800 flex items-center justify-end gap-3">
               <button
                 type="button"
-                onClick={() => {
-                  setEditingItem(null);
-                  setIsPhotoPickerOpen(false);
-                }}
+                onClick={() => setEditingItem(null)}
                 className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-colors"
               >
                 Cancelar
@@ -1689,7 +2416,6 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                     showNotification("¡Misión y caso completo guardados exitosamente!");
                   }
                   setEditingItem(null);
-                  setIsPhotoPickerOpen(false);
                 }}
                 className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-brand-teal to-brand-teal-dark hover:from-teal-600 hover:to-teal-700 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-brand-teal/20 hover:scale-105 transition-all"
               >

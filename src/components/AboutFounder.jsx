@@ -1,10 +1,12 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useAdminData } from '../context/AdminDataContext';
 import { Quote, Sparkles, HeartHandshake, CheckCircle, Cross, ExternalLink, MapPin, Phone, Globe, Church, Heart, Flame } from 'lucide-react';
 
 export const AboutFounder = ({ onOpenVolunteer }) => {
   const { language, t } = useLanguage();
-  const { about } = t;
+  const { about: adminAbout } = useAdminData();
+  const about = adminAbout || t.about;
 
   return (
     <section id="about" className="py-24 bg-gradient-to-b from-slate-50 via-white to-slate-50 relative overflow-hidden border-t border-slate-200/80">
@@ -66,7 +68,7 @@ export const AboutFounder = ({ onOpenVolunteer }) => {
               {/* Photo 1: Large Primary Image (Sanctuary / Altar Adoration) */}
               <div className="col-span-2 relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white group">
                 <img
-                  src="/retreats/seminario-espiritu.jpg"
+                  src={about.collageImg1 || "/retreats/seminario-espiritu.jpg"}
                   alt="Asamblea y Alabanza en el Centro Carismático Católico"
                   className="w-full h-64 sm:h-72 object-cover group-hover:scale-105 transition-transform duration-700"
                 />
@@ -96,7 +98,7 @@ export const AboutFounder = ({ onOpenVolunteer }) => {
               {/* Photo 2: Community Women Isha Bethel */}
               <div className="relative rounded-2xl overflow-hidden shadow-xl border-4 border-white group">
                 <img
-                  src="/retreats/retiro-mujeres.jpg"
+                  src={about.collageImg2 || "/retreats/retiro-mujeres.jpg"}
                   alt="Comunidad de Mujeres Isha Bethel"
                   className="w-full h-44 sm:h-52 object-cover group-hover:scale-105 transition-transform duration-700"
                 />
@@ -108,7 +110,7 @@ export const AboutFounder = ({ onOpenVolunteer }) => {
               {/* Photo 3: Humanitarian Aid & Food Distribution */}
               <div className="relative rounded-2xl overflow-hidden shadow-xl border-4 border-white group">
                 <img
-                  src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80"
+                  src={about.collageImg3 || "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80"}
                   alt="Distribución de Alimentos y Obras Sociales"
                   className="w-full h-44 sm:h-52 object-cover group-hover:scale-105 transition-transform duration-700"
                 />

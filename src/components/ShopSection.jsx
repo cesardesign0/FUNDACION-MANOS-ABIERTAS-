@@ -5,8 +5,8 @@ import { ShoppingBag, Star, Sparkles, Heart, Check, Plus, ArrowRight, ShieldChec
 
 export const ShopSection = ({ onAddToCart, onOpenCart, onBuyNow }) => {
   const { t } = useLanguage();
-  const { shop } = t;
-  const { products } = useAdminData();
+  const { products, shopHeader } = useAdminData();
+  const shop = { ...t.shop, ...(shopHeader || {}) };
 
   const activeProducts = products && products.length > 0 ? products : shop.products;
 

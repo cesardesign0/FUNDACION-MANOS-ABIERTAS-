@@ -4,7 +4,7 @@ import { FOUNDATION_CONFIG } from '../config/foundationConfig';
 
 const AdminDataContext = createContext();
 
-const STORAGE_KEY = 'manos_abiertas_custom_admin_data';
+const STORAGE_KEY = 'manos_abiertas_custom_admin_data_v2';
 
 export const AdminDataProvider = ({ children }) => {
   // Initialize state with stored data or default translations
@@ -28,6 +28,23 @@ export const AdminDataProvider = ({ children }) => {
           })),
           hero: parsed.hero || translations.es.hero,
           nav: parsed.nav || translations.es.nav,
+          about: parsed.about || translations.es.about,
+          programsSection: parsed.programsSection || translations.es.programsSection,
+          volunteerSection: parsed.volunteerSection || translations.es.volunteerSection,
+          retreatsModal: parsed.retreatsModal || translations.es.retreatsModal,
+          shopHeader: parsed.shopHeader || {
+            badge: "TIENDA SOLIDARIA CATÓLICA",
+            title: "Artículos de Fe, Devoción y Formación Cristiana",
+            subtitle: "El 100% de cada compra se destina directamente a financiar las obras de ayuda humanitaria y retiros espirituales.",
+            impactNote: "🛒 Tu compra solidaria transforma vidas y bendice a familias vulnerables."
+          },
+          missionHeart: parsed.missionHeart || {
+            badge: "NUESTRA RAZÓN DE SER",
+            title: "Amor, Fe y Ayuda en Acción",
+            subtitle: "Guiados por el Evangelio y la devoción a Jesús y María, llevamos una mano amiga a quienes sufren.",
+            quote: "«En esto conocerán todos que son mis discípulos, si se tienen amor los unos a los otros»"
+          },
+          footer: parsed.footer || translations.es.footer,
           settings: parsed.settings || {
             officialEmail: FOUNDATION_CONFIG.officialEmail,
             donationsEmail: FOUNDATION_CONFIG.donationsEmail,
@@ -56,6 +73,23 @@ export const AdminDataProvider = ({ children }) => {
       })),
       hero: translations.es.hero,
       nav: translations.es.nav,
+      about: translations.es.about,
+      programsSection: translations.es.programsSection,
+      volunteerSection: translations.es.volunteerSection,
+      retreatsModal: translations.es.retreatsModal,
+      shopHeader: {
+        badge: "TIENDA SOLIDARIA CATÓLICA",
+        title: "Artículos de Fe, Devoción y Formación Cristiana",
+        subtitle: "El 100% de cada compra se destina directamente a financiar las obras de ayuda humanitaria y retiros espirituales.",
+        impactNote: "🛒 Tu compra solidaria transforma vidas y bendice a familias vulnerables."
+      },
+      missionHeart: {
+        badge: "NUESTRA RAZÓN DE SER",
+        title: "Amor, Fe y Ayuda en Acción",
+        subtitle: "Guiados por el Evangelio y la devoción a Jesús y María, llevamos una mano amiga a quienes sufren.",
+        quote: "«En esto conocerán todos que son mis discípulos, si se tienen amor los unos a los otros»"
+      },
+      footer: translations.es.footer,
       settings: {
         officialEmail: FOUNDATION_CONFIG.officialEmail,
         donationsEmail: FOUNDATION_CONFIG.donationsEmail,
@@ -75,21 +109,23 @@ export const AdminDataProvider = ({ children }) => {
     }
   }, [adminData]);
 
-  // =================== HERO & INICIO ===================
-  const updateHero = (updatedFields) => {
+  // =================== GENERAL SECTION UPDATER ===================
+  const updateSection = (sectionKey, updatedFields) => {
     setAdminData(prev => ({
       ...prev,
-      hero: { ...prev.hero, ...updatedFields }
+      [sectionKey]: { ...prev[sectionKey], ...updatedFields }
     }));
   };
 
-  // =================== NAV & MENÚ ===================
-  const updateNav = (updatedFields) => {
-    setAdminData(prev => ({
-      ...prev,
-      nav: { ...prev.nav, ...updatedFields }
-    }));
-  };
+  const updateHero = (fields) => updateSection('hero', fields);
+  const updateNav = (fields) => updateSection('nav', fields);
+  const updateAbout = (fields) => updateSection('about', fields);
+  const updateProgramsHeader = (fields) => updateSection('programsSection', fields);
+  const updateVolunteerHeader = (fields) => updateSection('volunteerSection', fields);
+  const updateRetreatsHeader = (fields) => updateSection('retreatsModal', fields);
+  const updateShopHeader = (fields) => updateSection('shopHeader', fields);
+  const updateMissionHeart = (fields) => updateSection('missionHeart', fields);
+  const updateFooter = (fields) => updateSection('footer', fields);
 
   // =================== RETREATS / EVENTS ===================
   const addEvent = (newEvent) => {
@@ -217,6 +253,23 @@ export const AdminDataProvider = ({ children }) => {
       })),
       hero: translations.es.hero,
       nav: translations.es.nav,
+      about: translations.es.about,
+      programsSection: translations.es.programsSection,
+      volunteerSection: translations.es.volunteerSection,
+      retreatsModal: translations.es.retreatsModal,
+      shopHeader: {
+        badge: "TIENDA SOLIDARIA CATÓLICA",
+        title: "Artículos de Fe, Devoción y Formación Cristiana",
+        subtitle: "El 100% de cada compra se destina directamente a financiar las obras de ayuda humanitaria y retiros espirituales.",
+        impactNote: "🛒 Tu compra solidaria transforma vidas y bendice a familias vulnerables."
+      },
+      missionHeart: {
+        badge: "NUESTRA RAZÓN DE SER",
+        title: "Amor, Fe y Ayuda en Acción",
+        subtitle: "Guiados por el Evangelio y la devoción a Jesús y María, llevamos una mano amiga a quienes sufren.",
+        quote: "«En esto conocerán todos que son mis discípulos, si se tienen amor los unos a los otros»"
+      },
+      footer: translations.es.footer,
       settings: {
         officialEmail: FOUNDATION_CONFIG.officialEmail,
         donationsEmail: FOUNDATION_CONFIG.donationsEmail,
@@ -233,6 +286,13 @@ export const AdminDataProvider = ({ children }) => {
         adminData,
         hero: adminData.hero,
         nav: adminData.nav,
+        about: adminData.about,
+        programsSection: adminData.programsSection,
+        volunteerSection: adminData.volunteerSection,
+        retreatsModal: adminData.retreatsModal,
+        shopHeader: adminData.shopHeader,
+        missionHeart: adminData.missionHeart,
+        footer: adminData.footer,
         events: adminData.events,
         products: adminData.products,
         missions: adminData.missions,
@@ -240,8 +300,16 @@ export const AdminDataProvider = ({ children }) => {
         approvedReviews: adminData.reviews.filter(r => r.approved),
         pendingReviews: adminData.reviews.filter(r => !r.approved),
         settings: adminData.settings,
+        updateSection,
         updateHero,
         updateNav,
+        updateAbout,
+        updateProgramsHeader,
+        updateVolunteerHeader,
+        updateRetreatsHeader,
+        updateShopHeader,
+        updateMissionHeart,
+        updateFooter,
         addEvent,
         updateEvent,
         deleteEvent,

@@ -5,8 +5,8 @@ import { Heart, Target, TrendingUp, Sparkles, HandHeart, CheckCircle2, PlusCircl
 
 export const Programs = ({ onSelectCauseAndDonate, onOpenNewMission, onOpenMissionDetail, onOpenCompletedMissions }) => {
   const { language, t } = useLanguage();
-  const { programsSection } = t;
-  const { missions } = useAdminData();
+  const { missions, programsSection: adminProgramsSection } = useAdminData();
+  const programsSection = { ...t.programsSection, ...(adminProgramsSection || {}) };
 
   const activeMissions = missions && missions.length > 0 ? missions : programsSection.items;
 

@@ -99,19 +99,28 @@ export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpen
           {/* Right Column: Headlines, Bible Verse and Action Buttons */}
           <div className="lg:col-span-7 space-y-6 order-1 lg:order-2">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/20 border border-brand-teal/40 text-brand-teal-light text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+            <div 
+              className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/20 border border-brand-teal/40 text-xs font-bold tracking-wider backdrop-blur-md ${heroData.styles?.tag_case || 'uppercase'}`}
+              style={{ color: heroData.styles?.tag_color || '#2BBEC9' }}
+            >
               <Sparkles className="w-3.5 h-3.5 text-brand-gold" />
               <span>{heroData.tag}</span>
             </div>
 
             {/* Handwritten Subheading */}
-            <div className="font-handwritten text-4xl sm:text-5xl lg:text-6xl text-brand-gold font-bold tracking-wide drop-shadow-lg rotate-[-1deg] leading-tight">
+            <div 
+              className={`${heroData.styles?.handwritten_font || 'font-handwritten'} ${heroData.styles?.handwritten_size || 'text-4xl sm:text-5xl lg:text-6xl'} ${heroData.styles?.handwritten_weight || 'font-bold'} ${heroData.styles?.handwritten_case || 'normal-case'} tracking-wide drop-shadow-lg rotate-[-1deg] leading-tight ${heroData.styles?.handwritten_align || 'text-left'}`}
+              style={{ color: heroData.styles?.handwritten_color || '#E5A93C' }}
+            >
               {heroData.handwritten}
             </div>
 
             {/* Versículo Bíblico Católico de Servicio */}
             <div className="border-l-4 border-brand-gold/70 pl-4 py-1">
-              <h1 className="font-serif italic text-2xl sm:text-3xl lg:text-4xl text-white font-medium tracking-tight leading-snug drop-shadow-md">
+              <h1 
+                className={`${heroData.styles?.title_font || 'font-serif'} ${heroData.styles?.title_size || 'text-2xl sm:text-3xl lg:text-4xl'} ${heroData.styles?.title_weight || 'font-medium'} ${heroData.styles?.title_italic !== false ? 'italic' : ''} ${heroData.styles?.title_case || 'normal-case'} ${heroData.styles?.title_align || 'text-left'} tracking-tight leading-snug drop-shadow-md`}
+                style={{ color: heroData.styles?.title_color || '#FFFFFF' }}
+              >
                 {heroData.title}
               </h1>
               <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-gold/20 text-amber-200 text-xs sm:text-sm font-bold border border-brand-gold/40">
@@ -121,38 +130,62 @@ export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpen
             </div>
 
             {/* Description */}
-            <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl">
+            <p 
+              className={`leading-relaxed max-w-2xl ${heroData.styles?.desc_size || 'text-base sm:text-lg'}`}
+              style={{ color: heroData.styles?.desc_color || '#CBD5E1' }}
+            >
               {heroData.description}
             </p>
 
-            {/* 3 Botones de Acción Principales */}
+            {/* Botones de Acción Dinámicos y Configurables */}
             <div className="flex flex-wrap items-center gap-3.5 pt-2">
-              {/* Botón 1: Donar */}
-              <button
-                onClick={() => onOpenDonate()}
-                className="inline-flex items-center gap-2 bg-brand-coral hover:bg-brand-coral-dark text-white font-extrabold px-6 sm:px-7 py-3.5 sm:py-4 rounded-full shadow-xl shadow-brand-coral/40 hover:scale-105 transition-all text-sm sm:text-base"
-              >
-                <Heart className="w-5 h-5 fill-white" />
-                <span>{heroData.btnDonate}</span>
-              </button>
+              {(heroData.buttons && heroData.buttons.length > 0 ? heroData.buttons : [
+                { id: 'btn-1', label: heroData.btnDonate || 'Hacer una Donación', action: 'donate', variant: 'coral', shape: 'pill', icon: 'heart', visible: true },
+                { id: 'btn-2', label: heroData.btnVolunteer || 'Únete como Voluntario', action: 'volunteer', variant: 'glass', shape: 'pill', icon: 'users', visible: true },
+                { id: 'btn-3', label: heroData.btnCauses || 'Ver Nuestras Misiones', action: 'programs', variant: 'gold', shape: 'pill', icon: 'arrow', visible: true }
+              ]).filter(b => b.visible !== false).map((btn) => {
+                const shapeClass = btn.shape === 'square' ? 'rounded-lg' : btn.shape === 'smooth' ? 'rounded-2xl' : 'rounded-full';
+                let variantClass = 'bg-brand-coral hover:bg-brand-coral-dark text-white shadow-xl shadow-brand-coral/40';
+                if (btn.variant === 'teal') variantClass = 'bg-brand-teal hover:bg-brand-teal-dark text-white shadow-xl shadow-brand-teal/40';
+                else if (btn.variant === 'gold') variantClass = 'bg-brand-gold hover:bg-amber-500 text-slate-950 font-black shadow-xl shadow-brand-gold/40';
+                else if (btn.variant === 'glass') variantClass = 'bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/30 hover:border-white';
+                else if (btn.variant === 'outline-gold') variantClass = 'border-2 border-brand-gold text-brand-gold hover:bg-brand-gold/20';
+                else if (btn.variant === 'outline-white') variantClass = 'border-2 border-white/40 text-white hover:bg-white/20';
 
-              {/* Botón 2: Voluntariado */}
-              <button
-                onClick={() => onOpenVolunteer()}
-                className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-bold px-6 sm:px-7 py-3.5 sm:py-4 rounded-full backdrop-blur-md border border-white/30 hover:border-white transition-all text-sm sm:text-base"
-              >
-                <Users className="w-5 h-5 text-brand-teal" />
-                <span>{heroData.btnVolunteer}</span>
-              </button>
+                const handleClick = () => {
+                  if (btn.action === 'donate') onOpenDonate();
+                  else if (btn.action === 'volunteer') onOpenVolunteer();
+                  else if (btn.action === 'programs') {
+                    const el = document.getElementById('programs');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  } else if (btn.action === 'retreats') onOpenRetreats();
+                  else if (btn.action === 'about') {
+                    const el = document.getElementById('about');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  } else if (btn.action === 'shop') {
+                    const el = document.getElementById('shop');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  } else if (btn.action === 'custom_url' && btn.customUrl) {
+                    window.open(btn.customUrl, '_blank', 'noopener,noreferrer');
+                  }
+                };
 
-              {/* Botón 3: Ver Nuestras Misiones */}
-              <a
-                href="#programs"
-                className="inline-flex items-center gap-2 bg-brand-gold/20 hover:bg-brand-gold/30 text-brand-gold hover:text-white border border-brand-gold/50 font-bold px-6 sm:px-7 py-3.5 sm:py-4 rounded-full backdrop-blur-md shadow-lg hover:scale-105 transition-all text-sm sm:text-base group"
-              >
-                <span>{heroData.btnCauses}</span>
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </a>
+                return (
+                  <button
+                    key={btn.id}
+                    onClick={handleClick}
+                    className={`inline-flex items-center gap-2 font-extrabold px-6 sm:px-7 py-3.5 sm:py-4 ${shapeClass} ${variantClass} hover:scale-105 transition-all text-sm sm:text-base`}
+                  >
+                    {btn.icon === 'heart' && <Heart className="w-5 h-5 fill-current" />}
+                    {btn.icon === 'users' && <Users className="w-5 h-5 text-current" />}
+                    {btn.icon === 'calendar' && <Calendar className="w-5 h-5 text-current" />}
+                    {btn.icon === 'shop' && <ShoppingBag className="w-5 h-5 text-current" />}
+                    {btn.icon === 'sparkles' && <Sparkles className="w-5 h-5 text-current" />}
+                    <span>{btn.label}</span>
+                    {btn.icon === 'arrow' && <ChevronRight className="w-4 h-4" />}
+                  </button>
+                );
+              })}
             </div>
           </div>
 

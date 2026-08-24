@@ -4,10 +4,40 @@ import { FOUNDATION_CONFIG } from '../config/foundationConfig';
 
 const AdminDataContext = createContext();
 
-const STORAGE_KEY = 'manos_abiertas_custom_admin_data_v2';
+const STORAGE_KEY = 'manos_abiertas_custom_admin_data_v3';
+
+// Default button list for Hero
+export const DEFAULT_HERO_BUTTONS = [
+  {
+    id: 'btn-donate',
+    label: 'Hacer una Donación',
+    action: 'donate',
+    variant: 'coral',
+    shape: 'pill',
+    icon: 'heart',
+    visible: true
+  },
+  {
+    id: 'btn-volunteer',
+    label: 'Únete como Voluntario',
+    action: 'volunteer',
+    variant: 'glass',
+    shape: 'pill',
+    icon: 'users',
+    visible: true
+  },
+  {
+    id: 'btn-causes',
+    label: 'Ver Nuestras Misiones',
+    action: 'programs',
+    variant: 'gold',
+    shape: 'pill',
+    icon: 'arrow',
+    visible: true
+  }
+];
 
 export const AdminDataProvider = ({ children }) => {
-  // Initialize state with stored data or default translations
   const [adminData, setAdminData] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -26,23 +56,110 @@ export const AdminDataProvider = ({ children }) => {
             approved: true,
             date: 'Testimonio Permanente'
           })),
-          hero: parsed.hero || translations.es.hero,
+          hero: {
+            ...translations.es.hero,
+            buttons: DEFAULT_HERO_BUTTONS,
+            styles: {
+              handwritten_font: 'font-handwritten',
+              handwritten_size: 'text-5xl',
+              handwritten_color: '#E5A93C',
+              handwritten_weight: 'font-bold',
+              handwritten_case: 'normal-case',
+              title_font: 'font-serif',
+              title_size: 'text-3xl',
+              title_color: '#FFFFFF',
+              title_weight: 'font-medium',
+              title_italic: true,
+              title_case: 'normal-case',
+              tag_color: '#2BBEC9',
+              tag_case: 'uppercase',
+              desc_size: 'text-base',
+              desc_color: '#CBD5E1'
+            },
+            ...(parsed.hero || {})
+          },
           nav: parsed.nav || translations.es.nav,
-          about: parsed.about || translations.es.about,
-          programsSection: parsed.programsSection || translations.es.programsSection,
-          volunteerSection: parsed.volunteerSection || translations.es.volunteerSection,
-          retreatsModal: parsed.retreatsModal || translations.es.retreatsModal,
-          shopHeader: parsed.shopHeader || {
+          about: {
+            ...translations.es.about,
+            styles: {
+              title_font: 'font-display',
+              title_size: 'text-3xl',
+              title_color: '#0F172A',
+              title_weight: 'font-black',
+              title_case: 'uppercase',
+              subtitle_color: '#E05A47',
+              subtitle_size: 'text-lg',
+              subtitle_weight: 'font-extrabold',
+              quote_font: 'font-serif',
+              quote_color: '#E5A93C',
+              quote_italic: true
+            },
+            ...(parsed.about || {})
+          },
+          programsSection: {
+            ...translations.es.programsSection,
+            styles: {
+              title_font: 'font-display',
+              title_size: 'text-4xl',
+              title_color: '#FFFFFF',
+              title_weight: 'font-black',
+              badge_color: '#2BBEC9'
+            },
+            ...(parsed.programsSection || {})
+          },
+          volunteerSection: {
+            ...translations.es.volunteerSection,
+            styles: {
+              title_font: 'font-display',
+              title_size: 'text-4xl',
+              title_color: '#FFFFFF',
+              title_weight: 'font-black'
+            },
+            ...(parsed.volunteerSection || {})
+          },
+          retreatsModal: {
+            ...translations.es.retreatsModal,
+            styles: {
+              title_font: 'font-display',
+              title_size: 'text-4xl',
+              title_color: '#FFFFFF',
+              title_weight: 'font-black'
+            },
+            ...(parsed.retreatsModal || {})
+          },
+          shopHeader: {
             badge: "TIENDA SOLIDARIA CATÓLICA",
             title: "Artículos de Fe, Devoción y Formación Cristiana",
             subtitle: "El 100% de cada compra se destina directamente a financiar las obras de ayuda humanitaria y retiros espirituales.",
-            impactNote: "🛒 Tu compra solidaria transforma vidas y bendice a familias vulnerables."
+            supportCallout: "El 100% de los fondos financia alimentos para familias y retiros de sanación",
+            styles: {
+              title_font: 'font-display',
+              title_size: 'text-4xl',
+              title_color: '#0F172A',
+              title_weight: 'font-black',
+              badge_color: '#B45309'
+            },
+            ...(parsed.shopHeader || {})
           },
-          missionHeart: parsed.missionHeart || {
+          missionHeart: {
             badge: "NUESTRA RAZÓN DE SER",
             title: "Amor, Fe y Ayuda en Acción",
-            subtitle: "Guiados por el Evangelio y la devoción a Jesús y María, llevamos una mano amiga a quienes sufren.",
-            quote: "«En esto conocerán todos que son mis discípulos, si se tienen amor los unos a los otros»"
+            paragraph1: "Nuestra labor humanitaria nace, se sustenta y se nutre en el Centro Carismático Católico de la Ciudad de Nueva York y el Bronx...",
+            paragraph2: "Cada plato de comida caliente, cada abrigo entregado y cada retiro representa la misericordia y la gracia viva de Dios.",
+            btnMore: "Conocer la Casa de Ayuda",
+            donateLinkText: "¿Deseas hacer un aporte económico directo? Haz clic aquí",
+            centerLogoImage: "/logo-manos-abiertas.png",
+            bubble1Image: "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80",
+            bubbleIshaImage: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80",
+            bubbleRetreatsImage: "https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=600&q=80",
+            styles: {
+              title_font: 'font-display',
+              title_size: 'text-4xl',
+              title_color: '#0F172A',
+              title_weight: 'font-black',
+              badge_color: '#E05A47'
+            },
+            ...(parsed.missionHeart || {})
           },
           footer: parsed.footer || translations.es.footer,
           settings: parsed.settings || {
@@ -71,23 +188,103 @@ export const AdminDataProvider = ({ children }) => {
         approved: true,
         date: 'Testimonio Permanente'
       })),
-      hero: translations.es.hero,
+      hero: {
+        ...translations.es.hero,
+        buttons: DEFAULT_HERO_BUTTONS,
+        styles: {
+          handwritten_font: 'font-handwritten',
+          handwritten_size: 'text-5xl',
+          handwritten_color: '#E5A93C',
+          handwritten_weight: 'font-bold',
+          handwritten_case: 'normal-case',
+          title_font: 'font-serif',
+          title_size: 'text-3xl',
+          title_color: '#FFFFFF',
+          title_weight: 'font-medium',
+          title_italic: true,
+          title_case: 'normal-case',
+          tag_color: '#2BBEC9',
+          tag_case: 'uppercase',
+          desc_size: 'text-base',
+          desc_color: '#CBD5E1'
+        }
+      },
       nav: translations.es.nav,
-      about: translations.es.about,
-      programsSection: translations.es.programsSection,
-      volunteerSection: translations.es.volunteerSection,
-      retreatsModal: translations.es.retreatsModal,
+      about: {
+        ...translations.es.about,
+        styles: {
+          title_font: 'font-display',
+          title_size: 'text-3xl',
+          title_color: '#0F172A',
+          title_weight: 'font-black',
+          title_case: 'uppercase',
+          subtitle_color: '#E05A47',
+          subtitle_size: 'text-lg',
+          subtitle_weight: 'font-extrabold',
+          quote_font: 'font-serif',
+          quote_color: '#E5A93C',
+          quote_italic: true
+        }
+      },
+      programsSection: {
+        ...translations.es.programsSection,
+        styles: {
+          title_font: 'font-display',
+          title_size: 'text-4xl',
+          title_color: '#FFFFFF',
+          title_weight: 'font-black',
+          badge_color: '#2BBEC9'
+        }
+      },
+      volunteerSection: {
+        ...translations.es.volunteerSection,
+        styles: {
+          title_font: 'font-display',
+          title_size: 'text-4xl',
+          title_color: '#FFFFFF',
+          title_weight: 'font-black'
+        }
+      },
+      retreatsModal: {
+        ...translations.es.retreatsModal,
+        styles: {
+          title_font: 'font-display',
+          title_size: 'text-4xl',
+          title_color: '#FFFFFF',
+          title_weight: 'font-black'
+        }
+      },
       shopHeader: {
         badge: "TIENDA SOLIDARIA CATÓLICA",
         title: "Artículos de Fe, Devoción y Formación Cristiana",
         subtitle: "El 100% de cada compra se destina directamente a financiar las obras de ayuda humanitaria y retiros espirituales.",
-        impactNote: "🛒 Tu compra solidaria transforma vidas y bendice a familias vulnerables."
+        supportCallout: "El 100% de los fondos financia alimentos para familias y retiros de sanación",
+        styles: {
+          title_font: 'font-display',
+          title_size: 'text-4xl',
+          title_color: '#0F172A',
+          title_weight: 'font-black',
+          badge_color: '#B45309'
+        }
       },
       missionHeart: {
         badge: "NUESTRA RAZÓN DE SER",
         title: "Amor, Fe y Ayuda en Acción",
-        subtitle: "Guiados por el Evangelio y la devoción a Jesús y María, llevamos una mano amiga a quienes sufren.",
-        quote: "«En esto conocerán todos que son mis discípulos, si se tienen amor los unos a los otros»"
+        paragraph1: "Nuestra labor humanitaria nace, se sustenta y se nutre en el Centro Carismático Católico de la Ciudad de Nueva York y el Bronx...",
+        paragraph2: "Cada plato de comida caliente, cada abrigo entregado y cada retiro representa la misericordia y la gracia viva de Dios.",
+        btnMore: "Conocer la Casa de Ayuda",
+        donateLinkText: "¿Deseas hacer un aporte económico directo? Haz clic aquí",
+        centerLogoImage: "/logo-manos-abiertas.png",
+        bubble1Image: "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80",
+        bubbleIshaImage: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80",
+        bubbleRetreatsImage: "https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=600&q=80",
+        styles: {
+          title_font: 'font-display',
+          title_size: 'text-4xl',
+          title_color: '#0F172A',
+          title_weight: 'font-black',
+          badge_color: '#E05A47'
+        }
       },
       footer: translations.es.footer,
       settings: {
@@ -251,23 +448,103 @@ export const AdminDataProvider = ({ children }) => {
         approved: true,
         date: 'Testimonio Permanente'
       })),
-      hero: translations.es.hero,
+      hero: {
+        ...translations.es.hero,
+        buttons: DEFAULT_HERO_BUTTONS,
+        styles: {
+          handwritten_font: 'font-handwritten',
+          handwritten_size: 'text-5xl',
+          handwritten_color: '#E5A93C',
+          handwritten_weight: 'font-bold',
+          handwritten_case: 'normal-case',
+          title_font: 'font-serif',
+          title_size: 'text-3xl',
+          title_color: '#FFFFFF',
+          title_weight: 'font-medium',
+          title_italic: true,
+          title_case: 'normal-case',
+          tag_color: '#2BBEC9',
+          tag_case: 'uppercase',
+          desc_size: 'text-base',
+          desc_color: '#CBD5E1'
+        }
+      },
       nav: translations.es.nav,
-      about: translations.es.about,
-      programsSection: translations.es.programsSection,
-      volunteerSection: translations.es.volunteerSection,
-      retreatsModal: translations.es.retreatsModal,
+      about: {
+        ...translations.es.about,
+        styles: {
+          title_font: 'font-display',
+          title_size: 'text-3xl',
+          title_color: '#0F172A',
+          title_weight: 'font-black',
+          title_case: 'uppercase',
+          subtitle_color: '#E05A47',
+          subtitle_size: 'text-lg',
+          subtitle_weight: 'font-extrabold',
+          quote_font: 'font-serif',
+          quote_color: '#E5A93C',
+          quote_italic: true
+        }
+      },
+      programsSection: {
+        ...translations.es.programsSection,
+        styles: {
+          title_font: 'font-display',
+          title_size: 'text-4xl',
+          title_color: '#FFFFFF',
+          title_weight: 'font-black',
+          badge_color: '#2BBEC9'
+        }
+      },
+      volunteerSection: {
+        ...translations.es.volunteerSection,
+        styles: {
+          title_font: 'font-display',
+          title_size: 'text-4xl',
+          title_color: '#FFFFFF',
+          title_weight: 'font-black'
+        }
+      },
+      retreatsModal: {
+        ...translations.es.retreatsModal,
+        styles: {
+          title_font: 'font-display',
+          title_size: 'text-4xl',
+          title_color: '#FFFFFF',
+          title_weight: 'font-black'
+        }
+      },
       shopHeader: {
         badge: "TIENDA SOLIDARIA CATÓLICA",
         title: "Artículos de Fe, Devoción y Formación Cristiana",
         subtitle: "El 100% de cada compra se destina directamente a financiar las obras de ayuda humanitaria y retiros espirituales.",
-        impactNote: "🛒 Tu compra solidaria transforma vidas y bendice a familias vulnerables."
+        supportCallout: "El 100% de los fondos financia alimentos para familias y retiros de sanación",
+        styles: {
+          title_font: 'font-display',
+          title_size: 'text-4xl',
+          title_color: '#0F172A',
+          title_weight: 'font-black',
+          badge_color: '#B45309'
+        }
       },
       missionHeart: {
         badge: "NUESTRA RAZÓN DE SER",
         title: "Amor, Fe y Ayuda en Acción",
-        subtitle: "Guiados por el Evangelio y la devoción a Jesús y María, llevamos una mano amiga a quienes sufren.",
-        quote: "«En esto conocerán todos que son mis discípulos, si se tienen amor los unos a los otros»"
+        paragraph1: "Nuestra labor humanitaria nace, se sustenta y se nutre en el Centro Carismático Católico de la Ciudad de Nueva York y el Bronx...",
+        paragraph2: "Cada plato de comida caliente, cada abrigo entregado y cada retiro representa la misericordia y la gracia viva de Dios.",
+        btnMore: "Conocer la Casa de Ayuda",
+        donateLinkText: "¿Deseas hacer un aporte económico directo? Haz clic aquí",
+        centerLogoImage: "/logo-manos-abiertas.png",
+        bubble1Image: "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80",
+        bubbleIshaImage: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80",
+        bubbleRetreatsImage: "https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=600&q=80",
+        styles: {
+          title_font: 'font-display',
+          title_size: 'text-4xl',
+          title_color: '#0F172A',
+          title_weight: 'font-black',
+          badge_color: '#E05A47'
+        }
       },
       footer: translations.es.footer,
       settings: {

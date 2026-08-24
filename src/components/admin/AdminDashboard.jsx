@@ -697,6 +697,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                         fieldPrefix="handwritten"
                         styles={heroForm.styles || {}}
                         onChangeStyle={(k, v) => updateFormStyle(setHeroForm, k, v)}
+                        previewText={heroForm.handwritten}
                       />
                       <input
                         type="text"
@@ -716,6 +717,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                         fieldPrefix="title"
                         styles={heroForm.styles || {}}
                         onChangeStyle={(k, v) => updateFormStyle(setHeroForm, k, v)}
+                        previewText={heroForm.title}
                       />
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div className="sm:col-span-2">
@@ -873,6 +875,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                         fieldPrefix="title"
                         styles={missionHeartForm.styles || {}}
                         onChangeStyle={(k, v) => updateFormStyle(setMissionHeartForm, k, v)}
+                        previewText={missionHeartForm.title}
                       />
                       <input
                         type="text"
@@ -936,6 +939,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                         fieldPrefix="title"
                         styles={programsHeaderForm.styles || {}}
                         onChangeStyle={(k, v) => updateFormStyle(setProgramsHeaderForm, k, v)}
+                        previewText={programsHeaderForm.title}
                       />
                       <input
                         type="text"
@@ -1033,6 +1037,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                         fieldPrefix="title"
                         styles={aboutForm.styles || {}}
                         onChangeStyle={(k, v) => updateFormStyle(setAboutForm, k, v)}
+                        previewText={aboutForm.title}
                       />
                       <input
                         type="text"
@@ -1049,6 +1054,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                         fieldPrefix="quote"
                         styles={aboutForm.styles || {}}
                         onChangeStyle={(k, v) => updateFormStyle(setAboutForm, k, v)}
+                        previewText={aboutForm.quote}
                       />
                       <textarea
                         rows="2"
@@ -1091,6 +1097,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                         fieldPrefix="title"
                         styles={retreatsHeaderForm.styles || {}}
                         onChangeStyle={(k, v) => updateFormStyle(setRetreatsHeaderForm, k, v)}
+                        previewText={retreatsHeaderForm.title}
                       />
                       <input
                         type="text"
@@ -1133,6 +1140,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                         fieldPrefix="title"
                         styles={shopHeaderForm.styles || {}}
                         onChangeStyle={(k, v) => updateFormStyle(setShopHeaderForm, k, v)}
+                        previewText={shopHeaderForm.title}
                       />
                       <input
                         type="text"
@@ -1175,6 +1183,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                         fieldPrefix="title"
                         styles={volunteerHeaderForm.styles || {}}
                         onChangeStyle={(k, v) => updateFormStyle(setVolunteerHeaderForm, k, v)}
+                        previewText={volunteerHeaderForm.title}
                       />
                       <input
                         type="text"

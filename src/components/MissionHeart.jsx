@@ -12,7 +12,8 @@ export const MissionHeart = ({
   onOpenNewMission,
   onOpenHumanitarian,
   onOpenRetreats,
-  featuredRetreat
+  featuredRetreat,
+  onSelectElement
 }) => {
   const { t } = useLanguage();
   const { missionHeart } = useAdminData();

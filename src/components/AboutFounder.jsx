@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useAdminData } from '../context/AdminDataContext';
 import { Quote, Sparkles, HeartHandshake, CheckCircle, Cross, ExternalLink, MapPin, Phone, Globe, Church, Heart, Flame } from 'lucide-react';
 
-export const AboutFounder = ({ onOpenVolunteer }) => {
+export const AboutFounder = ({ onOpenVolunteer, onSelectElement }) => {
   const { language, t } = useLanguage();
   const { about: adminAbout } = useAdminData();
   const about = adminAbout || t.about;

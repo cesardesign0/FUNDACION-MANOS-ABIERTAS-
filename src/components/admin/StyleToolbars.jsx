@@ -201,16 +201,16 @@ export const TypographyToolbar = ({
         </div>
       </div>
 
-      {/* 2. RECUADRO DE PREVISUALIZACIÓN EN TIEMPO REAL INLINE */}
+      {/* 2. RECUADRO DE PREVISUALIZACIÓN EN TIEMPO REAL INLINE (ANCHO COMPLETO) */}
       {previewText && (
-        <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-inner">
-          <div className="flex items-center gap-1.5 text-brand-gold font-bold text-[10px] uppercase tracking-wider flex-shrink-0">
+        <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2 shadow-inner">
+          <div className="flex items-center gap-1.5 text-brand-gold font-bold text-[10px] uppercase tracking-wider">
             <Eye className="w-3.5 h-3.5" />
-            <span>Vista Previa en Vivo:</span>
+            <span>Vista Previa del Estilo:</span>
           </div>
 
           <div 
-            className={`flex-1 ${currentFont} ${currentSize} ${isBold ? 'font-bold' : 'font-normal'} ${isItalic ? 'italic' : ''} ${isUppercase ? 'uppercase' : 'normal-case'} ${currentAlign} transition-all leading-tight drop-shadow-sm`}
+            className={`w-full ${currentFont} ${currentSize} ${isBold ? 'font-bold' : 'font-normal'} ${isItalic ? 'italic' : ''} ${isUppercase ? 'uppercase' : 'normal-case'} ${currentAlign} transition-all leading-snug drop-shadow-sm break-words`}
             style={{ color: currentColor }}
           >
             {previewText}

@@ -59,7 +59,11 @@ import {
   List,
   Layout,
   PlusCircle,
-  AlertCircle
+  AlertCircle,
+  Quote,
+  CheckCircle,
+  Users,
+  ShieldCheck
 } from 'lucide-react';
 
 export const VisualLiveEditor = ({ onExit }) => {
@@ -117,7 +121,7 @@ export const VisualLiveEditor = ({ onExit }) => {
 
   const [deviceMode, setDeviceMode] = useState('desktop'); // 'desktop' | 'tablet' | 'mobile'
   const [activeSectionId, setActiveSectionId] = useState('hero');
-  const [selectedSubItem, setSelectedSubItem] = useState(null); // { type: 'mission'|'retreat'|'product'|'button', id: string|number }
+  const [selectedSubItem, setSelectedSubItem] = useState(null); // { type: 'mission'|'retreat'|'product'|'button'|'element', id: string|number, data?: any }
   const [isBlockManagerOpen, setIsBlockManagerOpen] = useState(true);
   const [notification, setNotification] = useState(null);
 
@@ -286,7 +290,7 @@ export const VisualLiveEditor = ({ onExit }) => {
             <span>EDITOR VISUAL EN VIVO</span>
           </div>
           <span className="text-xs text-slate-400 hidden xl:inline">
-            | Todo integrado • Clic sobre cualquier elemento para editarlo al instante
+            | Clic sobre cualquier elemento para autoseleccionarlo y editarlo de inmediato
           </span>
         </div>
 
@@ -590,12 +594,20 @@ export const VisualLiveEditor = ({ onExit }) => {
                       onOpenHumanitarian={() => handleScrollToSection('programs')}
                       onOpenRetreats={() => handleScrollToSection('retreats')}
                       featuredRetreat={events.find(e => e.id === featuredRetreatId) || events[0]}
+                      onSelectElement={() => {
+                        setActiveSectionId('mission');
+                        setSelectedSubItem(null);
+                      }}
                     />
                   )}
 
                   {section.id === 'about' && (
                     <AboutFounder
                       onOpenVolunteer={() => handleScrollToSection('volunteer')}
+                      onSelectElement={() => {
+                        setActiveSectionId('about');
+                        setSelectedSubItem(null);
+                      }}
                     />
                   )}
 
@@ -1279,6 +1291,60 @@ export const VisualLiveEditor = ({ onExit }) => {
                 </div>
               )}
 
+              {/* STATS GOALS BANNER */}
+              {!selectedSubItem && activeSectionId === 'stats' && (
+                <div className="space-y-6 animate-fadeIn">
+                  <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
+                    <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                      <Target className="w-3.5 h-3.5 text-brand-teal" />
+                      <span>Barra de Impacto y Logros Comunitarios</span>
+                    </span>
+
+                    <div className="space-y-3">
+                      <div className="p-3 bg-slate-900 rounded-xl space-y-1">
+                        <span className="text-[10px] text-slate-400 font-bold uppercase">Familias Alimentadas</span>
+                        <input
+                          type="text"
+                          value={hero?.stat1 || "1,200+"}
+                          onChange={(e) => updateHero({ stat1: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white font-bold"
+                        />
+                      </div>
+
+                      <div className="p-3 bg-slate-900 rounded-xl space-y-1">
+                        <span className="text-[10px] text-slate-400 font-bold uppercase">Retiros y Jornadas Realizadas</span>
+                        <input
+                          type="text"
+                          value={hero?.stat2 || "24+"}
+                          onChange={(e) => updateHero({ stat2: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white font-bold"
+                        />
+                      </div>
+
+                      <div className="p-3 bg-slate-900 rounded-xl space-y-1">
+                        <span className="text-[10px] text-slate-400 font-bold uppercase">Voluntarios Activos en NY</span>
+                        <input
+                          type="text"
+                          value={hero?.stat3 || "80+"}
+                          onChange={(e) => updateHero({ stat3: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white font-bold"
+                        />
+                      </div>
+
+                      <div className="p-3 bg-slate-900 rounded-xl space-y-1">
+                        <span className="text-[10px] text-slate-400 font-bold uppercase">Meta Anual de Recaudación</span>
+                        <input
+                          type="text"
+                          value={hero?.stat4 || "85% Logrado"}
+                          onChange={(e) => updateHero({ stat4: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-emerald-400 font-bold"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* MISSION HEART DEFAULT */}
               {!selectedSubItem && activeSectionId === 'mission' && (
                 <div className="space-y-6 animate-fadeIn">
@@ -1479,6 +1545,50 @@ export const VisualLiveEditor = ({ onExit }) => {
               {/* ABOUT DEFAULT */}
               {!selectedSubItem && activeSectionId === 'about' && (
                 <div className="space-y-6 animate-fadeIn">
+                  
+                  {/* Collage Photos Management */}
+                  <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+                    <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                      <ImageIcon className="w-3.5 h-3.5 text-brand-gold" />
+                      <span>Fotos del Collage del Centro y Comunidad</span>
+                    </span>
+
+                    <div className="grid grid-cols-3 gap-2 text-center">
+                      <div className="p-2 bg-slate-900 rounded-xl space-y-1">
+                        <span className="text-[10px] text-slate-400 font-bold block truncate">Principal</span>
+                        <img src={about?.collageImg1 || "/retreats/seminario-espiritu.jpg"} alt="Foto 1" className="w-full h-14 object-cover rounded-lg" />
+                        <button
+                          onClick={() => setImageModalTarget({ section: 'about', field: 'collageImg1' })}
+                          className="text-[10px] font-bold text-brand-teal hover:underline block w-full"
+                        >
+                          Cambiar
+                        </button>
+                      </div>
+
+                      <div className="p-2 bg-slate-900 rounded-xl space-y-1">
+                        <span className="text-[10px] text-slate-400 font-bold block truncate">Isha Bethel</span>
+                        <img src={about?.collageImg2 || "/retreats/retiro-mujeres.jpg"} alt="Foto 2" className="w-full h-14 object-cover rounded-lg" />
+                        <button
+                          onClick={() => setImageModalTarget({ section: 'about', field: 'collageImg2' })}
+                          className="text-[10px] font-bold text-brand-teal hover:underline block w-full"
+                        >
+                          Cambiar
+                        </button>
+                      </div>
+
+                      <div className="p-2 bg-slate-900 rounded-xl space-y-1">
+                        <span className="text-[10px] text-slate-400 font-bold block truncate">Comedores</span>
+                        <img src={about?.collageImg3 || "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80"} alt="Foto 3" className="w-full h-14 object-cover rounded-lg" />
+                        <button
+                          onClick={() => setImageModalTarget({ section: 'about', field: 'collageImg3' })}
+                          className="text-[10px] font-bold text-brand-teal hover:underline block w-full"
+                        >
+                          Cambiar
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-300 block">Título del Centro</label>
                     <input
@@ -1495,14 +1605,37 @@ export const VisualLiveEditor = ({ onExit }) => {
                       previewText={about?.title}
                     />
                   </div>
+
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Texto de Introducción</label>
+                    <label className="text-xs font-bold text-slate-300 block">Texto de Introducción / Historia</label>
                     <textarea
                       rows={3}
-                      value={about?.lead || ''}
-                      onChange={(e) => updateAbout({ lead: e.target.value })}
+                      value={about?.paragraph1 || ''}
+                      onChange={(e) => updateAbout({ paragraph1: e.target.value })}
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
                     />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-400 uppercase">Dirección Bronx</label>
+                      <input
+                        type="text"
+                        value={about?.address || '826 E. 166th St., Bronx, NY'}
+                        onChange={(e) => updateAbout({ address: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-400 uppercase">Teléfono</label>
+                      <input
+                        type="text"
+                        value={about?.phone || '(718) 378-1734'}
+                        onChange={(e) => updateAbout({ phone: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
@@ -1518,15 +1651,61 @@ export const VisualLiveEditor = ({ onExit }) => {
                       onChange={(e) => updateVolunteerHeader({ title: e.target.value })}
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
                     />
+                    <TypographyToolbar
+                      label="Estilo del Título"
+                      target="title"
+                      styles={volunteerSection?.styles || {}}
+                      onChange={(newStyles) => updateVolunteerHeader({ styles: newStyles })}
+                      previewText={volunteerSection?.title}
+                    />
                   </div>
+
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Subtítulo</label>
+                    <label className="text-xs font-bold text-slate-300 block">Descripción</label>
                     <textarea
                       rows={3}
-                      value={volunteerSection?.subtitle || ''}
-                      onChange={(e) => updateVolunteerHeader({ subtitle: e.target.value })}
+                      value={volunteerSection?.desc || ''}
+                      onChange={(e) => updateVolunteerHeader({ desc: e.target.value })}
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
                     />
+                  </div>
+
+                  {/* Testimonies Moderation */}
+                  <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+                    <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                      <Star className="w-3.5 h-3.5 text-brand-gold" />
+                      <span>Gestión de Reseñas y Testimonios ({approvedReviews.length} Aprobados)</span>
+                    </span>
+
+                    {pendingReviews && pendingReviews.length > 0 && (
+                      <div className="space-y-2">
+                        <span className="text-[10px] text-amber-400 font-bold uppercase block">
+                          Pendientes de Aprobación ({pendingReviews.length}):
+                        </span>
+                        {pendingReviews.map((rev) => (
+                          <div key={rev.id} className="p-2.5 bg-slate-900 rounded-xl border border-amber-500/40 text-xs space-y-1">
+                            <div className="flex justify-between font-bold text-white">
+                              <span>{rev.name}</span>
+                              <div className="flex gap-1">
+                                <button
+                                  onClick={() => approveReview(rev.id)}
+                                  className="px-2 py-0.5 bg-emerald-500 text-slate-950 text-[10px] font-black rounded"
+                                >
+                                  Aprobar
+                                </button>
+                                <button
+                                  onClick={() => deleteReview(rev.id)}
+                                  className="px-2 py-0.5 bg-rose-500 text-white text-[10px] font-black rounded"
+                                >
+                                  Eliminar
+                                </button>
+                              </div>
+                            </div>
+                            <p className="text-slate-300 text-[11px]">"{rev.comment}"</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -1542,6 +1721,23 @@ export const VisualLiveEditor = ({ onExit }) => {
                       onChange={(e) => updateFooter({ rights: e.target.value })}
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
                     />
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+                    <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                      <Mail className="w-3.5 h-3.5 text-brand-gold" />
+                      <span>Contacto Oficial & Zelle</span>
+                    </span>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-slate-400 uppercase block">Correo para Donaciones Zelle</label>
+                      <input
+                        type="email"
+                        value={settings?.donationsEmail || 'donaciones@fundacionmanosabiertas.org'}
+                        onChange={(e) => updateSettings({ donationsEmail: e.target.value })}
+                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono"
+                      />
+                    </div>
                   </div>
                 </div>
               )}

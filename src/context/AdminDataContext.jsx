@@ -4,7 +4,7 @@ import { FOUNDATION_CONFIG } from '../config/foundationConfig';
 
 const AdminDataContext = createContext();
 
-const STORAGE_KEY = 'manos_abiertas_custom_admin_data_v3';
+const STORAGE_KEY = 'manos_abiertas_custom_admin_data_v4';
 
 // Default button list for Hero
 export const DEFAULT_HERO_BUTTONS = [
@@ -37,6 +37,31 @@ export const DEFAULT_HERO_BUTTONS = [
   }
 ];
 
+// Default Section Ordering
+export const DEFAULT_SECTION_ORDER = [
+  { id: 'hero', name: '1. Portada / Inicio', icon: 'Home' },
+  { id: 'stats', name: '2. Barra de Metas y Logros', icon: 'TrendingUp' },
+  { id: 'mission', name: '3. Nuestra Misión y Corazón', icon: 'Heart' },
+  { id: 'about', name: '4. La Casa de Ayuda (Centro Bronx)', icon: 'Church' },
+  { id: 'programs', name: '5. Misiones y Causas Activas', icon: 'Target' },
+  { id: 'retreats', name: '6. Calendario de Retiros y Actividades', icon: 'Calendar' },
+  { id: 'shop', name: '7. Tienda Solidaria Católica', icon: 'ShoppingBag' },
+  { id: 'volunteer', name: '8. Voluntariado y Testimonios', icon: 'Users' },
+  { id: 'footer', name: '9. Pie de Página (Footer)', icon: 'FileText' }
+];
+
+export const DEFAULT_SECTION_VISIBILITY = {
+  hero: true,
+  stats: true,
+  mission: true,
+  about: true,
+  programs: true,
+  retreats: true,
+  shop: true,
+  volunteer: true,
+  footer: true
+};
+
 export const AdminDataProvider = ({ children }) => {
   const [adminData, setAdminData] = useState(() => {
     try {
@@ -44,6 +69,11 @@ export const AdminDataProvider = ({ children }) => {
       if (saved) {
         const parsed = JSON.parse(saved);
         return {
+          sectionOrder: parsed.sectionOrder || DEFAULT_SECTION_ORDER,
+          sectionVisibility: { ...DEFAULT_SECTION_VISIBILITY, ...(parsed.sectionVisibility || {}) },
+          featuredMissionId: parsed.featuredMissionId !== undefined ? parsed.featuredMissionId : 1,
+          featuredRetreatId: parsed.featuredRetreatId || 'ret-1',
+          featuredProductIds: parsed.featuredProductIds || ['prod-1', 'prod-2', 'prod-4'],
           events: parsed.events || translations.es.retreatsModal.events,
           products: parsed.products || translations.es.shop.products,
           missions: parsed.missions || translations.es.programsSection.items,
@@ -176,6 +206,11 @@ export const AdminDataProvider = ({ children }) => {
     }
 
     return {
+      sectionOrder: DEFAULT_SECTION_ORDER,
+      sectionVisibility: DEFAULT_SECTION_VISIBILITY,
+      featuredMissionId: 1,
+      featuredRetreatId: 'ret-1',
+      featuredProductIds: ['prod-1', 'prod-2', 'prod-4'],
       events: translations.es.retreatsModal.events,
       products: translations.es.shop.products,
       missions: translations.es.programsSection.items,
@@ -305,6 +340,66 @@ export const AdminDataProvider = ({ children }) => {
       console.error("Error saving admin data to storage", e);
     }
   }, [adminData]);
+
+  // =================== SECTION REORDERING & VISIBILITY ===================
+  const updateSectionOrder = (newOrder) => {
+    setAdminData(prev => ({
+      ...prev,
+      sectionOrder: newOrder
+    }));
+  };
+
+  const moveSection = (sectionId, direction) => {
+    const currentOrder = adminData.sectionOrder || DEFAULT_SECTION_ORDER;
+    const index = currentOrder.findIndex(s => s.id === sectionId);
+    if (index === -1) return;
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= currentOrder.length) return;
+    const updated = [...currentOrder];
+    const temp = updated[index];
+    updated[index] = updated[newIndex];
+    updated[newIndex] = temp;
+    updateSectionOrder(updated);
+  };
+
+  const toggleSectionVisibility = (sectionId) => {
+    setAdminData(prev => ({
+      ...prev,
+      sectionVisibility: {
+        ...prev.sectionVisibility,
+        [sectionId]: prev.sectionVisibility?.[sectionId] === false ? true : false
+      }
+    }));
+  };
+
+  // =================== FEATURED / DESTACADOS ===================
+  const setFeaturedMission = (missionId) => {
+    setAdminData(prev => ({
+      ...prev,
+      featuredMissionId: prev.featuredMissionId === missionId ? null : missionId
+    }));
+  };
+
+  const setFeaturedRetreat = (retreatId) => {
+    setAdminData(prev => ({
+      ...prev,
+      featuredRetreatId: prev.featuredRetreatId === retreatId ? null : retreatId
+    }));
+  };
+
+  const toggleFeaturedProduct = (productId) => {
+    setAdminData(prev => {
+      const current = prev.featuredProductIds || [];
+      const exists = current.includes(productId);
+      const updated = exists 
+        ? current.filter(id => id !== productId)
+        : [...current, productId];
+      return {
+        ...prev,
+        featuredProductIds: updated
+      };
+    });
+  };
 
   // =================== GENERAL SECTION UPDATER ===================
   const updateSection = (sectionKey, updatedFields) => {
@@ -436,6 +531,11 @@ export const AdminDataProvider = ({ children }) => {
   const resetToDefaults = () => {
     localStorage.removeItem(STORAGE_KEY);
     setAdminData({
+      sectionOrder: DEFAULT_SECTION_ORDER,
+      sectionVisibility: DEFAULT_SECTION_VISIBILITY,
+      featuredMissionId: 1,
+      featuredRetreatId: 'ret-1',
+      featuredProductIds: ['prod-1', 'prod-2', 'prod-4'],
       events: translations.es.retreatsModal.events,
       products: translations.es.shop.products,
       missions: translations.es.programsSection.items,
@@ -561,6 +661,11 @@ export const AdminDataProvider = ({ children }) => {
     <AdminDataContext.Provider
       value={{
         adminData,
+        sectionOrder: adminData.sectionOrder || DEFAULT_SECTION_ORDER,
+        sectionVisibility: adminData.sectionVisibility || DEFAULT_SECTION_VISIBILITY,
+        featuredMissionId: adminData.featuredMissionId,
+        featuredRetreatId: adminData.featuredRetreatId,
+        featuredProductIds: adminData.featuredProductIds || [],
         hero: adminData.hero,
         nav: adminData.nav,
         about: adminData.about,
@@ -577,6 +682,12 @@ export const AdminDataProvider = ({ children }) => {
         approvedReviews: adminData.reviews.filter(r => r.approved),
         pendingReviews: adminData.reviews.filter(r => !r.approved),
         settings: adminData.settings,
+        updateSectionOrder,
+        moveSection,
+        toggleSectionVisibility,
+        setFeaturedMission,
+        setFeaturedRetreat,
+        toggleFeaturedProduct,
         updateSection,
         updateHero,
         updateNav,

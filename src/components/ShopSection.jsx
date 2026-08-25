@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAdminData } from '../context/AdminDataContext';
-import { ShoppingBag, Star, Sparkles, Heart, Check, Plus, ArrowRight, ShieldCheck, Tag, Cross } from 'lucide-react';
+import { ShoppingBag, Star, Sparkles, Heart, Check, Plus, ArrowRight, ShieldCheck, Tag, Cross, Flame } from 'lucide-react';
 
 export const ShopSection = ({ onAddToCart, onOpenCart, onBuyNow }) => {
   const { t } = useLanguage();
-  const { products, shopHeader } = useAdminData();
+  const { products, shopHeader, featuredProductIds, toggleFeaturedProduct } = useAdminData();
   const shop = { ...t.shop, ...(shopHeader || {}) };
 
   const activeProducts = products && products.length > 0 ? products : shop.products;
+  const effectiveFeaturedIds = featuredProductIds || ['prod-1', 'prod-2', 'prod-4'];
 
   const [activeCategory, setActiveCategory] = useState('all');
   const [recentlyAdded, setRecentlyAdded] = useState(null);
 
   const categories = [
     { id: 'all', label: shop.categories.all },
+    { id: 'featured', label: '⭐ Más Vendidos / Destacados' },
     { id: 'religious', label: shop.categories.religious },
     { id: 'books', label: shop.categories.books },
     { id: 'apparel', label: shop.categories.apparel },
@@ -23,6 +25,8 @@ export const ShopSection = ({ onAddToCart, onOpenCart, onBuyNow }) => {
 
   const filteredProducts = activeCategory === 'all'
     ? activeProducts
+    : activeCategory === 'featured'
+    ? activeProducts.filter(p => effectiveFeaturedIds.includes(p.id))
     : activeProducts.filter(p => p.category === activeCategory);
 
   const handleAddToCart = (product) => {
@@ -48,12 +52,18 @@ export const ShopSection = ({ onAddToCart, onOpenCart, onBuyNow }) => {
         
         {/* Boutique Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-100 border border-amber-300 text-amber-950 font-black text-xs uppercase tracking-widest mb-4 shadow-sm">
+          <div 
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-100 border border-amber-300 text-amber-950 font-black text-xs uppercase tracking-widest mb-4 shadow-sm"
+            style={{ color: shopHeader?.styles?.badge_color || '#78350F' }}
+          >
             <Sparkles className="w-3.5 h-3.5 text-amber-700" />
             <span>{shop.badge}</span>
           </div>
 
-          <h2 className="font-display font-black text-3xl sm:text-5xl text-slate-900 leading-tight mb-4">
+          <h2 
+            className={`${shopHeader?.styles?.title_font || 'font-display'} ${shopHeader?.styles?.title_size || 'text-3xl sm:text-5xl'} ${shopHeader?.styles?.title_weight || 'font-black'} text-slate-900 leading-tight mb-4`}
+            style={{ color: shopHeader?.styles?.title_color || '#0F172A' }}
+          >
             {shop.title}
           </h2>
 
@@ -87,103 +97,107 @@ export const ShopSection = ({ onAddToCart, onOpenCart, onBuyNow }) => {
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-          {filteredProducts.map((product) => (
-            <div
-              key={product.id}
-              className="group bg-white rounded-3xl overflow-hidden border border-amber-200/70 shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-2"
-            >
-              <div>
-                {/* Image Box */}
-                <div className="relative h-60 overflow-hidden bg-amber-50/50">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          {filteredProducts.map((product) => {
+            const isFeatured = effectiveFeaturedIds.includes(product.id);
 
-                  {/* Badge */}
-                  <div className="absolute top-3 left-3 bg-brand-gold text-slate-950 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
-                    <Tag className="w-3 h-3" />
-                    <span>{product.tag}</span>
-                  </div>
+            return (
+              <div
+                key={product.id}
+                className={`group bg-white rounded-3xl overflow-hidden border shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-2 ${
+                  isFeatured
+                    ? 'border-amber-400 ring-2 ring-amber-400/40 shadow-amber-200/50'
+                    : 'border-amber-200/70'
+                }`}
+              >
+                <div>
+                  {/* Image Box */}
+                  <div className="relative h-60 overflow-hidden bg-amber-50/50">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                  {/* Rating */}
-                  <div className="absolute top-3 right-3 bg-slate-950/75 backdrop-blur-md text-brand-gold text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                    <Star className="w-3 h-3 fill-brand-gold" />
-                    <span className="text-white text-[11px]">5.0</span>
-                  </div>
-                </div>
+                    {/* Badge */}
+                    <div className="absolute top-3 left-3 bg-brand-gold text-slate-950 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
+                      <Tag className="w-3 h-3" />
+                      <span>{product.tag}</span>
+                    </div>
 
-                {/* Content */}
-                <div className="p-5 space-y-2">
-                  <h3 className="font-display font-extrabold text-base text-slate-900 leading-snug group-hover:text-brand-teal transition-colors line-clamp-2">
-                    {product.name}
-                  </h3>
-
-                  <p className="text-xs text-slate-500 leading-relaxed line-clamp-2 font-normal">
-                    {product.desc}
-                  </p>
-
-                  {/* Pricing */}
-                  <div className="flex items-baseline gap-2 pt-2">
-                    <span className="font-display font-black text-xl text-slate-950">
-                      ${product.price.toFixed(2)} USD
-                    </span>
-                    {product.originalPrice && (
-                      <span className="text-xs text-slate-400 line-through">
-                        ${product.originalPrice.toFixed(2)}
-                      </span>
+                    {/* Top Seller Badge */}
+                    {isFeatured && (
+                      <div className="absolute bottom-3 left-3 bg-red-600 text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1">
+                        <Flame className="w-3 h-3 fill-white" />
+                        <span>MÁS VENDIDO</span>
+                      </div>
                     )}
+
+                    {/* Rating */}
+                    <div className="absolute top-3 right-3 bg-slate-950/75 backdrop-blur-md text-brand-gold text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <Star className="w-3 h-3 fill-brand-gold" />
+                      <span className="text-white text-[11px]">5.0</span>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-5 space-y-2">
+                    <h3 className="font-display font-extrabold text-base text-slate-900 leading-snug group-hover:text-brand-teal transition-colors line-clamp-2">
+                      {product.name}
+                    </h3>
+
+                    <p className="text-xs text-slate-500 leading-relaxed line-clamp-2 font-normal">
+                      {product.desc}
+                    </p>
+
+                    {/* Pricing */}
+                    <div className="flex items-baseline gap-2 pt-2">
+                      <span className="font-display font-black text-xl text-slate-950">
+                        ${product.price.toFixed(2)} USD
+                      </span>
+                      {product.originalPrice && (
+                        <span className="text-xs text-slate-400 line-through">
+                          ${product.originalPrice.toFixed(2)}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
+
+                {/* Action Buttons */}
+                <div className="p-5 pt-0 space-y-2">
+                  <button
+                    onClick={() => handleAddToCart(product)}
+                    className={`w-full py-2.5 px-4 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-sm ${
+                      recentlyAdded === product.id
+                        ? 'bg-emerald-600 text-white'
+                        : 'bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-200'
+                    }`}
+                  >
+                    {recentlyAdded === product.id ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-white" />
+                        <span>¡Agregado al Carrito!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>{shop.addToCart || 'Agregar al Carrito'}</span>
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => onBuyNow(product)}
+                    className="w-full py-2.5 px-4 rounded-xl bg-brand-coral hover:bg-brand-coral-dark text-white font-extrabold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-md hover:scale-[1.02]"
+                  >
+                    <ShoppingBag className="w-3.5 h-3.5" />
+                    <span>{shop.buyNow || 'Comprar Ahora'}</span>
+                  </button>
+                </div>
               </div>
-
-              {/* Action Buttons */}
-              <div className="p-5 pt-0 space-y-2">
-                <button
-                  onClick={() => handleAddToCart(product)}
-                  className={`w-full py-2.5 px-4 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-sm ${
-                    recentlyAdded === product.id
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-200'
-                  }`}
-                >
-                  {recentlyAdded === product.id ? (
-                    <>
-                      <Check className="w-3.5 h-3.5" />
-                      <span>{shop.addedToCart}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>{shop.addToCart}</span>
-                    </>
-                  )}
-                </button>
-
-                <button
-                  onClick={() => onBuyNow(product)}
-                  className="w-full py-2.5 px-4 rounded-xl bg-brand-coral hover:bg-brand-coral-dark text-white text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-md hover:shadow-brand-coral/30"
-                >
-                  <ShoppingBag className="w-3.5 h-3.5" />
-                  <span>{shop.buyNow}</span>
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Bottom Cart Trigger */}
-        <div className="mt-16 text-center">
-          <button
-            onClick={onOpenCart}
-            className="inline-flex items-center gap-3 bg-slate-950 hover:bg-slate-900 text-white font-bold text-sm px-8 py-4 rounded-full shadow-2xl hover:scale-105 transition-all border border-amber-300/30"
-          >
-            <ShoppingBag className="w-5 h-5 text-brand-gold" />
-            <span>{shop.viewCart} ({shop.proceedsNotice})</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+            );
+          })}
         </div>
 
       </div>

@@ -86,9 +86,18 @@ export const MissionHeart = ({
   };
 
   return (
-    <section id="mission" className="py-20 bg-white relative overflow-hidden">
-      {/* Background Subtle Pattern */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#2BBEC9_1px,transparent_1px)] [background-size:24px_24px]" />
+    <section 
+      id="mission" 
+      className="py-24 relative overflow-hidden bg-gradient-to-tr from-[#fbf8f3] via-[#f4f9fa] to-[#fdf7f4] border-b border-slate-100"
+    >
+      {/* Luces Ambientales de Colores (Glow Orbs) */}
+      <div className="absolute -top-16 -left-16 w-[450px] h-[450px] bg-brand-teal/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 -right-20 w-[420px] h-[420px] bg-brand-gold/22 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-16 left-1/4 w-[400px] h-[400px] bg-brand-coral/18 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-10 right-1/4 w-[350px] h-[350px] bg-sky-200/30 rounded-full blur-2xl pointer-events-none" />
+
+      {/* Textura artesanal sutil */}
+      <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#2BBEC9_1.2px,transparent_1.2px)] [background-size:28px_28px]" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         

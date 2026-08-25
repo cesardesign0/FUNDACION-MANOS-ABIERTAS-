@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAdminData, DEFAULT_HERO_BUTTONS } from '../../context/AdminDataContext';
 import { TypographyToolbar, ButtonStudio } from './StyleToolbars';
+import { VisualLiveEditor } from './VisualLiveEditor';
 import { 
   Calendar, ShoppingBag, Target, Star, Settings, LogOut, ExternalLink, 
   Plus, Edit, Trash2, Check, X, ShieldCheck, RefreshCw, AlertCircle, 
@@ -41,6 +42,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
   const [tempUrlInput, setTempUrlInput] = useState('');
   const [photoPickerTarget, setPhotoPickerTarget] = useState(null);
   const [saveSuccessNotice, setSaveSuccessNotice] = useState('');
+  const [isVisualEditorOpen, setIsVisualEditorOpen] = useState(false);
 
   // =================== SECTION FORMS LOCAL STATES CON ESTILOS ===================
   const [heroForm, setHeroForm] = useState(() => ({
@@ -380,6 +382,13 @@ export const AdminDashboard = ({ onExitAdmin }) => {
   }
 
   // =========================================================================
+  // VISUAL LIVE EDITOR (WIX / STORYBLOK STYLE)
+  // =========================================================================
+  if (isVisualEditorOpen) {
+    return <VisualLiveEditor onExit={() => setIsVisualEditorOpen(false)} />;
+  }
+
+  // =========================================================================
   // MAIN DASHBOARD
   // =========================================================================
   return (
@@ -402,6 +411,15 @@ export const AdminDashboard = ({ onExitAdmin }) => {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Botón Destacado: Abrir Editor Visual Wix */}
+          <button
+            onClick={() => setIsVisualEditorOpen(true)}
+            className="inline-flex items-center gap-1.5 bg-gradient-to-r from-brand-coral via-brand-gold to-brand-teal hover:scale-105 text-slate-950 text-xs font-black px-4 py-2 rounded-xl shadow-lg shadow-brand-gold/20 transition-all cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4 fill-slate-950" />
+            <span>🎨 Abrir Editor Visual Wix</span>
+          </button>
+
           <button
             onClick={onExitAdmin}
             className="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-bold px-3.5 py-2 rounded-xl border border-slate-700 transition-all shadow-xs"
@@ -433,6 +451,19 @@ export const AdminDashboard = ({ onExitAdmin }) => {
         
         {/* Sidebar */}
         <aside className="w-full md:w-64 flex-shrink-0 space-y-2">
+          
+          {/* Botón Destacado Editor Visual Wix en Sidebar */}
+          <button
+            onClick={() => setIsVisualEditorOpen(true)}
+            className="w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-xs font-black uppercase tracking-wider bg-gradient-to-r from-brand-coral via-brand-gold to-brand-teal text-slate-950 shadow-xl shadow-brand-gold/20 hover:scale-[1.02] transition-all mb-3 border border-brand-gold/50"
+          >
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 fill-slate-950" />
+              <span>Editor Visual Wix</span>
+            </div>
+            <span className="bg-black/20 px-2 py-0.5 rounded-full text-[10px] font-black">EN VIVO</span>
+          </button>
+
           <div className="bg-slate-950 p-2 rounded-2xl border border-slate-800 space-y-1">
             
             <button

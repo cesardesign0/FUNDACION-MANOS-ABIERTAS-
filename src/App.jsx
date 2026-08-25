@@ -28,7 +28,7 @@ import { Heart, ShoppingBag, PlusCircle, MessageSquare, X, Lock } from 'lucide-r
 
 const MainLayout = () => {
   const { language, t } = useLanguage();
-  const { events, products, missions, approvedReviews, addReviewForModeration } = useAdminData();
+  const { events, products, missions, approvedReviews, addReviewForModeration, sectionVisibility, sectionOrder } = useAdminData();
 
   // Admin View state (Triggered by /admin, #admin, or footer link)
   const [isAdminView, setIsAdminView] = useState(() => {
@@ -182,73 +182,91 @@ const MainLayout = () => {
 
       {/* Hero Section with Clickable Cards */}
       <main className="flex-grow">
-        <Hero
-          onOpenDonate={() => handleOpenDonate('all')}
-          onOpenVolunteer={() => handleOpenVolunteer('volunteer')}
-          onOpenHumanitarian={() => setIsHumanitarianOpen(true)}
-          onOpenRetreats={() => setIsRetreatsOpen(true)}
-        />
+        {(!sectionVisibility || sectionVisibility.hero !== false) && (
+          <Hero
+            onOpenDonate={() => handleOpenDonate('all')}
+            onOpenVolunteer={() => handleOpenVolunteer('volunteer')}
+            onOpenHumanitarian={() => setIsHumanitarianOpen(true)}
+            onOpenRetreats={() => setIsRetreatsOpen(true)}
+          />
+        )}
 
         {/* 3 Impact Banners */}
-        <StatsGoalsBanner
-          onOpenDonate={() => handleOpenDonate('all')}
-          onOpenVolunteer={() => handleOpenVolunteer('volunteer')}
-        />
+        {(!sectionVisibility || sectionVisibility.stats !== false) && (
+          <StatsGoalsBanner
+            onOpenDonate={() => handleOpenDonate('all')}
+            onOpenVolunteer={() => handleOpenVolunteer('volunteer')}
+          />
+        )}
 
         {/* Mission, Heart Collage & 6 Quick Actions */}
-        <MissionHeart
-          onOpenDonate={() => handleOpenDonate('all')}
-          onOpenVolunteer={() => handleOpenVolunteer('volunteer')}
-          onOpenGetHelp={() => handleOpenVolunteer('help')}
-          onOpenShop={handleScrollToShop}
-          onOpenContact={() => handleOpenVolunteer('volunteer')}
-          onOpenNewMission={() => setIsNewMissionOpen(true)}
-          onOpenHumanitarian={() => setIsHumanitarianOpen(true)}
-          onOpenRetreats={() => setIsRetreatsOpen(true)}
-          featuredRetreat={featuredRetreat}
-        />
+        {(!sectionVisibility || sectionVisibility.mission !== false) && (
+          <MissionHeart
+            onOpenDonate={() => handleOpenDonate('all')}
+            onOpenVolunteer={() => handleOpenVolunteer('volunteer')}
+            onOpenGetHelp={() => handleOpenVolunteer('help')}
+            onOpenShop={handleScrollToShop}
+            onOpenContact={() => handleOpenVolunteer('volunteer')}
+            onOpenNewMission={() => setIsNewMissionOpen(true)}
+            onOpenHumanitarian={() => setIsHumanitarianOpen(true)}
+            onOpenRetreats={() => setIsRetreatsOpen(true)}
+            featuredRetreat={featuredRetreat}
+          />
+        )}
 
         {/* Missions Section */}
-        <Programs
-          onSelectCauseAndDonate={(cause) => handleOpenDonate(cause)}
-          onOpenNewMission={() => setIsNewMissionOpen(true)}
-          onOpenMissionDetail={(mission) => setSelectedMissionDetail(mission)}
-          onOpenCompletedMissions={() => setIsCompletedMissionsOpen(true)}
-        />
+        {(!sectionVisibility || sectionVisibility.programs !== false) && (
+          <Programs
+            onSelectCauseAndDonate={(cause) => handleOpenDonate(cause)}
+            onOpenNewMission={() => setIsNewMissionOpen(true)}
+            onOpenMissionDetail={(mission) => setSelectedMissionDetail(mission)}
+            onOpenCompletedMissions={() => setIsCompletedMissionsOpen(true)}
+          />
+        )}
 
         {/* La Casa de la Ayuda / Centro Carismático Católico & Grupo Isha Bethel */}
-        <AboutFounder
-          onOpenVolunteer={() => handleOpenVolunteer('volunteer')}
-        />
+        {(!sectionVisibility || sectionVisibility.about !== false) && (
+          <AboutFounder
+            onOpenVolunteer={() => handleOpenVolunteer('volunteer')}
+          />
+        )}
 
         {/* Dedicated Retreats & Activities Calendar Section */}
-        <RetreatsSection
-          onOpenRetreatsModal={(eventId) => setIsRetreatsOpen(true)}
-          featuredRetreatId={featuredRetreatId}
-          onToggleFeaturedRetreat={handleToggleFeaturedRetreat}
-        />
+        {(!sectionVisibility || sectionVisibility.retreats !== false) && (
+          <RetreatsSection
+            onOpenRetreatsModal={(eventId) => setIsRetreatsOpen(true)}
+            featuredRetreatId={featuredRetreatId}
+            onToggleFeaturedRetreat={handleToggleFeaturedRetreat}
+          />
+        )}
 
         {/* Tienda Solidaria 100% Católica y Cristiana */}
-        <ShopSection
-          onAddToCart={handleAddToCart}
-          onOpenCart={() => setIsCartOpen(true)}
-          onBuyNow={handleBuyNow}
-        />
+        {(!sectionVisibility || sectionVisibility.shop !== false) && (
+          <ShopSection
+            onAddToCart={handleAddToCart}
+            onOpenCart={() => setIsCartOpen(true)}
+            onBuyNow={handleBuyNow}
+          />
+        )}
 
         {/* Volunteer, Reviews & Testimonials Section */}
-        <VolunteerSection
-          onOpenVolunteer={() => handleOpenVolunteer('volunteer')}
-          onOpenReviewModal={() => setIsReviewOpen(true)}
-          customReviews={approvedReviews}
-        />
+        {(!sectionVisibility || sectionVisibility.volunteer !== false) && (
+          <VolunteerSection
+            onOpenVolunteer={() => handleOpenVolunteer('volunteer')}
+            onOpenReviewModal={() => setIsReviewOpen(true)}
+            customReviews={approvedReviews}
+          />
+        )}
       </main>
 
       {/* Footer */}
-      <Footer
-        onOpenDonate={() => handleOpenDonate('all')}
-        onOpenVolunteer={() => handleOpenVolunteer('volunteer')}
-        onOpenAdmin={() => setIsAdminView(true)}
-      />
+      {(!sectionVisibility || sectionVisibility.footer !== false) && (
+        <Footer
+          onOpenDonate={() => handleOpenDonate('all')}
+          onOpenVolunteer={() => handleOpenVolunteer('volunteer')}
+          onOpenAdmin={() => setIsAdminView(true)}
+        />
+      )}
 
       {/* Floating Action Menu with Cross (Speed Dial) */}
       <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">

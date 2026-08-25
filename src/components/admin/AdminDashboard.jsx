@@ -411,13 +411,13 @@ export const AdminDashboard = ({ onExitAdmin }) => {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Botón Destacado: Abrir Editor Visual Wix */}
+          {/* Botón Destacado: Abrir Editor Visual */}
           <button
             onClick={() => setIsVisualEditorOpen(true)}
             className="inline-flex items-center gap-1.5 bg-gradient-to-r from-brand-coral via-brand-gold to-brand-teal hover:scale-105 text-slate-950 text-xs font-black px-4 py-2 rounded-xl shadow-lg shadow-brand-gold/20 transition-all cursor-pointer"
           >
             <Sparkles className="w-4 h-4 fill-slate-950" />
-            <span>🎨 Abrir Editor Visual Wix</span>
+            <span>🎨 Abrir Editor Visual</span>
           </button>
 
           <button
@@ -452,14 +452,14 @@ export const AdminDashboard = ({ onExitAdmin }) => {
         {/* Sidebar */}
         <aside className="w-full md:w-64 flex-shrink-0 space-y-2">
           
-          {/* Botón Destacado Editor Visual Wix en Sidebar */}
+          {/* Botón Destacado Editor Visual en Sidebar */}
           <button
             onClick={() => setIsVisualEditorOpen(true)}
             className="w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-xs font-black uppercase tracking-wider bg-gradient-to-r from-brand-coral via-brand-gold to-brand-teal text-slate-950 shadow-xl shadow-brand-gold/20 hover:scale-[1.02] transition-all mb-3 border border-brand-gold/50"
           >
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 fill-slate-950" />
-              <span>Editor Visual Wix</span>
+              <span>Editor Visual en Vivo</span>
             </div>
             <span className="bg-black/20 px-2 py-0.5 rounded-full text-[10px] font-black">EN VIVO</span>
           </button>

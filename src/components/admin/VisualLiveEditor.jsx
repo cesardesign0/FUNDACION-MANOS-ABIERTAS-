@@ -48,7 +48,11 @@ import {
   Wand2,
   CheckCircle2,
   RefreshCw,
-  FolderOpen
+  FolderOpen,
+  DollarSign,
+  Clock,
+  MapPin,
+  Tag
 } from 'lucide-react';
 
 export const VisualLiveEditor = ({ onExit }) => {
@@ -93,11 +97,12 @@ export const VisualLiveEditor = ({ onExit }) => {
 
   const [deviceMode, setDeviceMode] = useState('desktop'); // 'desktop' | 'tablet' | 'mobile'
   const [activeSectionId, setActiveSectionId] = useState('hero');
+  const [selectedSubItem, setSelectedSubItem] = useState(null); // { type: 'mission'|'retreat'|'product'|'button', id: string|number }
   const [isBlockManagerOpen, setIsBlockManagerOpen] = useState(true);
   const [notification, setNotification] = useState(null);
 
   // Image Hub Modal state
-  const [imageModalTarget, setImageModalTarget] = useState(null); // { section: 'hero'|'mission'|..., field: 'backgroundImage'|... }
+  const [imageModalTarget, setImageModalTarget] = useState(null); // { section: string, field: string, itemId?: any }
   const [imageModalTab, setImageModalTab] = useState('upload'); // 'upload' | 'ai' | 'url' | 'gallery'
   const [imageUrlInput, setImageUrlInput] = useState('');
   const [aiPromptInput, setAiPromptInput] = useState('');
@@ -111,6 +116,7 @@ export const VisualLiveEditor = ({ onExit }) => {
 
   const handleScrollToSection = (sectionId) => {
     setActiveSectionId(sectionId);
+    setSelectedSubItem(null);
     const el = document.getElementById(`editor-section-${sectionId}`);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -132,23 +138,25 @@ export const VisualLiveEditor = ({ onExit }) => {
   // Apply chosen image to active target
   const applyImageChange = (url) => {
     if (!imageModalTarget || !url) return;
-    const { section, field } = imageModalTarget;
+    const { section, field, itemId } = imageModalTarget;
 
     if (section === 'hero') updateHero({ [field]: url });
     else if (section === 'missionHeart') updateMissionHeart({ [field]: url });
     else if (section === 'about') updateAbout({ [field]: url });
     else if (section === 'programs') updateProgramsHeader({ [field]: url });
+    else if (section === 'missionItem' && itemId) updateMission(itemId, { [field]: url });
+    else if (section === 'retreatItem' && itemId) updateEvent(itemId, { [field]: url });
+    else if (section === 'productItem' && itemId) updateProduct(itemId, { [field]: url });
 
     setImageModalTarget(null);
     setImageUrlInput('');
   };
 
-  // AI Prompt preset image generator (Free smart Catholic library generator)
+  // AI Prompt preset image generator
   const handleGenerateAiImage = () => {
     if (!aiPromptInput.trim()) return;
     setIsGeneratingAi(true);
     setTimeout(() => {
-      // High-resolution curated Catholic & humanitarian unspash artwork matching prompt
       const promptLower = aiPromptInput.toLowerCase();
       let generatedUrl = "https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1920&q=85";
       
@@ -170,7 +178,7 @@ export const VisualLiveEditor = ({ onExit }) => {
     }, 1200);
   };
 
-  // Gallery of high quality curated Catholic images
+  // Curated Catholic Gallery
   const curatedGallery = [
     { label: "Sagrado Corazón de Jesús", url: "/sagrado-corazon-jesus-lateral.jpg" },
     { label: "Inmaculado Corazón de María", url: "/sagrado-corazon-maria-lateral.jpg" },
@@ -196,8 +204,8 @@ export const VisualLiveEditor = ({ onExit }) => {
             <Sparkles className="w-4 h-4 fill-slate-950" />
             <span>EDITOR VISUAL EN VIVO</span>
           </div>
-          <span className="text-xs text-slate-400 hidden lg:inline">
-            | Vista real en vivo • Clic sobre cualquier sección para editarla al instante
+          <span className="text-xs text-slate-400 hidden xl:inline">
+            | Clic sobre cualquier elemento para autoseleccionarlo y editarlo de inmediato
           </span>
         </div>
 
@@ -210,7 +218,7 @@ export const VisualLiveEditor = ({ onExit }) => {
                 ? 'bg-brand-teal text-slate-950 shadow-md'
                 : 'text-slate-400 hover:text-white'
             }`}
-            title="Vista Computadora / Pantalla Completa"
+            title="Vista Escritorio"
           >
             <Monitor className="w-3.5 h-3.5" />
             <span className="hidden md:inline">Escritorio</span>
@@ -291,7 +299,7 @@ export const VisualLiveEditor = ({ onExit }) => {
 
         {/* 1. LEFT SIDEBAR: BLOCK MANAGER & REORDERING */}
         {isBlockManagerOpen && (
-          <aside className="w-80 bg-slate-900 border-r border-slate-800 flex flex-col flex-shrink-0 z-20 shadow-xl overflow-hidden animate-slide-right">
+          <aside className="w-72 bg-slate-900 border-r border-slate-800 flex flex-col flex-shrink-0 z-20 shadow-xl overflow-hidden animate-slide-right">
             
             <div className="p-4 border-b border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-brand-gold">
@@ -308,7 +316,7 @@ export const VisualLiveEditor = ({ onExit }) => {
 
               {sectionOrder.map((section, idx) => {
                 const isVisible = sectionVisibility[section.id] !== false;
-                const isSelected = activeSectionId === section.id;
+                const isSelected = activeSectionId === section.id && !selectedSubItem;
 
                 return (
                   <div
@@ -369,7 +377,10 @@ export const VisualLiveEditor = ({ onExit }) => {
 
                       {/* Edit Button */}
                       <button
-                        onClick={() => setActiveSectionId(section.id)}
+                        onClick={() => {
+                          setActiveSectionId(section.id);
+                          setSelectedSubItem(null);
+                        }}
                         className={`p-1.5 rounded-lg transition-colors ${
                           isSelected
                             ? 'bg-brand-teal text-slate-950 font-black'
@@ -437,7 +448,9 @@ export const VisualLiveEditor = ({ onExit }) => {
                 <div
                   key={section.id}
                   id={`editor-section-${section.id}`}
-                  onClick={() => setActiveSectionId(section.id)}
+                  onClick={() => {
+                    setActiveSectionId(section.id);
+                  }}
                   className={`relative group cursor-pointer transition-all ${
                     isSelected
                       ? 'ring-4 ring-brand-teal ring-inset shadow-2xl'
@@ -451,81 +464,114 @@ export const VisualLiveEditor = ({ onExit }) => {
                   </div>
 
                   {/* ========================================================= */}
-                  {/* REAL 100% LIVE COMPONENTS WITH EXACT LAYOUT AND DATA */}
+                  {/* REAL 100% LIVE COMPONENTS WITH CONTEXT-AWARE ONCLICK */}
                   {/* ========================================================= */}
                   {section.id === 'hero' && (
                     <Hero
-                      onOpenDonate={() => showNotification("Vista previa: Donación")}
-                      onOpenVolunteer={() => showNotification("Vista previa: Voluntariado")}
-                      onOpenHumanitarian={() => showNotification("Vista previa: Misiones")}
-                      onOpenRetreats={() => showNotification("Vista previa: Retiros")}
+                      onOpenDonate={() => {
+                        setActiveSectionId('hero');
+                        setSelectedSubItem({ type: 'button', id: 'btn-donate' });
+                      }}
+                      onOpenVolunteer={() => {
+                        setActiveSectionId('hero');
+                        setSelectedSubItem({ type: 'button', id: 'btn-volunteer' });
+                      }}
+                      onOpenHumanitarian={() => {
+                        setActiveSectionId('hero');
+                        setSelectedSubItem({ type: 'button', id: 'btn-causes' });
+                      }}
+                      onOpenRetreats={() => {
+                        setActiveSectionId('retreats');
+                        setSelectedSubItem(null);
+                      }}
                     />
                   )}
 
                   {section.id === 'stats' && (
                     <StatsGoalsBanner
-                      onOpenDonate={() => showNotification("Vista previa: Donación")}
-                      onOpenVolunteer={() => showNotification("Vista previa: Voluntariado")}
+                      onOpenDonate={() => handleScrollToSection('hero')}
+                      onOpenVolunteer={() => handleScrollToSection('volunteer')}
                     />
                   )}
 
                   {section.id === 'mission' && (
                     <MissionHeart
-                      onOpenDonate={() => showNotification("Vista previa: Donación")}
-                      onOpenVolunteer={() => showNotification("Vista previa: Voluntariado")}
-                      onOpenGetHelp={() => showNotification("Vista previa: Ayuda")}
+                      onOpenDonate={() => handleScrollToSection('hero')}
+                      onOpenVolunteer={() => handleScrollToSection('volunteer')}
+                      onOpenGetHelp={() => handleScrollToSection('volunteer')}
                       onOpenShop={() => handleScrollToSection('shop')}
-                      onOpenContact={() => showNotification("Vista previa: Contacto")}
-                      onOpenNewMission={() => showNotification("Vista previa: Nueva Misión")}
-                      onOpenHumanitarian={() => showNotification("Vista previa: Misiones")}
-                      onOpenRetreats={() => showNotification("Vista previa: Retiros")}
+                      onOpenContact={() => handleScrollToSection('volunteer')}
+                      onOpenNewMission={() => handleScrollToSection('programs')}
+                      onOpenHumanitarian={() => handleScrollToSection('programs')}
+                      onOpenRetreats={() => handleScrollToSection('retreats')}
                       featuredRetreat={events.find(e => e.id === featuredRetreatId) || events[0]}
                     />
                   )}
 
                   {section.id === 'about' && (
                     <AboutFounder
-                      onOpenVolunteer={() => showNotification("Vista previa: Voluntariado")}
+                      onOpenVolunteer={() => handleScrollToSection('volunteer')}
                     />
                   )}
 
                   {section.id === 'programs' && (
                     <Programs
-                      onSelectCauseAndDonate={() => showNotification("Vista previa: Donación")}
-                      onOpenNewMission={() => showNotification("Vista previa: Nueva Causa")}
-                      onOpenMissionDetail={() => showNotification("Vista previa: Detalle del Caso")}
-                      onOpenCompletedMissions={() => showNotification("Vista previa: Misiones Completadas")}
+                      onSelectCauseAndDonate={(causeTitle) => {
+                        setActiveSectionId('programs');
+                        const found = missions.find(m => m.title === causeTitle);
+                        if (found) setSelectedSubItem({ type: 'mission', id: found.id, item: found });
+                      }}
+                      onOpenNewMission={() => handleScrollToSection('programs')}
+                      onOpenMissionDetail={(missionItem) => {
+                        setActiveSectionId('programs');
+                        setSelectedSubItem({ type: 'mission', id: missionItem.id, item: missionItem });
+                      }}
+                      onOpenCompletedMissions={() => handleScrollToSection('programs')}
                     />
                   )}
 
                   {section.id === 'retreats' && (
                     <RetreatsSection
-                      onOpenRetreatsModal={() => showNotification("Vista previa: Calendario")}
+                      onOpenRetreatsModal={(eventId) => {
+                        setActiveSectionId('retreats');
+                        const found = events.find(e => e.id === eventId);
+                        if (found) setSelectedSubItem({ type: 'retreat', id: found.id, item: found });
+                      }}
                       featuredRetreatId={featuredRetreatId}
-                      onToggleFeaturedRetreat={setFeaturedRetreat}
+                      onToggleFeaturedRetreat={(eventId) => {
+                        setActiveSectionId('retreats');
+                        const found = events.find(e => e.id === eventId);
+                        if (found) setSelectedSubItem({ type: 'retreat', id: found.id, item: found });
+                      }}
                     />
                   )}
 
                   {section.id === 'shop' && (
                     <ShopSection
-                      onAddToCart={() => showNotification("Vista previa: Agregado al carrito")}
-                      onOpenCart={() => showNotification("Vista previa: Carrito abierto")}
-                      onBuyNow={() => showNotification("Vista previa: Comprar ahora")}
+                      onAddToCart={(prod) => {
+                        setActiveSectionId('shop');
+                        setSelectedSubItem({ type: 'product', id: prod.id, item: prod });
+                      }}
+                      onOpenCart={() => handleScrollToSection('shop')}
+                      onBuyNow={(prod) => {
+                        setActiveSectionId('shop');
+                        setSelectedSubItem({ type: 'product', id: prod.id, item: prod });
+                      }}
                     />
                   )}
 
                   {section.id === 'volunteer' && (
                     <VolunteerSection
-                      onOpenVolunteer={() => showNotification("Vista previa: Voluntariado")}
-                      onOpenReviewModal={() => showNotification("Vista previa: Reseñas")}
+                      onOpenVolunteer={() => handleScrollToSection('volunteer')}
+                      onOpenReviewModal={() => handleScrollToSection('volunteer')}
                       customReviews={approvedReviews}
                     />
                   )}
 
                   {section.id === 'footer' && (
                     <Footer
-                      onOpenDonate={() => showNotification("Vista previa: Donación")}
-                      onOpenVolunteer={() => showNotification("Vista previa: Voluntariado")}
+                      onOpenDonate={() => handleScrollToSection('hero')}
+                      onOpenVolunteer={() => handleScrollToSection('volunteer')}
                       onOpenAdmin={() => {}}
                     />
                   )}
@@ -538,32 +584,339 @@ export const VisualLiveEditor = ({ onExit }) => {
 
         </main>
 
-        {/* 3. RIGHT SIDEBAR: INLINE INSPECTOR & COMPLETE EDITOR */}
+        {/* 3. RIGHT SIDEBAR: SPACIOUS & RESPONSIVE CONTEXT-AWARE INSPECTOR */}
         {activeSectionId && (
-          <aside className="w-[420px] bg-slate-900 border-l border-slate-800 flex flex-col flex-shrink-0 z-20 shadow-2xl overflow-hidden animate-slide-left">
+          <aside className="w-full max-w-[460px] sm:w-[460px] bg-slate-900 border-l border-slate-800 flex flex-col flex-shrink-0 z-20 shadow-2xl overflow-hidden animate-slide-left">
             
-            {/* Inspector Header */}
+            {/* Inspector Header with Back to Section Button if sub-item is selected */}
             <div className="p-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Sliders className="w-4 h-4 text-brand-teal" />
-                <span className="text-xs font-black uppercase text-white truncate max-w-[280px]">
-                  {sectionOrder.find(s => s.id === activeSectionId)?.name}
+              <div className="flex items-center gap-2 truncate">
+                <Sliders className="w-4 h-4 text-brand-teal flex-shrink-0" />
+                <span className="text-xs font-black uppercase text-white truncate">
+                  {selectedSubItem ? (
+                    <span className="text-brand-gold">
+                      Editando: {selectedSubItem.type === 'mission' ? 'Causa' : selectedSubItem.type === 'retreat' ? 'Retiro' : selectedSubItem.type === 'product' ? 'Producto' : 'Botón'} Seleccionado
+                    </span>
+                  ) : (
+                    sectionOrder.find(s => s.id === activeSectionId)?.name
+                  )}
                 </span>
               </div>
-              <button
-                onClick={() => setActiveSectionId(null)}
-                className="p-1 text-slate-400 hover:text-white rounded-lg"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                {selectedSubItem && (
+                  <button
+                    onClick={() => setSelectedSubItem(null)}
+                    className="text-[10px] bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-lg text-slate-300 font-bold"
+                  >
+                    Ver Sección
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    setActiveSectionId(null);
+                    setSelectedSubItem(null);
+                  }}
+                  className="p-1 text-slate-400 hover:text-white rounded-lg"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
-            {/* Inspector Content per Section */}
+            {/* Inspector Content */}
             <div className="flex-1 overflow-y-auto p-5 space-y-6">
 
-              {/* ===================== HERO INSPECTOR ===================== */}
-              {activeSectionId === 'hero' && (
-                <div className="space-y-6">
+              {/* ========================================================================= */}
+              {/* SUB-ITEM FOCUS: SPECIFIC MISSION CARD CLICKED */}
+              {/* ========================================================================= */}
+              {selectedSubItem?.type === 'mission' && (() => {
+                const currentMission = missions.find(m => m.id === selectedSubItem.id) || selectedSubItem.item || missions[0];
+                const isFeatured = featuredMissionId === currentMission.id;
+
+                return (
+                  <div className="space-y-5 animate-fadeIn">
+                    <div className="p-4 rounded-2xl bg-gradient-to-r from-brand-gold/20 via-brand-navy to-slate-900 border border-brand-gold/40 flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-brand-gold font-black text-xs uppercase">
+                        <Star className="w-4 h-4 fill-brand-gold" />
+                        <span>Causa Seleccionada</span>
+                      </div>
+                      <button
+                        onClick={() => setFeaturedMission(currentMission.id)}
+                        className={`px-3 py-1 rounded-xl text-xs font-black uppercase transition-all ${
+                          isFeatured
+                            ? 'bg-brand-gold text-slate-950 shadow-md'
+                            : 'bg-slate-800 text-slate-300 hover:bg-brand-gold hover:text-slate-950'
+                        }`}
+                      >
+                        {isFeatured ? '⭐ Destacada' : 'Hacer Destacada'}
+                      </button>
+                    </div>
+
+                    {/* Image manager for this mission */}
+                    <div className="p-3 bg-slate-950 rounded-2xl border border-slate-800 flex items-center gap-3">
+                      <img src={currentMission.image} alt={currentMission.title} className="w-16 h-16 object-cover rounded-xl border border-slate-700" />
+                      <div className="flex-1 space-y-1">
+                        <span className="text-xs font-bold text-white block truncate">{currentMission.title}</span>
+                        <button
+                          onClick={() => setImageModalTarget({ section: 'missionItem', field: 'image', itemId: currentMission.id })}
+                          className="text-[11px] font-bold text-brand-teal hover:underline flex items-center gap-1"
+                        >
+                          <Wand2 className="w-3 h-3" />
+                          <span>Cambiar Imagen / IA</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-300 block">Título de la Causa</label>
+                      <input
+                        type="text"
+                        value={currentMission.title || ''}
+                        onChange={(e) => updateMission(currentMission.id, { title: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-300 block">Descripción del Caso</label>
+                      <textarea
+                        rows={3}
+                        value={currentMission.desc || ''}
+                        onChange={(e) => updateMission(currentMission.id, { desc: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 block uppercase">Recaudado</label>
+                        <input
+                          type="text"
+                          value={currentMission.raisedAmount || ''}
+                          onChange={(e) => updateMission(currentMission.id, { raisedAmount: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white font-bold"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 block uppercase">Meta ($)</label>
+                        <input
+                          type="text"
+                          value={currentMission.goalAmount || ''}
+                          onChange={(e) => updateMission(currentMission.id, { goalAmount: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white font-bold"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 block uppercase">% Logro</label>
+                        <input
+                          type="number"
+                          value={currentMission.percentage || 0}
+                          onChange={(e) => updateMission(currentMission.id, { percentage: Number(e.target.value) })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-emerald-400 font-bold"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* ========================================================================= */}
+              {/* SUB-ITEM FOCUS: SPECIFIC RETREAT / EVENT CLICKED */}
+              {/* ========================================================================= */}
+              {selectedSubItem?.type === 'retreat' && (() => {
+                const currentEvent = events.find(e => e.id === selectedSubItem.id) || selectedSubItem.item || events[0];
+                const isFeatured = featuredRetreatId === currentEvent.id;
+
+                return (
+                  <div className="space-y-5 animate-fadeIn">
+                    <div className="p-4 rounded-2xl bg-gradient-to-r from-brand-gold/20 via-brand-navy to-slate-900 border border-brand-gold/40 flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-brand-gold font-black text-xs uppercase">
+                        <Calendar className="w-4 h-4 text-brand-gold" />
+                        <span>Retiro Seleccionado</span>
+                      </div>
+                      <button
+                        onClick={() => setFeaturedRetreat(currentEvent.id)}
+                        className={`px-3 py-1 rounded-xl text-xs font-black uppercase transition-all ${
+                          isFeatured
+                            ? 'bg-brand-gold text-slate-950 shadow-md'
+                            : 'bg-slate-800 text-slate-300 hover:bg-brand-gold hover:text-slate-950'
+                        }`}
+                      >
+                        {isFeatured ? '⭐ Destacado' : 'Fijar Destacado'}
+                      </button>
+                    </div>
+
+                    {/* Image manager for this event */}
+                    <div className="p-3 bg-slate-950 rounded-2xl border border-slate-800 flex items-center gap-3">
+                      <img src={currentEvent.image} alt={currentEvent.title} className="w-16 h-16 object-cover rounded-xl border border-slate-700" />
+                      <div className="flex-1 space-y-1">
+                        <span className="text-xs font-bold text-white block truncate">{currentEvent.title}</span>
+                        <button
+                          onClick={() => setImageModalTarget({ section: 'retreatItem', field: 'image', itemId: currentEvent.id })}
+                          className="text-[11px] font-bold text-brand-teal hover:underline flex items-center gap-1"
+                        >
+                          <Wand2 className="w-3 h-3" />
+                          <span>Cambiar Imagen / IA</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-300 block">Título de la Actividad</label>
+                      <input
+                        type="text"
+                        value={currentEvent.title || ''}
+                        onChange={(e) => updateEvent(currentEvent.id, { title: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 block uppercase">Fecha</label>
+                        <input
+                          type="text"
+                          value={currentEvent.date || ''}
+                          onChange={(e) => updateEvent(currentEvent.id, { date: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white font-bold"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 block uppercase">Horario</label>
+                        <input
+                          type="text"
+                          value={currentEvent.schedule || ''}
+                          onChange={(e) => updateEvent(currentEvent.id, { schedule: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white font-bold"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 block uppercase">Aporte / Donación</label>
+                        <input
+                          type="text"
+                          value={currentEvent.cost || ''}
+                          onChange={(e) => updateEvent(currentEvent.id, { cost: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white font-bold"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 block uppercase">Categoría</label>
+                        <input
+                          type="text"
+                          value={currentEvent.category || ''}
+                          onChange={(e) => updateEvent(currentEvent.id, { category: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white font-bold"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-300 block">Enlace de Registro / Boletos</label>
+                      <input
+                        type="text"
+                        value={currentEvent.registrationLink || ''}
+                        onChange={(e) => updateEvent(currentEvent.id, { registrationLink: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono text-[11px]"
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* ========================================================================= */}
+              {/* SUB-ITEM FOCUS: SPECIFIC PRODUCT CLICKED */}
+              {/* ========================================================================= */}
+              {selectedSubItem?.type === 'product' && (() => {
+                const currentProduct = products.find(p => p.id === selectedSubItem.id) || selectedSubItem.item || products[0];
+                const isFeatured = (featuredProductIds || []).includes(currentProduct.id);
+
+                return (
+                  <div className="space-y-5 animate-fadeIn">
+                    <div className="p-4 rounded-2xl bg-amber-500/15 border border-amber-400/40 flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-amber-300 font-black text-xs uppercase">
+                        <ShoppingBag className="w-4 h-4 text-amber-400" />
+                        <span>Producto Seleccionado</span>
+                      </div>
+                      <button
+                        onClick={() => toggleFeaturedProduct(currentProduct.id)}
+                        className={`px-3 py-1 rounded-xl text-xs font-black uppercase transition-all ${
+                          isFeatured
+                            ? 'bg-amber-400 text-slate-950 shadow-md'
+                            : 'bg-slate-800 text-slate-300 hover:bg-amber-400 hover:text-slate-950'
+                        }`}
+                      >
+                        {isFeatured ? '🔥 Más Vendido' : 'Marcar Top Ventas'}
+                      </button>
+                    </div>
+
+                    {/* Image manager for this product */}
+                    <div className="p-3 bg-slate-950 rounded-2xl border border-slate-800 flex items-center gap-3">
+                      <img src={currentProduct.image} alt={currentProduct.name} className="w-16 h-16 object-cover rounded-xl border border-slate-700" />
+                      <div className="flex-1 space-y-1">
+                        <span className="text-xs font-bold text-white block truncate">{currentProduct.name}</span>
+                        <button
+                          onClick={() => setImageModalTarget({ section: 'productItem', field: 'image', itemId: currentProduct.id })}
+                          className="text-[11px] font-bold text-brand-teal hover:underline flex items-center gap-1"
+                        >
+                          <Wand2 className="w-3 h-3" />
+                          <span>Cambiar Foto / IA</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-300 block">Nombre del Artículo</label>
+                      <input
+                        type="text"
+                        value={currentProduct.name || ''}
+                        onChange={(e) => updateProduct(currentProduct.id, { name: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 block uppercase">Precio ($ USD)</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={currentProduct.price || 0}
+                          onChange={(e) => updateProduct(currentProduct.id, { price: parseFloat(e.target.value) || 0 })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white font-bold"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 block uppercase">Etiqueta / Badge</label>
+                        <input
+                          type="text"
+                          value={currentProduct.tag || ''}
+                          onChange={(e) => updateProduct(currentProduct.id, { tag: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white font-bold"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-300 block">Descripción Corta</label>
+                      <textarea
+                        rows={3}
+                        value={currentProduct.desc || ''}
+                        onChange={(e) => updateProduct(currentProduct.id, { desc: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* ========================================================================= */}
+              {/* SECTION LEVEL INSPECTOR (Default when no specific card is focused) */}
+              {/* ========================================================================= */}
+              {!selectedSubItem && activeSectionId === 'hero' && (
+                <div className="space-y-6 animate-fadeIn">
                   
                   {/* Photo & Logo Manager */}
                   <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
@@ -587,9 +940,6 @@ export const VisualLiveEditor = ({ onExit }) => {
                         className="w-16 h-16 object-contain rounded-xl bg-white p-1 border border-slate-700"
                       />
                       <div className="text-[11px] text-slate-400 space-y-1 flex-1">
-                        <span className="block truncate font-mono text-[10px] text-slate-300">
-                          {hero?.logoCardImage || "/logo-manos-abiertas.png"}
-                        </span>
                         <button
                           onClick={() => setImageModalTarget({ section: 'hero', field: 'logoCardImage' })}
                           className="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg text-white font-bold text-xs"
@@ -663,24 +1013,20 @@ export const VisualLiveEditor = ({ onExit }) => {
                       onChange={(newButtons) => updateHero({ buttons: newButtons })}
                     />
                   </div>
-
                 </div>
               )}
 
-              {/* ===================== MISSION HEART INSPECTOR ===================== */}
-              {activeSectionId === 'mission' && (
-                <div className="space-y-6">
-                  
-                  {/* Bubble Images Manager */}
+              {/* MISSION HEART DEFAULT */}
+              {!selectedSubItem && activeSectionId === 'mission' && (
+                <div className="space-y-6 animate-fadeIn">
                   <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
                     <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
                       <ImageIcon className="w-3.5 h-3.5 text-brand-gold" />
-                      <span>Imágenes de las Burbujas Interactivas</span>
+                      <span>Fotos de Burbujas Interactivas</span>
                     </span>
-
                     <div className="grid grid-cols-2 gap-3">
                       <div className="p-2 bg-slate-900 rounded-xl space-y-1.5 text-center">
-                        <span className="text-[10px] text-slate-400 font-bold block">Burbuja Ayuda</span>
+                        <span className="text-[10px] text-slate-400 font-bold block">Ayuda</span>
                         <img src={missionHeart?.bubble1Image} alt="Ayuda" className="w-12 h-12 rounded-full object-cover mx-auto" />
                         <button
                           onClick={() => setImageModalTarget({ section: 'missionHeart', field: 'bubble1Image' })}
@@ -689,9 +1035,8 @@ export const VisualLiveEditor = ({ onExit }) => {
                           Cambiar Foto
                         </button>
                       </div>
-
                       <div className="p-2 bg-slate-900 rounded-xl space-y-1.5 text-center">
-                        <span className="text-[10px] text-slate-400 font-bold block">Burbuja Isha Bethel</span>
+                        <span className="text-[10px] text-slate-400 font-bold block">Isha Bethel</span>
                         <img src={missionHeart?.bubbleIshaImage} alt="Isha" className="w-12 h-12 rounded-full object-cover mx-auto" />
                         <button
                           onClick={() => setImageModalTarget({ section: 'missionHeart', field: 'bubbleIshaImage' })}
@@ -704,16 +1049,6 @@ export const VisualLiveEditor = ({ onExit }) => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Insignia / Badge</label>
-                    <input
-                      type="text"
-                      value={missionHeart?.badge || ''}
-                      onChange={(e) => updateMissionHeart({ badge: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-300 block">Título de la Misión</label>
                     <input
                       type="text"
@@ -722,7 +1057,7 @@ export const VisualLiveEditor = ({ onExit }) => {
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
                     />
                     <TypographyToolbar
-                      label="Estilo del Título de la Misión"
+                      label="Estilo del Título"
                       target="title"
                       styles={missionHeart?.styles || {}}
                       onChange={(newStyles) => updateMissionHeart({ styles: newStyles })}
@@ -731,7 +1066,7 @@ export const VisualLiveEditor = ({ onExit }) => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Párrafo 1 (Historia y Casa de Ayuda)</label>
+                    <label className="text-xs font-bold text-slate-300 block">Párrafo Principal</label>
                     <textarea
                       rows={3}
                       value={missionHeart?.paragraph1 || ''}
@@ -739,57 +1074,14 @@ export const VisualLiveEditor = ({ onExit }) => {
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
                     />
                   </div>
-
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Párrafo 2 (Misericordia)</label>
-                    <textarea
-                      rows={3}
-                      value={missionHeart?.paragraph2 || ''}
-                      onChange={(e) => updateMissionHeart({ paragraph2: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Texto del Botón Principal</label>
-                    <input
-                      type="text"
-                      value={missionHeart?.btnMore || ''}
-                      onChange={(e) => updateMissionHeart({ btnMore: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
-                    />
-                  </div>
                 </div>
               )}
 
-              {/* ===================== PROGRAMS / FEATURED MISSIONS INSPECTOR ===================== */}
-              {activeSectionId === 'programs' && (
-                <div className="space-y-6">
-                  
-                  {/* ⭐ Featured Mission Selector */}
-                  <div className="p-4 rounded-2xl bg-brand-gold/15 border-2 border-brand-gold/50 space-y-3">
-                    <div className="flex items-center gap-2 text-brand-gold font-black text-xs uppercase">
-                      <Star className="w-4 h-4 fill-brand-gold" />
-                      <span>⭐ Causa Destacada / Principal</span>
-                    </div>
-                    <p className="text-[11px] text-slate-300 leading-relaxed">
-                      Selecciona la causa que se destacará con marco dorado de alta prioridad en la cabecera:
-                    </p>
-                    <select
-                      value={featuredMissionId || ''}
-                      onChange={(e) => setFeaturedMission(Number(e.target.value) || e.target.value)}
-                      className="w-full bg-slate-950 border border-brand-gold rounded-xl px-3 py-2 text-xs text-white font-bold"
-                    >
-                      {missions.map((m) => (
-                        <option key={m.id} value={m.id}>
-                          {m.title} ({m.percentage}% recaudado)
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
+              {/* PROGRAMS DEFAULT */}
+              {!selectedSubItem && activeSectionId === 'programs' && (
+                <div className="space-y-6 animate-fadeIn">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Título de la Sección de Misiones</label>
+                    <label className="text-xs font-bold text-slate-300 block">Título de Misiones</label>
                     <input
                       type="text"
                       value={programsSection?.title || ''}
@@ -806,43 +1098,26 @@ export const VisualLiveEditor = ({ onExit }) => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Subtítulo</label>
-                    <textarea
-                      rows={2}
-                      value={programsSection?.subtitle || ''}
-                      onChange={(e) => updateProgramsHeader({ subtitle: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
-                    />
+                    <label className="text-xs font-bold text-slate-300 block">Selecciona una Causa para editarla:</label>
+                    <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+                      {missions.map((m) => (
+                        <button
+                          key={m.id}
+                          onClick={() => setSelectedSubItem({ type: 'mission', id: m.id, item: m })}
+                          className="w-full p-2.5 bg-slate-950 border border-slate-800 hover:border-brand-teal rounded-xl text-left flex items-center justify-between text-xs transition-all"
+                        >
+                          <span className="truncate flex-1 font-bold text-white">{m.title}</span>
+                          <span className="text-emerald-400 font-bold ml-2">{m.percentage}%</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
 
-              {/* ===================== RETREATS / FEATURED CALENDAR INSPECTOR ===================== */}
-              {activeSectionId === 'retreats' && (
-                <div className="space-y-6">
-                  
-                  {/* ⭐ Featured Retreat Selector */}
-                  <div className="p-4 rounded-2xl bg-brand-gold/15 border-2 border-brand-gold/50 space-y-3">
-                    <div className="flex items-center gap-2 text-brand-gold font-black text-xs uppercase">
-                      <Star className="w-4 h-4 fill-brand-gold" />
-                      <span>⭐ Retiro Destacado en Calendario</span>
-                    </div>
-                    <p className="text-[11px] text-slate-300 leading-relaxed">
-                      Este retiro aparecerá fijado en la cabecera del calendario con banner dorado:
-                    </p>
-                    <select
-                      value={featuredRetreatId || ''}
-                      onChange={(e) => setFeaturedRetreat(e.target.value)}
-                      className="w-full bg-slate-950 border border-brand-gold rounded-xl px-3 py-2 text-xs text-white font-bold"
-                    >
-                      {events.map((ev) => (
-                        <option key={ev.id} value={ev.id}>
-                          {ev.title} ({ev.date})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
+              {/* RETREATS DEFAULT */}
+              {!selectedSubItem && activeSectionId === 'retreats' && (
+                <div className="space-y-6 animate-fadeIn">
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-300 block">Título del Calendario</label>
                     <input
@@ -851,60 +1126,29 @@ export const VisualLiveEditor = ({ onExit }) => {
                       onChange={(e) => updateRetreatsHeader({ title: e.target.value })}
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
                     />
-                    <TypographyToolbar
-                      label="Estilo del Título del Calendario"
-                      target="title"
-                      styles={retreatsModal?.styles || {}}
-                      onChange={(newStyles) => updateRetreatsHeader({ styles: newStyles })}
-                      previewText={retreatsModal?.title}
-                    />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Subtítulo</label>
-                    <textarea
-                      rows={2}
-                      value={retreatsModal?.subtitle || ''}
-                      onChange={(e) => updateRetreatsHeader({ subtitle: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
-                    />
+                    <label className="text-xs font-bold text-slate-300 block">Selecciona un Retiro para editarlo:</label>
+                    <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+                      {events.map((ev) => (
+                        <button
+                          key={ev.id}
+                          onClick={() => setSelectedSubItem({ type: 'retreat', id: ev.id, item: ev })}
+                          className="w-full p-2.5 bg-slate-950 border border-slate-800 hover:border-brand-gold rounded-xl text-left flex items-center justify-between text-xs transition-all"
+                        >
+                          <span className="truncate flex-1 font-bold text-white">{ev.title}</span>
+                          <span className="text-amber-300 text-[10px] ml-2">{ev.date}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
 
-              {/* ===================== SHOP / FEATURED PRODUCTS INSPECTOR ===================== */}
-              {activeSectionId === 'shop' && (
-                <div className="space-y-6">
-                  
-                  {/* ⭐ Featured Products / Best Sellers */}
-                  <div className="p-4 rounded-2xl bg-amber-500/15 border-2 border-amber-400/50 space-y-3">
-                    <div className="flex items-center gap-2 text-amber-300 font-black text-xs uppercase">
-                      <Flame className="w-4 h-4 text-amber-400" />
-                      <span>⭐ Artículos Más Vendidos / Destacados</span>
-                    </div>
-                    <p className="text-[11px] text-slate-300 leading-relaxed">
-                      Marca los artículos con insignia de «MÁS VENDIDO» que se muestran en el filtro destacado:
-                    </p>
-                    <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-                      {products.map((p) => {
-                        const isFeat = (featuredProductIds || []).includes(p.id);
-                        return (
-                          <label key={p.id} className="flex items-center gap-2 p-2 rounded-xl bg-slate-950 border border-slate-800 cursor-pointer hover:border-amber-400 text-xs">
-                            <input
-                              type="checkbox"
-                              checked={isFeat}
-                              onChange={() => toggleFeaturedProduct(p.id)}
-                              className="accent-amber-400 rounded"
-                            />
-                            <img src={p.image} alt={p.name} className="w-7 h-7 object-cover rounded-lg" />
-                            <span className="truncate flex-1 font-bold text-white">{p.name}</span>
-                            <span className="text-[10px] text-amber-300 font-mono">${p.price}</span>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </div>
-
+              {/* SHOP DEFAULT */}
+              {!selectedSubItem && activeSectionId === 'shop' && (
+                <div className="space-y-6 animate-fadeIn">
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-300 block">Título de la Tienda</label>
                     <input
@@ -913,66 +1157,31 @@ export const VisualLiveEditor = ({ onExit }) => {
                       onChange={(e) => updateShopHeader({ title: e.target.value })}
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
                     />
-                    <TypographyToolbar
-                      label="Estilo del Título de Tienda"
-                      target="title"
-                      styles={shopHeader?.styles || {}}
-                      onChange={(newStyles) => updateShopHeader({ styles: newStyles })}
-                      previewText={shopHeader?.title}
-                    />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Llamado de Impacto Social</label>
-                    <input
-                      type="text"
-                      value={shopHeader?.supportCallout || ''}
-                      onChange={(e) => updateShopHeader({ supportCallout: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
-                    />
+                    <label className="text-xs font-bold text-slate-300 block">Selecciona un Producto para editarlo:</label>
+                    <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+                      {products.map((p) => (
+                        <button
+                          key={p.id}
+                          onClick={() => setSelectedSubItem({ type: 'product', id: p.id, item: p })}
+                          className="w-full p-2.5 bg-slate-950 border border-slate-800 hover:border-amber-400 rounded-xl text-left flex items-center justify-between text-xs transition-all"
+                        >
+                          <span className="truncate flex-1 font-bold text-white">{p.name}</span>
+                          <span className="text-amber-300 font-bold ml-2">${p.price}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
 
-              {/* ===================== ABOUT FOUNDER INSPECTOR ===================== */}
-              {activeSectionId === 'about' && (
-                <div className="space-y-6">
-                  
-                  {/* Casa de Ayuda Image Manager */}
-                  <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
-                    <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
-                      <ImageIcon className="w-3.5 h-3.5 text-brand-gold" />
-                      <span>Foto del Centro / Casa de Ayuda</span>
-                    </span>
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={about?.image || "https://images.unsplash.com/photo-1548625361-16a9a08e1e79?auto=format&fit=crop&w=800&q=80"}
-                        alt="Centro Bronx"
-                        className="w-16 h-16 object-cover rounded-xl border border-slate-700"
-                      />
-                      <div className="text-[11px] text-slate-400 space-y-1 flex-1">
-                        <button
-                          onClick={() => setImageModalTarget({ section: 'about', field: 'image' })}
-                          className="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg text-white font-bold text-xs"
-                        >
-                          Reemplazar Imagen / IA
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
+              {/* ABOUT DEFAULT */}
+              {!selectedSubItem && activeSectionId === 'about' && (
+                <div className="space-y-6 animate-fadeIn">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Insignia / Badge</label>
-                    <input
-                      type="text"
-                      value={about?.badge || ''}
-                      onChange={(e) => updateAbout({ badge: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Título Principal</label>
+                    <label className="text-xs font-bold text-slate-300 block">Título del Centro</label>
                     <input
                       type="text"
                       value={about?.title || ''}
@@ -980,14 +1189,13 @@ export const VisualLiveEditor = ({ onExit }) => {
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
                     />
                     <TypographyToolbar
-                      label="Estilo del Título del Centro"
+                      label="Estilo del Título"
                       target="title"
                       styles={about?.styles || {}}
                       onChange={(newStyles) => updateAbout({ styles: newStyles })}
                       previewText={about?.title}
                     />
                   </div>
-
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-300 block">Texto de Introducción</label>
                     <textarea
@@ -1000,19 +1208,9 @@ export const VisualLiveEditor = ({ onExit }) => {
                 </div>
               )}
 
-              {/* ===================== VOLUNTEER INSPECTOR ===================== */}
-              {activeSectionId === 'volunteer' && (
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Insignia</label>
-                    <input
-                      type="text"
-                      value={volunteerSection?.badge || ''}
-                      onChange={(e) => updateVolunteerHeader({ badge: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
-                    />
-                  </div>
-
+              {/* VOLUNTEER DEFAULT */}
+              {!selectedSubItem && activeSectionId === 'volunteer' && (
+                <div className="space-y-6 animate-fadeIn">
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-300 block">Título de Voluntariado</label>
                     <input
@@ -1021,15 +1219,7 @@ export const VisualLiveEditor = ({ onExit }) => {
                       onChange={(e) => updateVolunteerHeader({ title: e.target.value })}
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
                     />
-                    <TypographyToolbar
-                      label="Estilo del Título de Voluntariado"
-                      target="title"
-                      styles={volunteerSection?.styles || {}}
-                      onChange={(newStyles) => updateVolunteerHeader({ styles: newStyles })}
-                      previewText={volunteerSection?.title}
-                    />
                   </div>
-
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-300 block">Subtítulo</label>
                     <textarea
@@ -1042,9 +1232,9 @@ export const VisualLiveEditor = ({ onExit }) => {
                 </div>
               )}
 
-              {/* ===================== FOOTER INSPECTOR ===================== */}
-              {activeSectionId === 'footer' && (
-                <div className="space-y-6">
+              {/* FOOTER DEFAULT */}
+              {!selectedSubItem && activeSectionId === 'footer' && (
+                <div className="space-y-6 animate-fadeIn">
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-300 block">Derechos de Autor (Footer)</label>
                     <input
@@ -1062,7 +1252,7 @@ export const VisualLiveEditor = ({ onExit }) => {
             {/* Inspector Footer */}
             <div className="p-4 bg-slate-950 border-t border-slate-800 text-center">
               <button
-                onClick={() => showNotification("¡Bloque actualizado con éxito en tiempo real!")}
+                onClick={() => showNotification("¡Cambios aplicados y guardados con éxito en tiempo real!")}
                 className="w-full py-2.5 bg-brand-teal hover:bg-teal-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md"
               >
                 Aplicar y Guardar Cambios

@@ -4,7 +4,7 @@ import { useAdminData } from '../context/AdminDataContext';
 import { Calendar, Clock, MapPin, Sparkles, UserCheck, Star, ExternalLink, Info, CheckCircle2, ChevronDown, ChevronUp, Layers, RefreshCw, Radio, Heart, Users } from 'lucide-react';
 import { CENTRO_BRONX_SOURCE_URL, CENTRO_BRONX_TICKETS_URL, syncCentroBronxEvents, getLastSyncTime } from '../services/centroBronxSync';
 
-export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId: propFeaturedRetreatId, onToggleFeaturedRetreat }) => {
+export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId: propFeaturedRetreatId, onToggleFeaturedRetreat, onSelectEvent }) => {
   const { language, t } = useLanguage();
   const { events, retreatsModal: adminRetreatsModal, featuredRetreatId: adminFeaturedRetreatId, setFeaturedRetreat } = useAdminData();
   const retreatsModal = { ...t.retreatsModal, ...(adminRetreatsModal || {}) };
@@ -134,7 +134,17 @@ export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId: propFe
         {/* ⭐ ACTIVIDAD / RETIRO DESTACADO HERO SHOWCASE EN CALENDARIO */}
         {/* ========================================================================= */}
         {featuredEvent && (
-          <div className="mb-12 bg-white rounded-3xl p-6 sm:p-8 border-2 border-brand-gold/60 shadow-xl shadow-brand-gold/10 relative overflow-hidden">
+          <div 
+            onClick={(e) => {
+              if (onSelectEvent) {
+                e.stopPropagation();
+                onSelectEvent(featuredEvent);
+              }
+            }}
+            className={`mb-12 bg-white rounded-3xl p-6 sm:p-8 border-2 border-brand-gold/60 shadow-xl shadow-brand-gold/10 relative overflow-hidden transition-all ${
+              onSelectEvent ? 'cursor-pointer hover:ring-4 hover:ring-brand-gold/50' : ''
+            }`}
+          >
             <div className="absolute top-0 right-0 w-72 h-72 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
@@ -290,7 +300,15 @@ export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId: propFe
             return (
               <div
                 key={event.id}
+                onClick={(e) => {
+                  if (onSelectEvent) {
+                    e.stopPropagation();
+                    onSelectEvent(event);
+                  }
+                }}
                 className={`bg-white rounded-3xl overflow-hidden shadow-lg border transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5 flex flex-col justify-between group ${
+                  onSelectEvent ? 'cursor-pointer' : ''
+                } ${
                   isFeatured 
                     ? 'border-brand-gold ring-4 ring-brand-gold/30 shadow-brand-gold/20' 
                     : 'border-slate-200/80 hover:border-brand-teal/60'

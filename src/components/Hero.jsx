@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useAdminData } from '../context/AdminDataContext';
 import { Heart, Users, ArrowRight, Sparkles, HeartHandshake, HandHeart, Sun, Calendar, ChevronRight, BookOpen } from 'lucide-react';
 
-export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpenRetreats }) => {
+export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpenRetreats, onSelectButton, onSelectElement }) => {
   const { t } = useLanguage();
   const { hero } = useAdminData();
 
@@ -152,7 +152,13 @@ export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpen
                 else if (btn.variant === 'outline-gold') variantClass = 'border-2 border-brand-gold text-brand-gold hover:bg-brand-gold/20';
                 else if (btn.variant === 'outline-white') variantClass = 'border-2 border-white/40 text-white hover:bg-white/20';
 
-                const handleClick = () => {
+                const handleClick = (e) => {
+                  if (onSelectButton) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onSelectButton(btn);
+                    return;
+                  }
                   if (btn.action === 'donate') onOpenDonate();
                   else if (btn.action === 'volunteer') onOpenVolunteer();
                   else if (btn.action === 'programs') {

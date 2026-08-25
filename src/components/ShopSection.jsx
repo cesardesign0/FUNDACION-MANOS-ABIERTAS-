@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useAdminData } from '../context/AdminDataContext';
 import { ShoppingBag, Star, Sparkles, Heart, Check, Plus, ArrowRight, ShieldCheck, Tag, Cross, Flame } from 'lucide-react';
 
-export const ShopSection = ({ onAddToCart, onOpenCart, onBuyNow }) => {
+export const ShopSection = ({ onAddToCart, onOpenCart, onBuyNow, onSelectProduct }) => {
   const { t } = useLanguage();
   const { products, shopHeader, featuredProductIds, toggleFeaturedProduct } = useAdminData();
   const shop = { ...t.shop, ...(shopHeader || {}) };
@@ -103,10 +103,18 @@ export const ShopSection = ({ onAddToCart, onOpenCart, onBuyNow }) => {
             return (
               <div
                 key={product.id}
-                className={`group bg-white rounded-3xl overflow-hidden border shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col justify-between hover:-translate-y-2 ${
+                onClick={(e) => {
+                  if (onSelectProduct) {
+                    e.stopPropagation();
+                    onSelectProduct(product);
+                  }
+                }}
+                className={`bg-white rounded-3xl overflow-hidden shadow-lg border transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5 flex flex-col justify-between group ${
+                  onSelectProduct ? 'cursor-pointer' : ''
+                } ${
                   isFeatured
-                    ? 'border-amber-400 ring-2 ring-amber-400/40 shadow-amber-200/50'
-                    : 'border-amber-200/70'
+                    ? 'border-amber-400 ring-2 ring-amber-400/50 shadow-amber-400/10'
+                    : 'border-amber-100 hover:border-brand-gold/60'
                 }`}
               >
                 <div>

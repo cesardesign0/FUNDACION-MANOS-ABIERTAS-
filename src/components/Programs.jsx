@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useAdminData } from '../context/AdminDataContext';
 import { Heart, Target, TrendingUp, Sparkles, HandHeart, CheckCircle2, PlusCircle, ArrowRight, Eye, Trophy, Star, AlertCircle } from 'lucide-react';
 
-export const Programs = ({ onSelectCauseAndDonate, onOpenNewMission, onOpenMissionDetail, onOpenCompletedMissions }) => {
+export const Programs = ({ onSelectCauseAndDonate, onOpenNewMission, onOpenMissionDetail, onOpenCompletedMissions, onSelectMission }) => {
   const { language, t } = useLanguage();
   const { missions, programsSection: adminProgramsSection, featuredMissionId } = useAdminData();
   const programsSection = { ...t.programsSection, ...(adminProgramsSection || {}) };
@@ -74,7 +74,17 @@ export const Programs = ({ onSelectCauseAndDonate, onOpenNewMission, onOpenMissi
         {/* ⭐ CAUSA DESTACADA / PRIORITARIA HERO SHOWCASE */}
         {/* ========================================================================= */}
         {featuredMission && (
-          <div className="mb-14 bg-gradient-to-br from-slate-900 via-brand-navy to-slate-900 rounded-3xl p-6 sm:p-8 lg:p-10 border-2 border-brand-gold/60 shadow-2xl shadow-brand-gold/10 relative overflow-hidden group">
+          <div 
+            onClick={(e) => {
+              if (onSelectMission) {
+                e.stopPropagation();
+                onSelectMission(featuredMission);
+              }
+            }}
+            className={`mb-14 bg-gradient-to-br from-slate-900 via-brand-navy to-slate-900 rounded-3xl p-6 sm:p-8 lg:p-10 border-2 border-brand-gold/60 shadow-2xl shadow-brand-gold/10 relative overflow-hidden group transition-all ${
+              onSelectMission ? 'cursor-pointer hover:ring-4 hover:ring-brand-gold/50' : ''
+            }`}
+          >
             
             {/* Ambient Gold Glow */}
             <div className="absolute top-0 right-0 w-80 h-80 bg-brand-gold/15 rounded-full blur-3xl pointer-events-none" />
@@ -194,7 +204,15 @@ export const Programs = ({ onSelectCauseAndDonate, onOpenNewMission, onOpenMissi
               {regularMissions.map((program) => (
                 <div
                   key={program.id}
-                  className="group bg-white rounded-3xl overflow-hidden shadow-2xl border border-white/20 transition-all duration-500 flex flex-col justify-between hover:-translate-y-2.5 hover:shadow-brand-teal/20"
+                  onClick={(e) => {
+                    if (onSelectMission) {
+                      e.stopPropagation();
+                      onSelectMission(program);
+                    }
+                  }}
+                  className={`group bg-white rounded-3xl overflow-hidden shadow-2xl border border-white/20 transition-all duration-500 flex flex-col justify-between hover:-translate-y-2.5 hover:shadow-brand-teal/20 ${
+                    onSelectMission ? 'cursor-pointer hover:ring-4 hover:ring-brand-teal/50' : ''
+                  }`}
                 >
                   <div>
                     {/* Image Container - Clickable to open Detail View */}

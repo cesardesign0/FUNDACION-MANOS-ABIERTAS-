@@ -557,20 +557,16 @@ export const VisualLiveEditor = ({ onExit }) => {
                   {/* ========================================================= */}
                   {section.id === 'hero' && (
                     <Hero
-                      onOpenDonate={() => {
+                      onOpenDonate={() => {}}
+                      onOpenVolunteer={() => {}}
+                      onOpenHumanitarian={() => {}}
+                      onOpenRetreats={() => {}}
+                      onSelectButton={(btn) => {
                         setActiveSectionId('hero');
-                        setSelectedSubItem({ type: 'button', id: 'btn-donate' });
+                        setSelectedSubItem({ type: 'button', id: btn.id, item: btn });
                       }}
-                      onOpenVolunteer={() => {
+                      onSelectElement={() => {
                         setActiveSectionId('hero');
-                        setSelectedSubItem({ type: 'button', id: 'btn-volunteer' });
-                      }}
-                      onOpenHumanitarian={() => {
-                        setActiveSectionId('hero');
-                        setSelectedSubItem({ type: 'button', id: 'btn-causes' });
-                      }}
-                      onOpenRetreats={() => {
-                        setActiveSectionId('retreats');
                         setSelectedSubItem(null);
                       }}
                     />
@@ -619,6 +615,10 @@ export const VisualLiveEditor = ({ onExit }) => {
                         setSelectedSubItem({ type: 'mission', id: missionItem.id, item: missionItem });
                       }}
                       onOpenCompletedMissions={() => handleScrollToSection('programs')}
+                      onSelectMission={(missionItem) => {
+                        setActiveSectionId('programs');
+                        setSelectedSubItem({ type: 'mission', id: missionItem.id, item: missionItem });
+                      }}
                     />
                   )}
 
@@ -635,6 +635,10 @@ export const VisualLiveEditor = ({ onExit }) => {
                         const found = events.find(e => e.id === eventId);
                         if (found) setSelectedSubItem({ type: 'retreat', id: found.id, item: found });
                       }}
+                      onSelectEvent={(eventItem) => {
+                        setActiveSectionId('retreats');
+                        setSelectedSubItem({ type: 'retreat', id: eventItem.id, item: eventItem });
+                      }}
                     />
                   )}
 
@@ -648,6 +652,10 @@ export const VisualLiveEditor = ({ onExit }) => {
                       onBuyNow={(prod) => {
                         setActiveSectionId('shop');
                         setSelectedSubItem({ type: 'product', id: prod.id, item: prod });
+                      }}
+                      onSelectProduct={(prodItem) => {
+                        setActiveSectionId('shop');
+                        setSelectedSubItem({ type: 'product', id: prodItem.id, item: prodItem });
                       }}
                     />
                   )}
@@ -717,6 +725,121 @@ export const VisualLiveEditor = ({ onExit }) => {
 
             {/* Inspector Content */}
             <div className="flex-1 overflow-y-auto p-5 space-y-6">
+
+              {/* ========================================================================= */}
+              {/* SUB-ITEM FOCUS: SPECIFIC BUTTON CLICKED */}
+              {/* ========================================================================= */}
+              {selectedSubItem?.type === 'button' && (() => {
+                const heroButtons = hero?.buttons || [
+                  { id: 'btn-donate', label: 'Hacer una Donación', variant: 'primary', shape: 'pill', icon: 'heart', action: 'donate' },
+                  { id: 'btn-volunteer', label: 'Únete como Voluntario', variant: 'secondary', shape: 'rounded', icon: 'users', action: 'volunteer' },
+                  { id: 'btn-causes', label: 'Ver Nuestras Misiones', variant: 'gold', shape: 'pill', icon: 'arrow', action: 'causes' }
+                ];
+                const currentBtn = heroButtons.find(b => b.id === selectedSubItem.id) || selectedSubItem.item || heroButtons[0];
+                const btnIdx = heroButtons.findIndex(b => b.id === currentBtn?.id);
+
+                const updateSingleButton = (updates) => {
+                  const updated = heroButtons.map((b, i) => i === (btnIdx !== -1 ? btnIdx : 0) ? { ...b, ...updates } : b);
+                  updateHero({ buttons: updated });
+                };
+
+                return (
+                  <div className="space-y-5 animate-fadeIn">
+                    <div className="p-4 rounded-2xl bg-brand-teal/20 border border-brand-teal/40 flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-brand-teal font-black text-xs uppercase">
+                        <Sparkles className="w-4 h-4 text-brand-teal" />
+                        <span>Editando Botón Seleccionado</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-300 block">Texto / Etiqueta del Botón</label>
+                      <input
+                        type="text"
+                        value={currentBtn?.label || ''}
+                        onChange={(e) => updateSingleButton({ label: e.target.value })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white font-bold"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase">Estilo / Color</label>
+                        <select
+                          value={currentBtn?.variant || 'primary'}
+                          onChange={(e) => updateSingleButton({ variant: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white"
+                        >
+                          <option value="primary">Rojo Coral (Donación)</option>
+                          <option value="secondary">Gris Carbón / Oscuro</option>
+                          <option value="gold">Dorado Brillante</option>
+                          <option value="teal">Verde Azulado / Teal</option>
+                          <option value="outline-white">Borde Blanco</option>
+                          <option value="outline-gold">Borde Dorado</option>
+                        </select>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase">Forma</label>
+                        <select
+                          value={currentBtn?.shape || 'rounded'}
+                          onChange={(e) => updateSingleButton({ shape: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white"
+                        >
+                          <option value="pill">Pastilla Redonda</option>
+                          <option value="rounded">Bordes Suaves</option>
+                          <option value="square">Rectangular</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase">Acción al Clic</label>
+                        <select
+                          value={currentBtn?.action || 'donate'}
+                          onChange={(e) => updateSingleButton({ action: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white"
+                        >
+                          <option value="donate">Abrir Donaciones</option>
+                          <option value="volunteer">Abrir Voluntariado</option>
+                          <option value="causes">Ir a Misiones</option>
+                          <option value="retreats">Ir a Retiros</option>
+                          <option value="custom">Enlace Web Personalizado</option>
+                        </select>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase">Icono</label>
+                        <select
+                          value={currentBtn?.icon || 'heart'}
+                          onChange={(e) => updateSingleButton({ icon: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white"
+                        >
+                          <option value="heart">Corazón ❤️</option>
+                          <option value="users">Personas 👥</option>
+                          <option value="arrow">Flecha ➔</option>
+                          <option value="calendar">Calendario 📅</option>
+                          <option value="shop">Bolsa 🛍️</option>
+                          <option value="sparkles">Destello ✨</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {currentBtn?.action === 'custom' && (
+                      <div className="space-y-1">
+                        <label className="text-xs font-bold text-slate-300 block">Enlace URL (https://...)</label>
+                        <input
+                          type="text"
+                          value={currentBtn?.url || ''}
+                          onChange={(e) => updateSingleButton({ url: e.target.value })}
+                          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono"
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* ========================================================================= */}
               {/* SUB-ITEM FOCUS: SPECIFIC MISSION CARD CLICKED */}

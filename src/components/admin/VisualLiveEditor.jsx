@@ -52,7 +52,14 @@ import {
   DollarSign,
   Clock,
   MapPin,
-  Tag
+  Tag,
+  Mail,
+  Phone,
+  LogOut,
+  List,
+  Layout,
+  PlusCircle,
+  AlertCircle
 } from 'lucide-react';
 
 export const VisualLiveEditor = ({ onExit }) => {
@@ -89,10 +96,23 @@ export const VisualLiveEditor = ({ onExit }) => {
     missions,
     events,
     products,
+    reviews,
     approvedReviews,
-    updateMission,
+    pendingReviews,
+    settings,
+    addEvent,
     updateEvent,
-    updateProduct
+    deleteEvent,
+    addProduct,
+    updateProduct,
+    deleteProduct,
+    addMission,
+    updateMission,
+    deleteMission,
+    approveReview,
+    deleteReview,
+    updateSettings,
+    resetToDefaults
   } = useAdminData();
 
   const [deviceMode, setDeviceMode] = useState('desktop'); // 'desktop' | 'tablet' | 'mobile'
@@ -100,6 +120,25 @@ export const VisualLiveEditor = ({ onExit }) => {
   const [selectedSubItem, setSelectedSubItem] = useState(null); // { type: 'mission'|'retreat'|'product'|'button', id: string|number }
   const [isBlockManagerOpen, setIsBlockManagerOpen] = useState(true);
   const [notification, setNotification] = useState(null);
+
+  // New Item Modal states
+  const [isNewItemModalOpen, setIsNewItemModalOpen] = useState(false);
+  const [newItemType, setNewItemType] = useState('mission'); // 'mission' | 'retreat' | 'product'
+  const [newItemForm, setNewItemForm] = useState({
+    title: '',
+    name: '',
+    desc: '',
+    price: 25,
+    tag: 'Solidario',
+    raisedAmount: '$0',
+    goalAmount: '$5,000',
+    percentage: 0,
+    date: 'Próximamente 2026',
+    schedule: '9:00 AM - 5:00 PM',
+    cost: '$25 USD',
+    category: 'Jornada',
+    image: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=800&q=80'
+  });
 
   // Image Hub Modal state
   const [imageModalTarget, setImageModalTarget] = useState(null); // { section: string, field: string, itemId?: any }
@@ -178,6 +217,48 @@ export const VisualLiveEditor = ({ onExit }) => {
     }, 1200);
   };
 
+  // Create new item (Mission, Retreat or Product)
+  const handleCreateNewItem = (e) => {
+    e.preventDefault();
+    if (newItemType === 'mission') {
+      addMission({
+        id: Date.now(),
+        title: newItemForm.title || 'Nueva Causa de Ayuda',
+        desc: newItemForm.desc || 'Descripción de la obra solidaria.',
+        raisedAmount: newItemForm.raisedAmount || '$0',
+        goalAmount: newItemForm.goalAmount || '$5,000',
+        percentage: Number(newItemForm.percentage) || 0,
+        image: newItemForm.image
+      });
+      showNotification("¡Nueva Causa agregada a la web!");
+    } else if (newItemType === 'retreat') {
+      addEvent({
+        id: `ret-${Date.now()}`,
+        title: newItemForm.title || 'Nuevo Retiro Espiritual',
+        desc: newItemForm.desc || 'Descripción del retiro.',
+        date: newItemForm.date || 'Octubre 2026',
+        schedule: newItemForm.schedule || '9:00 AM',
+        cost: newItemForm.cost || '$25 USD',
+        category: newItemForm.category || 'Retiro',
+        image: newItemForm.image
+      });
+      showNotification("¡Nuevo Retiro agregado al calendario!");
+    } else if (newItemType === 'product') {
+      addProduct({
+        id: `prod-${Date.now()}`,
+        name: newItemForm.name || 'Nuevo Artículo Católico',
+        desc: newItemForm.desc || 'Descripción del artículo solidario.',
+        price: parseFloat(newItemForm.price) || 20,
+        tag: newItemForm.tag || 'Devoción',
+        category: 'religious',
+        image: newItemForm.image
+      });
+      showNotification("¡Nuevo Producto agregado a la tienda!");
+    }
+
+    setIsNewItemModalOpen(false);
+  };
+
   // Curated Catholic Gallery
   const curatedGallery = [
     { label: "Sagrado Corazón de Jesús", url: "/sagrado-corazon-jesus-lateral.jpg" },
@@ -205,7 +286,7 @@ export const VisualLiveEditor = ({ onExit }) => {
             <span>EDITOR VISUAL EN VIVO</span>
           </div>
           <span className="text-xs text-slate-400 hidden xl:inline">
-            | Clic sobre cualquier elemento para autoseleccionarlo y editarlo de inmediato
+            | Todo integrado • Clic sobre cualquier elemento para editarlo al instante
           </span>
         </div>
 
@@ -297,7 +378,7 @@ export const VisualLiveEditor = ({ onExit }) => {
       {/* ========================================================================= */}
       <div className="flex-1 flex overflow-hidden relative">
 
-        {/* 1. LEFT SIDEBAR: BLOCK MANAGER & REORDERING */}
+        {/* 1. LEFT SIDEBAR: BLOCK MANAGER & QUICK SECTION JUMP */}
         {isBlockManagerOpen && (
           <aside className="w-72 bg-slate-900 border-r border-slate-800 flex flex-col flex-shrink-0 z-20 shadow-xl overflow-hidden animate-slide-right">
             
@@ -396,10 +477,18 @@ export const VisualLiveEditor = ({ onExit }) => {
               })}
             </div>
 
-            <div className="p-3 border-t border-slate-800 text-center">
-              <span className="text-[10px] text-slate-400">
-                Fundación Manos Abiertas de Jesús & María
-              </span>
+            {/* Quick Actions at bottom of left sidebar */}
+            <div className="p-3 border-t border-slate-800 space-y-2 bg-slate-950">
+              <button
+                onClick={() => {
+                  setNewItemType('mission');
+                  setIsNewItemModalOpen(true);
+                }}
+                className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 text-brand-gold"
+              >
+                <PlusCircle className="w-3.5 h-3.5" />
+                <span>+ Nueva Causa / Retiro / Prod</span>
+              </button>
             </div>
 
           </aside>
@@ -521,7 +610,10 @@ export const VisualLiveEditor = ({ onExit }) => {
                         const found = missions.find(m => m.title === causeTitle);
                         if (found) setSelectedSubItem({ type: 'mission', id: found.id, item: found });
                       }}
-                      onOpenNewMission={() => handleScrollToSection('programs')}
+                      onOpenNewMission={() => {
+                        setNewItemType('mission');
+                        setIsNewItemModalOpen(true);
+                      }}
                       onOpenMissionDetail={(missionItem) => {
                         setActiveSectionId('programs');
                         setSelectedSubItem({ type: 'mission', id: missionItem.id, item: missionItem });
@@ -716,6 +808,22 @@ export const VisualLiveEditor = ({ onExit }) => {
                         />
                       </div>
                     </div>
+
+                    <div className="pt-2 border-t border-slate-800 flex justify-between items-center">
+                      <button
+                        onClick={() => {
+                          if (confirm(`¿Eliminar la causa "${currentMission.title}"?`)) {
+                            deleteMission(currentMission.id);
+                            setSelectedSubItem(null);
+                            showNotification("Causa eliminada");
+                          }
+                        }}
+                        className="text-xs text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Eliminar Causa</span>
+                      </button>
+                    </div>
                   </div>
                 );
               })()}
@@ -822,6 +930,22 @@ export const VisualLiveEditor = ({ onExit }) => {
                         className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono text-[11px]"
                       />
                     </div>
+
+                    <div className="pt-2 border-t border-slate-800 flex justify-between items-center">
+                      <button
+                        onClick={() => {
+                          if (confirm(`¿Eliminar el evento "${currentEvent.title}"?`)) {
+                            deleteEvent(currentEvent.id);
+                            setSelectedSubItem(null);
+                            showNotification("Retiro eliminado");
+                          }
+                        }}
+                        className="text-xs text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Eliminar Retiro</span>
+                      </button>
+                    </div>
                   </div>
                 );
               })()}
@@ -907,6 +1031,22 @@ export const VisualLiveEditor = ({ onExit }) => {
                         onChange={(e) => updateProduct(currentProduct.id, { desc: e.target.value })}
                         className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
                       />
+                    </div>
+
+                    <div className="pt-2 border-t border-slate-800 flex justify-between items-center">
+                      <button
+                        onClick={() => {
+                          if (confirm(`¿Eliminar el producto "${currentProduct.name}"?`)) {
+                            deleteProduct(currentProduct.id);
+                            setSelectedSubItem(null);
+                            showNotification("Producto eliminado");
+                          }
+                        }}
+                        className="text-xs text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Eliminar Producto</span>
+                      </button>
                     </div>
                   </div>
                 );
@@ -1098,7 +1238,19 @@ export const VisualLiveEditor = ({ onExit }) => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Selecciona una Causa para editarla:</label>
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-slate-300">Causas Activas ({missions.length})</label>
+                      <button
+                        onClick={() => {
+                          setNewItemType('mission');
+                          setIsNewItemModalOpen(true);
+                        }}
+                        className="text-[11px] font-black text-brand-gold hover:underline flex items-center gap-1"
+                      >
+                        <Plus className="w-3 h-3" />
+                        <span>+ Nueva Causa</span>
+                      </button>
+                    </div>
                     <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
                       {missions.map((m) => (
                         <button
@@ -1129,7 +1281,19 @@ export const VisualLiveEditor = ({ onExit }) => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Selecciona un Retiro para editarlo:</label>
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-slate-300">Actividades ({events.length})</label>
+                      <button
+                        onClick={() => {
+                          setNewItemType('retreat');
+                          setIsNewItemModalOpen(true);
+                        }}
+                        className="text-[11px] font-black text-brand-gold hover:underline flex items-center gap-1"
+                      >
+                        <Plus className="w-3 h-3" />
+                        <span>+ Nuevo Retiro</span>
+                      </button>
+                    </div>
                     <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
                       {events.map((ev) => (
                         <button
@@ -1160,7 +1324,19 @@ export const VisualLiveEditor = ({ onExit }) => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-300 block">Selecciona un Producto para editarlo:</label>
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-slate-300">Artículos ({products.length})</label>
+                      <button
+                        onClick={() => {
+                          setNewItemType('product');
+                          setIsNewItemModalOpen(true);
+                        }}
+                        className="text-[11px] font-black text-amber-400 hover:underline flex items-center gap-1"
+                      >
+                        <Plus className="w-3 h-3" />
+                        <span>+ Nuevo Producto</span>
+                      </button>
+                    </div>
                     <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
                       {products.map((p) => (
                         <button
@@ -1263,6 +1439,184 @@ export const VisualLiveEditor = ({ onExit }) => {
         )}
 
       </div>
+
+      {/* ========================================================================= */}
+      {/* MODAL: CREATE NEW ITEM (Mission, Retreat or Product) */}
+      {/* ========================================================================= */}
+      {isNewItemModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-scaleUp">
+            
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center gap-2 text-brand-gold font-black text-sm uppercase">
+                <PlusCircle className="w-5 h-5" />
+                <span>Agregar Nuevo Elemento a la Web</span>
+              </div>
+              <button
+                onClick={() => setIsNewItemModalOpen(false)}
+                className="p-1 text-slate-400 hover:text-white rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Type Switcher */}
+            <div className="grid grid-cols-3 gap-2 bg-slate-950 p-1 rounded-2xl border border-slate-800 text-xs">
+              <button
+                type="button"
+                onClick={() => setNewItemType('mission')}
+                className={`py-2 rounded-xl font-bold transition-all ${
+                  newItemType === 'mission' ? 'bg-brand-teal text-slate-950' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                Causa / Misión
+              </button>
+              <button
+                type="button"
+                onClick={() => setNewItemType('retreat')}
+                className={`py-2 rounded-xl font-bold transition-all ${
+                  newItemType === 'retreat' ? 'bg-brand-gold text-slate-950' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                Retiro / Evento
+              </button>
+              <button
+                type="button"
+                onClick={() => setNewItemType('product')}
+                className={`py-2 rounded-xl font-bold transition-all ${
+                  newItemType === 'product' ? 'bg-amber-400 text-slate-950' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                Producto Tienda
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateNewItem} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-300">
+                  {newItemType === 'product' ? 'Nombre del Producto' : 'Título'}
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder={newItemType === 'product' ? 'Ej: Rosario de San Benito' : 'Ej: Jornada de Alimentación Navideña'}
+                  value={newItemType === 'product' ? newItemForm.name : newItemForm.title}
+                  onChange={(e) => setNewItemForm(prev => ({ ...prev, [newItemType === 'product' ? 'name' : 'title']: e.target.value }))}
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-300">Descripción</label>
+                <textarea
+                  rows={2}
+                  required
+                  value={newItemForm.desc}
+                  onChange={(e) => setNewItemForm(prev => ({ ...prev, desc: e.target.value }))}
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
+                />
+              </div>
+
+              {newItemType === 'mission' && (
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase">Meta en Dólares ($)</label>
+                    <input
+                      type="text"
+                      value={newItemForm.goalAmount}
+                      onChange={(e) => setNewItemForm(prev => ({ ...prev, goalAmount: e.target.value }))}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-bold"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase">Recaudado Inicial</label>
+                    <input
+                      type="text"
+                      value={newItemForm.raisedAmount}
+                      onChange={(e) => setNewItemForm(prev => ({ ...prev, raisedAmount: e.target.value }))}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-bold"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {newItemType === 'retreat' && (
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase">Fecha</label>
+                    <input
+                      type="text"
+                      value={newItemForm.date}
+                      onChange={(e) => setNewItemForm(prev => ({ ...prev, date: e.target.value }))}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase">Aporte Sugerido</label>
+                    <input
+                      type="text"
+                      value={newItemForm.cost}
+                      onChange={(e) => setNewItemForm(prev => ({ ...prev, cost: e.target.value }))}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {newItemType === 'product' && (
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase">Precio ($ USD)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={newItemForm.price}
+                      onChange={(e) => setNewItemForm(prev => ({ ...prev, price: e.target.value }))}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase">Etiqueta / Badge</label>
+                    <input
+                      type="text"
+                      value={newItemForm.tag}
+                      onChange={(e) => setNewItemForm(prev => ({ ...prev, tag: e.target.value }))}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-300">URL de Imagen</label>
+                <input
+                  type="text"
+                  value={newItemForm.image}
+                  onChange={(e) => setNewItemForm(prev => ({ ...prev, image: e.target.value }))}
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white font-mono text-[11px]"
+                />
+              </div>
+
+              <div className="pt-3 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsNewItemModalOpen(false)}
+                  className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-bold text-slate-300"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 bg-emerald-500 hover:bg-emerald-600 rounded-xl text-xs font-black text-slate-950 uppercase tracking-wider shadow-lg"
+                >
+                  Guardar y Publicar
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      )}
 
       {/* ========================================================================= */}
       {/* MODAL: IMAGE HUB (Upload, AI Generator & Curated Catholic Library) */}

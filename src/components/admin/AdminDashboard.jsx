@@ -42,7 +42,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
   const [tempUrlInput, setTempUrlInput] = useState('');
   const [photoPickerTarget, setPhotoPickerTarget] = useState(null);
   const [saveSuccessNotice, setSaveSuccessNotice] = useState('');
-  const [isVisualEditorOpen, setIsVisualEditorOpen] = useState(false);
+  const [isVisualEditorOpen, setIsVisualEditorOpen] = useState(true);
 
   // =================== SECTION FORMS LOCAL STATES CON ESTILOS ===================
   const [heroForm, setHeroForm] = useState(() => ({

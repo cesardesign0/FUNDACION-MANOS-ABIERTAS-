@@ -87,8 +87,20 @@ export const MissionHeart = ({
 
   return (
     <section id="mission" className="py-20 bg-white relative overflow-hidden">
+      {/* Fondo Celestial del Sagrado Corazón de Jesús y María */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <img
+          src="/sagrado-corazon-jesus-y-maria.jpg"
+          alt="Sagrado Corazón de Jesús y Sagrado Corazón de María"
+          className="w-full h-full object-cover object-center opacity-35 filter brightness-105 contrast-105 transition-opacity duration-700"
+        />
+        {/* Capas de degradado blanco para mantener la pureza, luz y legibilidad */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white/75 via-white/45 to-white/75" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white" />
+      </div>
+
       {/* Background Subtle Pattern */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#2BBEC9_1px,transparent_1px)] [background-size:24px_24px]" />
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[radial-gradient(#2BBEC9_1px,transparent_1px)] [background-size:24px_24px] z-0" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         

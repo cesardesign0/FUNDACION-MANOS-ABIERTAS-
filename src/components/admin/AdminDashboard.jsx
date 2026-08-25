@@ -394,7 +394,6 @@ export const AdminDashboard = ({ onExitAdmin }) => {
           <div>
             <h1 className="font-display font-black text-base sm:text-lg text-white leading-tight flex items-center gap-2">
               <span>Panel de Control Pastoral</span>
-              <span className="bg-brand-gold text-slate-950 text-[10px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider">Editor Completo Wix & Word</span>
             </h1>
             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
               Fundación Manos Abiertas de Jesús & María
@@ -550,7 +549,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
         <main className="flex-1 bg-slate-950 rounded-3xl border border-slate-800 p-6 sm:p-8">
           
           {/* ========================================================================= */}
-          {/* TAB 1: EDITOR DE SECCIONES ESTILO WIX Y MINI-WORD */}
+          {/* TAB 1: EDITOR VISUAL DE SECCIONES */}
           {/* ========================================================================= */}
           {activeTab === 'sections' && (
             <div className="space-y-6">
@@ -560,7 +559,7 @@ export const AdminDashboard = ({ onExitAdmin }) => {
                 <div>
                   <h2 className="text-xl font-black text-white font-display flex items-center gap-2">
                     <Palette className="w-5 h-5 text-brand-gold" />
-                    <span>Personalizador Visual de Secciones (Estilo Wix & Word)</span>
+                    <span>Personalizador Visual de Secciones</span>
                   </h2>
                   <p className="text-xs text-slate-400">
                     Edita textos, estilos tipográficos, negritas, colores, fotos y botones de cada sección con vista previa en tiempo real.

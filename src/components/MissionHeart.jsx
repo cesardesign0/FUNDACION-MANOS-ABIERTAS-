@@ -87,19 +87,36 @@ export const MissionHeart = ({
 
   return (
     <section id="mission" className="py-20 bg-white relative overflow-hidden">
-      {/* Fondo Celestial del Sagrado Corazón de Jesús y María */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        <img
-          src="/sagrado-corazon-jesus-y-maria.jpg"
-          alt="Sagrado Corazón de Jesús y Sagrado Corazón de María"
-          className="w-full h-full object-cover object-center opacity-35 filter brightness-105 contrast-105 transition-opacity duration-700"
-        />
-        {/* Capas de degradado blanco para mantener la pureza, luz y legibilidad */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/75 via-white/45 to-white/75" />
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white" />
+      {/* Lateral Izquierdo: Sagrado Corazón de Jesús */}
+      <div className="absolute left-0 top-0 bottom-0 w-full sm:w-1/2 lg:w-[38%] max-w-lg pointer-events-none overflow-hidden z-0 flex items-center justify-start">
+        <div className="relative w-full h-full">
+          <img
+            src="/sagrado-corazon-jesus-lateral.jpg"
+            alt="Sagrado Corazón de Jesús"
+            className="w-full h-full object-cover object-left opacity-35 sm:opacity-40 filter brightness-105 contrast-105"
+          />
+          {/* Suave degradado para desvanecer hacia el centro blanco */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-white" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-transparent to-white/70" />
+        </div>
       </div>
 
-      {/* Background Subtle Pattern */}
+      {/* Lateral Derecho: Inmaculado Corazón de María */}
+      <div className="absolute right-0 top-0 bottom-0 w-full sm:w-1/2 lg:w-[38%] max-w-lg pointer-events-none overflow-hidden z-0 flex items-center justify-end">
+        <div className="relative w-full h-full">
+          <img
+            src="/sagrado-corazon-maria-lateral.jpg"
+            alt="Inmaculado Corazón de María"
+            className="w-full h-full object-cover object-right opacity-35 sm:opacity-40 filter brightness-105 contrast-105"
+          />
+          {/* Suave degradado para desvanecer hacia el centro blanco */}
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-white/40 to-white" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-transparent to-white/70" />
+        </div>
+      </div>
+
+      {/* Centro Blanco Luminoso y Puro */}
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,white_0%,transparent_75%)] z-0" />
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[radial-gradient(#2BBEC9_1px,transparent_1px)] [background-size:24px_24px] z-0" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

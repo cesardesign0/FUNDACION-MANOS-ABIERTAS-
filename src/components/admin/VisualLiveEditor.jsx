@@ -1409,6 +1409,34 @@ export const VisualLiveEditor = ({ onExit }) => {
               {/* PROGRAMS DEFAULT */}
               {!selectedSubItem && activeSectionId === 'programs' && (
                 <div className="space-y-6 animate-fadeIn">
+                  
+                  {/* Selector de Causa Destacada */}
+                  <div className="p-4 rounded-2xl bg-gradient-to-r from-brand-gold/20 via-brand-navy to-slate-950 border-2 border-brand-gold/50 space-y-2.5 shadow-lg">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-black text-brand-gold uppercase tracking-wider flex items-center gap-1.5">
+                        <Star className="w-4 h-4 fill-brand-gold" />
+                        <span>Causa Destacada en Portada</span>
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-300">
+                      Selecciona cuál misión aparecerá en la parte superior con marco dorado y botón de donación destacado:
+                    </p>
+                    <select
+                      value={featuredMissionId}
+                      onChange={(e) => {
+                        setFeaturedMission(Number(e.target.value));
+                        showNotification("¡Causa destacada actualizada con éxito!");
+                      }}
+                      className="w-full bg-slate-950 border border-brand-gold/50 text-brand-gold rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-brand-gold outline-none"
+                    >
+                      {missions.map((m) => (
+                        <option key={m.id} value={m.id}>
+                          ⭐ {m.title} ({m.percentage}%)
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-300 block">Título de Misiones</label>
                     <input
@@ -1441,16 +1469,42 @@ export const VisualLiveEditor = ({ onExit }) => {
                       </button>
                     </div>
                     <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-                      {missions.map((m) => (
-                        <button
-                          key={m.id}
-                          onClick={() => setSelectedSubItem({ type: 'mission', id: m.id, item: m })}
-                          className="w-full p-2.5 bg-slate-950 border border-slate-800 hover:border-brand-teal rounded-xl text-left flex items-center justify-between text-xs transition-all"
-                        >
-                          <span className="truncate flex-1 font-bold text-white">{m.title}</span>
-                          <span className="text-emerald-400 font-bold ml-2">{m.percentage}%</span>
-                        </button>
-                      ))}
+                      {missions.map((m) => {
+                        const isThisFeatured = featuredMissionId === m.id;
+                        return (
+                          <div
+                            key={m.id}
+                            className={`w-full p-2.5 rounded-xl border flex items-center justify-between text-xs transition-all ${
+                              isThisFeatured
+                                ? 'bg-brand-gold/15 border-brand-gold text-white'
+                                : 'bg-slate-950 border-slate-800 text-slate-300 hover:border-brand-teal'
+                            }`}
+                          >
+                            <button
+                              onClick={() => setSelectedSubItem({ type: 'mission', id: m.id, item: m })}
+                              className="truncate flex-1 font-bold text-left hover:underline text-white"
+                            >
+                              {isThisFeatured && '⭐ '} {m.title}
+                            </button>
+                            <div className="flex items-center gap-2 ml-2">
+                              <span className="text-emerald-400 font-bold">{m.percentage}%</span>
+                              <button
+                                onClick={() => {
+                                  setFeaturedMission(m.id);
+                                  showNotification(`¡Causa "${m.title}" fijada como Destacada!`);
+                                }}
+                                className={`px-2 py-0.5 rounded text-[10px] font-black uppercase transition-all ${
+                                  isThisFeatured
+                                    ? 'bg-brand-gold text-slate-950 shadow-xs'
+                                    : 'bg-slate-800 text-slate-400 hover:bg-brand-gold hover:text-slate-950'
+                                }`}
+                              >
+                                {isThisFeatured ? 'Destacada' : 'Destacar'}
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -1459,6 +1513,34 @@ export const VisualLiveEditor = ({ onExit }) => {
               {/* RETREATS DEFAULT */}
               {!selectedSubItem && activeSectionId === 'retreats' && (
                 <div className="space-y-6 animate-fadeIn">
+
+                  {/* Selector de Retiro Destacado */}
+                  <div className="p-4 rounded-2xl bg-gradient-to-r from-brand-gold/20 via-brand-navy to-slate-950 border-2 border-brand-gold/50 space-y-2.5 shadow-lg">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-black text-brand-gold uppercase tracking-wider flex items-center gap-1.5">
+                        <Calendar className="w-4 h-4 text-brand-gold" />
+                        <span>Retiro Destacado del Calendario</span>
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-300">
+                      Selecciona cuál retiro o actividad aparecerá en el gran recuadro principal de la cabecera:
+                    </p>
+                    <select
+                      value={featuredRetreatId}
+                      onChange={(e) => {
+                        setFeaturedRetreat(e.target.value);
+                        showNotification("¡Retiro destacado actualizado con éxito!");
+                      }}
+                      className="w-full bg-slate-950 border border-brand-gold/50 text-brand-gold rounded-xl px-3 py-2 text-xs font-bold focus:ring-2 focus:ring-brand-gold outline-none"
+                    >
+                      {events.map((ev) => (
+                        <option key={ev.id} value={ev.id}>
+                          ⭐ {ev.title} ({ev.date})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-300 block">Título del Calendario</label>
                     <input
@@ -1484,16 +1566,42 @@ export const VisualLiveEditor = ({ onExit }) => {
                       </button>
                     </div>
                     <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-                      {events.map((ev) => (
-                        <button
-                          key={ev.id}
-                          onClick={() => setSelectedSubItem({ type: 'retreat', id: ev.id, item: ev })}
-                          className="w-full p-2.5 bg-slate-950 border border-slate-800 hover:border-brand-gold rounded-xl text-left flex items-center justify-between text-xs transition-all"
-                        >
-                          <span className="truncate flex-1 font-bold text-white">{ev.title}</span>
-                          <span className="text-amber-300 text-[10px] ml-2">{ev.date}</span>
-                        </button>
-                      ))}
+                      {events.map((ev) => {
+                        const isThisFeatured = featuredRetreatId === ev.id;
+                        return (
+                          <div
+                            key={ev.id}
+                            className={`w-full p-2.5 rounded-xl border flex items-center justify-between text-xs transition-all ${
+                              isThisFeatured
+                                ? 'bg-brand-gold/15 border-brand-gold text-white'
+                                : 'bg-slate-950 border-slate-800 text-slate-300 hover:border-brand-gold'
+                            }`}
+                          >
+                            <button
+                              onClick={() => setSelectedSubItem({ type: 'retreat', id: ev.id, item: ev })}
+                              className="truncate flex-1 font-bold text-left hover:underline text-white"
+                            >
+                              {isThisFeatured && '⭐ '} {ev.title}
+                            </button>
+                            <div className="flex items-center gap-2 ml-2">
+                              <span className="text-amber-300 text-[10px]">{ev.date}</span>
+                              <button
+                                onClick={() => {
+                                  setFeaturedRetreat(ev.id);
+                                  showNotification(`¡Retiro "${ev.title}" fijado como Destacado!`);
+                                }}
+                                className={`px-2 py-0.5 rounded text-[10px] font-black uppercase transition-all ${
+                                  isThisFeatured
+                                    ? 'bg-brand-gold text-slate-950 shadow-xs'
+                                    : 'bg-slate-800 text-slate-400 hover:bg-brand-gold hover:text-slate-950'
+                                }`}
+                              >
+                                {isThisFeatured ? 'Destacado' : 'Destacar'}
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>

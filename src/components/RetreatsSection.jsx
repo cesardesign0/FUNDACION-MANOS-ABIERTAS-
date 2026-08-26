@@ -328,19 +328,13 @@ export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId: propFe
                     {event.category}
                   </span>
 
-                  {/* Featured Badge or Button */}
-                  <button
-                    onClick={() => handleToggle(event.id)}
-                    title={isFeatured ? "Retiro actualmente fijado en portada" : "Haz clic para destacar este retiro"}
-                    className={`absolute top-4 right-4 p-2 rounded-full backdrop-blur-md transition-all shadow-md flex items-center gap-1.5 text-xs font-bold ${
-                      isFeatured
-                        ? 'bg-brand-gold text-slate-950 font-black shadow-brand-gold/40'
-                        : 'bg-black/60 text-white hover:bg-black/80 hover:text-brand-gold'
-                    }`}
-                  >
-                    <Star className={`w-4 h-4 ${isFeatured ? 'fill-slate-950 text-slate-950' : 'text-white'}`} />
-                    {isFeatured && <span className="text-[10px] font-black uppercase">Destacado</span>}
-                  </button>
+                  {/* Featured Badge */}
+                  {isFeatured && (
+                    <div className="absolute top-4 right-4 bg-brand-gold text-slate-950 px-3 py-1 rounded-full backdrop-blur-md shadow-lg flex items-center gap-1.5 text-[10px] font-black uppercase">
+                      <Star className="w-3.5 h-3.5 fill-slate-950 text-slate-950" />
+                      <span>Destacado</span>
+                    </div>
+                  )}
 
                   <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white">
                     <span className="text-xs font-mono font-bold text-amber-300 flex items-center gap-1">

@@ -25,6 +25,7 @@ import { ReviewModal } from './components/ReviewModal';
 import { ChatAssistantModal } from './components/ChatAssistantModal';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { Heart, ShoppingBag, PlusCircle, MessageSquare, X, Lock } from 'lucide-react';
+import { recordPublicVisit } from './utils/analyticsTracker';
 
 const MainLayout = () => {
   const { language, t } = useLanguage();
@@ -34,6 +35,12 @@ const MainLayout = () => {
   const [isAdminView, setIsAdminView] = useState(() => {
     return window.location.pathname.includes('/admin') || window.location.hash.includes('admin');
   });
+
+  useEffect(() => {
+    if (!isAdminView) {
+      recordPublicVisit();
+    }
+  }, [isAdminView]);
 
   useEffect(() => {
     const handleHashChange = () => {

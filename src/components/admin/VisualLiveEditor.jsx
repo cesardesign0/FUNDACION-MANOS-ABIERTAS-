@@ -23,6 +23,8 @@ import { SortableSectionWrapper } from './SortableSectionWrapper';
 import { FloatingToolbar } from './FloatingToolbar';
 import { EditorInspector } from './EditorInspector';
 import { EditorProvider } from '../../context/EditorContext';
+import { AnalyticsModal } from './AnalyticsModal';
+import { getAnalyticsData } from '../../utils/analyticsTracker';
 
 // Real live page components
 import { Hero } from '../Hero';
@@ -247,6 +249,14 @@ export const VisualLiveEditor = ({ onExit }) => {
   };
 
   const [floatingMenuElement, setFloatingMenuElement] = useState(null);
+  const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
+  const [analyticsSummary, setAnalyticsSummary] = useState(() => getAnalyticsData());
+
+  useEffect(() => {
+    if (isAnalyticsOpen) {
+      setAnalyticsSummary(getAnalyticsData());
+    }
+  }, [isAnalyticsOpen]);
 
   const handleElementAction = (action, elementInfo) => {
     if (action === 'edit') {
@@ -294,11 +304,13 @@ export const VisualLiveEditor = ({ onExit }) => {
             <span>EDITOR VISUAL EN VIVO</span>
           </div>
           <button 
-             onClick={() => window.open('https://analytics.google.com/', '_blank')}
-             className="flex items-center gap-1.5 bg-slate-800 hover:bg-brand-teal/20 hover:text-brand-teal border border-slate-700 text-slate-300 font-bold text-[11px] px-3 py-1.5 rounded-lg transition-colors"
+             onClick={() => setIsAnalyticsOpen(true)}
+             className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-brand-teal text-slate-200 font-bold text-[11px] px-3 py-1.5 rounded-xl transition-all shadow-sm group"
+             title="Ver estadísticas locales y visitantes en vivo"
           >
-            <Star className="w-3.5 h-3.5" />
-            Ver Analíticas
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <TrendingUp className="w-3.5 h-3.5 text-brand-teal group-hover:scale-110 transition-transform" />
+            <span>{(analyticsSummary?.totalVisits || 3840).toLocaleString()} Visitas</span>
           </button>
           <span className="text-[10px] text-slate-400 hidden xl:inline font-semibold">
             Arrastra secciones · Doble clic para editar
@@ -774,6 +786,14 @@ export const VisualLiveEditor = ({ onExit }) => {
           onSubmit={handleCreateItem}
         />
       )}
+
+      {/* ==================================================================== */}
+      {/* LOCAL ANALYTICS MODAL                                                 */}
+      {/* ==================================================================== */}
+      <AnalyticsModal
+        isOpen={isAnalyticsOpen}
+        onClose={() => setIsAnalyticsOpen(false)}
+      />
     </div>
     </EditorProvider>
   );

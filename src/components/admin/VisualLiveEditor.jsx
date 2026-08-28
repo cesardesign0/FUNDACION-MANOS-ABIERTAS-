@@ -22,6 +22,7 @@ import { useAdminData } from '../../context/AdminDataContext';
 import { SortableSectionWrapper } from './SortableSectionWrapper';
 import { FloatingToolbar } from './FloatingToolbar';
 import { EditorInspector } from './EditorInspector';
+import { EditorProvider } from '../../context/EditorContext';
 
 // Real live page components
 import { Hero } from '../Hero';
@@ -245,11 +246,41 @@ export const VisualLiveEditor = ({ onExit }) => {
     setNewItemModal(null);
   };
 
+  const [floatingMenuElement, setFloatingMenuElement] = useState(null);
+
+  const handleElementAction = (action, elementInfo) => {
+    if (action === 'edit') {
+      selectSubItem(elementInfo.type, elementInfo.id, elementInfo.label, elementInfo.data);
+      setFloatingMenuElement(null); // Close menu
+    } else if (action === 'delete') {
+      if (elementInfo.type === 'mission') deleteMission(elementInfo.id);
+      if (elementInfo.type === 'retreat') deleteEvent(elementInfo.id);
+      if (elementInfo.type === 'product') deleteProduct(elementInfo.id);
+      showNotification('Elemento eliminado.');
+      setFloatingMenuElement(null);
+    } else if (action === 'moveLeft' || action === 'moveRight') {
+       // Mock for moving items, you'd typically rearrange an array here
+       showNotification(`Elemento desplazado hacia la ${action === 'moveLeft' ? 'izquierda/arriba' : 'derecha/abajo'}.`);
+    }
+  };
+
   const sectionIds = sectionOrder.map(s => s.id);
   const isItemSelected = !!selectedElement;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950 flex flex-col font-sans overflow-hidden text-slate-100">
+    <EditorProvider 
+      isEditorActive={true}
+      onElementSelect={(e, elementInfo) => setFloatingMenuElement(elementInfo)}
+      onElementAction={handleElementAction}
+    >
+    <div className="fixed inset-0 z-50 bg-slate-950 flex flex-col font-sans overflow-hidden text-slate-100" onClick={() => setFloatingMenuElement(null)}>
+      
+      <FloatingToolbar 
+        visible={!!floatingMenuElement}
+        targetRect={floatingMenuElement?.rect}
+        selectedElement={floatingMenuElement}
+        onAction={(action) => handleElementAction(action, floatingMenuElement)}
+      />
 
       {/* ==================================================================== */}
       {/* TOPBAR                                                                */}
@@ -262,8 +293,15 @@ export const VisualLiveEditor = ({ onExit }) => {
             <Sparkles className="w-4 h-4 fill-slate-950" />
             <span>EDITOR VISUAL EN VIVO</span>
           </div>
+          <button 
+             onClick={() => window.open('https://analytics.google.com/', '_blank')}
+             className="flex items-center gap-1.5 bg-slate-800 hover:bg-brand-teal/20 hover:text-brand-teal border border-slate-700 text-slate-300 font-bold text-[11px] px-3 py-1.5 rounded-lg transition-colors"
+          >
+            <Star className="w-3.5 h-3.5" />
+            Ver Analíticas
+          </button>
           <span className="text-[10px] text-slate-400 hidden xl:inline font-semibold">
-            Arrastra secciones · Clic para editar · Doble clic en texto
+            Arrastra secciones · Doble clic para editar
           </span>
         </div>
 
@@ -737,5 +775,6 @@ export const VisualLiveEditor = ({ onExit }) => {
         />
       )}
     </div>
+    </EditorProvider>
   );
 };

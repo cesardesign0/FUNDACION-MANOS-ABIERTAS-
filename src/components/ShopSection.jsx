@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAdminData } from '../context/AdminDataContext';
+import { EditableElement } from './admin/EditableElement';
 import { ShoppingBag, Star, Sparkles, Heart, Check, Plus, ArrowRight, ShieldCheck, Tag, Cross, Flame } from 'lucide-react';
 
 export const ShopSection = ({ onAddToCart, onOpenCart, onBuyNow, onSelectProduct }) => {
@@ -52,30 +53,40 @@ export const ShopSection = ({ onAddToCart, onOpenCart, onBuyNow, onSelectProduct
         
         {/* Boutique Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <div 
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-100 border border-amber-300 text-amber-950 font-black text-xs uppercase tracking-widest mb-4 shadow-sm"
-            style={{ color: shopHeader?.styles?.badge_color || '#78350F' }}
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-700" />
-            <span>{shop.badge}</span>
-          </div>
+          <EditableElement elementInfo={{ type: 'text', id: 'shop-badge', sectionId: 'shop', label: 'Etiqueta Tienda', data: { text: shop.badge } }} inline>
+            <div 
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-100 border border-amber-300 text-amber-950 font-black text-xs uppercase tracking-widest mb-4 shadow-sm"
+              style={{ color: shopHeader?.styles?.badge_color || '#78350F' }}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-700" />
+              <span>{shop.badge}</span>
+            </div>
+          </EditableElement>
 
-          <h2 
-            className={`${shopHeader?.styles?.title_font || 'font-display'} ${shopHeader?.styles?.title_size || 'text-3xl sm:text-5xl'} ${shopHeader?.styles?.title_weight || 'font-black'} text-slate-900 leading-tight mb-4`}
-            style={{ color: shopHeader?.styles?.title_color || '#0F172A' }}
-          >
-            {shop.title}
-          </h2>
+          <EditableElement elementInfo={{ type: 'text', id: 'shop-title', sectionId: 'shop', label: 'Título Tienda', data: { text: shop.title } }}>
+            <h2 
+              className={`${shopHeader?.styles?.title_font || 'font-display'} ${shopHeader?.styles?.title_size || 'text-3xl sm:text-5xl'} ${shopHeader?.styles?.title_weight || 'font-black'} text-slate-900 leading-tight mb-4`}
+              style={{ color: shopHeader?.styles?.title_color || '#0F172A' }}
+            >
+              {shop.title}
+            </h2>
+          </EditableElement>
 
-          <p className="text-slate-700 text-base sm:text-lg leading-relaxed mb-6 font-medium">
-            {shop.subtitle}
-          </p>
+          <EditableElement elementInfo={{ type: 'text', id: 'shop-subtitle', sectionId: 'shop', label: 'Subtítulo Tienda', data: { text: shop.subtitle } }}>
+            <p 
+              className="text-slate-700 text-base sm:text-lg leading-relaxed mb-6 font-medium"
+              style={{ color: shopHeader?.styles?.subtitle_color || '#334155' }}
+            >
+              {shop.subtitle}
+            </p>
+          </EditableElement>
 
-          {/* Social Impact Banner Card */}
-          <div className="inline-flex items-center gap-2.5 p-4 px-6 rounded-2xl bg-white/90 backdrop-blur-md border border-amber-300/80 shadow-lg text-slate-800 text-xs sm:text-sm font-semibold">
-            <Heart className="w-4 h-4 text-brand-coral fill-brand-coral flex-shrink-0" />
-            <span>{shop.supportCallout}</span>
-          </div>
+          <EditableElement elementInfo={{ type: 'text', id: 'shop-callout', sectionId: 'shop', label: 'Llamado a la Acción', data: { text: shop.supportCallout } }} inline>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-2xl shadow-sm border border-brand-gold/40 text-xs sm:text-sm text-slate-700 font-bold max-w-lg mx-auto leading-tight">
+              <Heart className="w-4 h-4 text-brand-coral flex-shrink-0" fill="currentColor" />
+              <span>{shop.supportCallout}</span>
+            </div>
+          </EditableElement>
         </div>
 
         {/* Category Filters */}
@@ -101,22 +112,22 @@ export const ShopSection = ({ onAddToCart, onOpenCart, onBuyNow, onSelectProduct
             const isFeatured = effectiveFeaturedIds.includes(product.id);
 
             return (
-              <div
-                key={product.id}
-                onClick={(e) => {
-                  if (onSelectProduct) {
-                    e.stopPropagation();
-                    onSelectProduct(product);
-                  }
-                }}
-                className={`bg-white rounded-3xl overflow-hidden shadow-lg border transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5 flex flex-col justify-between group ${
-                  onSelectProduct ? 'cursor-pointer' : ''
-                } ${
-                  isFeatured
-                    ? 'border-amber-400 ring-2 ring-amber-400/50 shadow-amber-400/10'
-                    : 'border-amber-100 hover:border-brand-gold/60'
-                }`}
-              >
+              <EditableElement key={product.id} elementInfo={{ type: 'product', id: product.id, sectionId: 'shop', label: 'Producto Tienda', data: product, movable: true, deletable: true }}>
+                <div
+                  onClick={(e) => {
+                    if (onSelectProduct) {
+                      e.stopPropagation();
+                      onSelectProduct(product);
+                    }
+                  }}
+                  className={`bg-white rounded-3xl overflow-hidden shadow-lg border transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5 flex flex-col justify-between group ${
+                    onSelectProduct ? 'cursor-pointer' : ''
+                  } ${
+                    isFeatured
+                      ? 'border-amber-400 ring-2 ring-amber-400/50 shadow-amber-400/10'
+                      : 'border-amber-100 hover:border-brand-gold/60'
+                  }`}
+                >
                 <div>
                   {/* Image Box */}
                   <div className="relative h-60 overflow-hidden bg-amber-50/50">
@@ -203,7 +214,9 @@ export const ShopSection = ({ onAddToCart, onOpenCart, onBuyNow, onSelectProduct
                     <span>{shop.buyNow || 'Comprar Ahora'}</span>
                   </button>
                 </div>
+                </div>
               </div>
+              </EditableElement>
             );
           })}
         </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAdminData } from '../context/AdminDataContext';
 import { Calendar, Clock, MapPin, Sparkles, UserCheck, Star, ExternalLink, Info, CheckCircle2, ChevronDown, ChevronUp, Layers, RefreshCw, Radio, Heart, Users } from 'lucide-react';
+import { EditableElement } from './admin/EditableElement';
 import { CENTRO_BRONX_SOURCE_URL, CENTRO_BRONX_TICKETS_URL, syncCentroBronxEvents, getLastSyncTime } from '../services/centroBronxSync';
 
 export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId: propFeaturedRetreatId, onToggleFeaturedRetreat, onSelectEvent }) => {
@@ -68,16 +69,23 @@ export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId: propFe
             <span>{language === 'es' ? 'CALENDARIO OFICIAL' : 'OFFICIAL CALENDAR'}</span>
           </div>
 
-          <h2 
-            className={`${retreatsModal.styles?.title_font || 'font-display'} ${retreatsModal.styles?.title_size || 'text-3xl sm:text-5xl'} ${retreatsModal.styles?.title_weight || 'font-black'} leading-tight mb-4`}
-            style={{ color: retreatsModal.styles?.title_color || '#0F172A' }}
-          >
-            {retreatsModal.title || (language === 'es' ? 'Calendario de Actividades y Retiros' : 'Calendar of Activities & Retreats')}
-          </h2>
+          <EditableElement elementInfo={{ type: 'text', id: 'retreats-title', sectionId: 'retreats', label: 'Título Principal', data: { text: retreatsModal.title } }}>
+            <h2 
+              className={`${retreatsModal.styles?.title_font || 'font-display'} ${retreatsModal.styles?.title_size || 'text-3xl sm:text-5xl'} ${retreatsModal.styles?.title_weight || 'font-black'} leading-tight mb-4`}
+              style={{ color: retreatsModal.styles?.title_color || '#0F172A' }}
+            >
+              {retreatsModal.title || (language === 'es' ? 'Calendario de Actividades y Retiros' : 'Calendar of Activities & Retreats')}
+            </h2>
+          </EditableElement>
 
-          <p className="text-slate-600 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
-            {retreatsModal.subtitle}
-          </p>
+          <EditableElement elementInfo={{ type: 'text', id: 'retreats-subtitle', sectionId: 'retreats', label: 'Subtítulo', data: { text: retreatsModal.subtitle } }}>
+            <p 
+              className={`leading-relaxed max-w-2xl mx-auto ${retreatsModal.styles?.subtitle_size || 'text-base sm:text-lg'}`}
+              style={{ color: retreatsModal.styles?.subtitle_color || '#475569' }}
+            >
+              {retreatsModal.subtitle}
+            </p>
+          </EditableElement>
 
           <div className="mt-3 inline-flex items-center gap-1.5 text-xs text-slate-600 bg-white px-3.5 py-1.5 rounded-full border border-slate-200 shadow-xs">
             <MapPin className="w-3.5 h-3.5 text-brand-coral flex-shrink-0" />
@@ -134,17 +142,18 @@ export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId: propFe
         {/* ⭐ ACTIVIDAD / RETIRO DESTACADO HERO SHOWCASE EN CALENDARIO */}
         {/* ========================================================================= */}
         {featuredEvent && (
-          <div 
-            onClick={(e) => {
-              if (onSelectEvent) {
-                e.stopPropagation();
-                onSelectEvent(featuredEvent);
-              }
-            }}
-            className={`mb-12 bg-white rounded-3xl p-6 sm:p-8 border-2 border-brand-gold/60 shadow-xl shadow-brand-gold/10 relative overflow-hidden transition-all ${
-              onSelectEvent ? 'cursor-pointer hover:ring-4 hover:ring-brand-gold/50' : ''
-            }`}
-          >
+          <EditableElement elementInfo={{ type: 'retreat', id: featuredEvent.id, sectionId: 'retreats', label: 'Retiro Destacado', data: featuredEvent, movable: true, deletable: true }}>
+            <div 
+              onClick={(e) => {
+                if (onSelectEvent) {
+                  e.stopPropagation();
+                  onSelectEvent(featuredEvent);
+                }
+              }}
+              className={`mb-12 bg-white rounded-3xl p-6 sm:p-8 border-2 border-brand-gold/60 shadow-xl shadow-brand-gold/10 relative overflow-hidden transition-all ${
+                onSelectEvent ? 'cursor-pointer hover:ring-4 hover:ring-brand-gold/50' : ''
+              }`}
+            >
             <div className="absolute top-0 right-0 w-72 h-72 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
@@ -222,11 +231,10 @@ export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId: propFe
                     <span>Fijado en Portada</span>
                   </button>
                 </div>
-
               </div>
-
             </div>
           </div>
+          </EditableElement>
         )}
 
         {/* 3 Botones de Filtro por Mes / Periodo */}

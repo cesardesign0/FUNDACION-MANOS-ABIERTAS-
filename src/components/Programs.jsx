@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAdminData } from '../context/AdminDataContext';
+import { EditableElement } from './admin/EditableElement';
 import { Heart, Target, TrendingUp, Sparkles, HandHeart, CheckCircle2, PlusCircle, ArrowRight, Eye, Trophy, Star, AlertCircle } from 'lucide-react';
 
 export const Programs = ({ onSelectCauseAndDonate, onOpenNewMission, onOpenMissionDetail, onOpenCompletedMissions, onSelectMission }) => {

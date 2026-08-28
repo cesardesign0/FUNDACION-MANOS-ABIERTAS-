@@ -852,9 +852,39 @@ export const EditorInspector = ({
             </div>
           </CollapsibleHeader>
 
-          <CollapsibleHeader id="retTitle" label="✏️ Título del Calendario">
-            <input type="text" value={retreatsModal?.title || ''} onChange={(e) => updateRetreatsHeader({ title: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
+          <CollapsibleHeader id="retTitle" label="✏️ Textos del Calendario">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Título</label>
+                <input type="text" value={retreatsModal?.title || ''} onChange={(e) => updateRetreatsHeader({ title: e.target.value })}
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
+                <InlineStyleEditor label="Estilo del Título" fieldPrefix="title"
+                  styles={retreatsModal?.styles || {}}
+                  onChange={(s) => updateRetreatsHeader({ styles: s })}
+                  previewText={retreatsModal?.title} />
+              </div>
+              
+              <div className="space-y-2 pt-2 border-t border-slate-800">
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Subtítulo / Descripción</label>
+                <textarea rows={2} value={retreatsModal?.subtitle || ''} onChange={(e) => updateRetreatsHeader({ subtitle: e.target.value })}
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
+                <InlineStyleEditor label="Estilo del Subtítulo" fieldPrefix="subtitle"
+                  styles={retreatsModal?.styles || {}}
+                  onChange={(s) => updateRetreatsHeader({ styles: s })}
+                  previewText={retreatsModal?.subtitle} />
+              </div>
+
+              <div className="space-y-2 pt-2 border-t border-slate-800">
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Aviso de Ubicación</label>
+                <input type="text" value={retreatsModal?.venueNotice || ''} onChange={(e) => updateRetreatsHeader({ venueNotice: e.target.value })}
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white" />
+                <div className="space-y-1">
+                  <label className="text-[10px] text-slate-400 font-bold block">Color del Aviso</label>
+                  <input type="color" value={retreatsModal?.styles?.venue_color || '#94A3B8'} onChange={(e) => updateRetreatsHeader({ styles: { ...retreatsModal?.styles, venue_color: e.target.value } })}
+                    className="w-8 h-8 rounded-lg cursor-pointer bg-slate-950 border border-slate-700" />
+                </div>
+              </div>
+            </div>
           </CollapsibleHeader>
 
           <CollapsibleHeader id="retList" label={`📋 Actividades (${events.length})`}>

@@ -153,7 +153,12 @@ export const AdminDataProvider = ({ children }) => {
               title_font: 'font-display',
               title_size: 'text-4xl',
               title_color: '#FFFFFF',
-              title_weight: 'font-black'
+              title_weight: 'font-black',
+              subtitle_color: '#E2E8F0',
+              subtitle_size: 'text-lg',
+              venue_color: '#94A3B8',
+              card_title_color: '#0F172A',
+              card_text_color: '#475569'
             },
             ...(parsed.retreatsModal || {})
           },
@@ -611,7 +616,12 @@ export const AdminDataProvider = ({ children }) => {
           title_font: 'font-display',
           title_size: 'text-4xl',
           title_color: '#FFFFFF',
-          title_weight: 'font-black'
+          title_weight: 'font-black',
+          subtitle_color: '#E2E8F0',
+          subtitle_size: 'text-lg',
+          venue_color: '#94A3B8',
+          card_title_color: '#0F172A',
+          card_text_color: '#475569'
         }
       },
       shopHeader: {

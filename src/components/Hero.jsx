@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAdminData } from '../context/AdminDataContext';
+import { EditableElement } from './admin/EditableElement';
 import { Heart, Users, ArrowRight, Sparkles, HeartHandshake, HandHeart, Sun, Calendar, ChevronRight, BookOpen } from 'lucide-react';
 
 export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpenRetreats, onSelectButton, onSelectElement }) => {
@@ -70,13 +71,15 @@ export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpen
               <div className="relative bg-gradient-to-b from-white/95 to-slate-100/95 backdrop-blur-xl p-8 rounded-3xl border border-white flex flex-col items-center text-center text-slate-900 shadow-2xl">
                 
                 {/* Official Logo */}
-                <div className="w-full flex justify-center mb-4">
-                  <img
-                    src={heroData.logoCardImage || "/logo-manos-abiertas.png"}
-                    alt="Fundación Manos Abiertas de Jesús & María"
-                    className="h-32 sm:h-36 w-auto object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
+                <EditableElement elementInfo={{ type: 'image', id: 'hero-logo', sectionId: 'hero', label: 'Logo Principal' }}>
+                  <div className="w-full flex justify-center mb-4">
+                    <img
+                      src={heroData.logoCardImage || "/logo-manos-abiertas.png"}
+                      alt="Fundación Manos Abiertas de Jesús & María"
+                      className="h-32 sm:h-36 w-auto object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                </EditableElement>
 
                 <div className="w-12 h-1 bg-gradient-to-r from-brand-coral to-brand-teal rounded-full mb-3" />
 
@@ -99,43 +102,51 @@ export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpen
           {/* Right Column: Headlines, Bible Verse and Action Buttons */}
           <div className="lg:col-span-7 space-y-6 order-1 lg:order-2">
             {/* Badge */}
-            <div 
-              className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/20 border border-brand-teal/40 text-xs font-bold tracking-wider backdrop-blur-md ${heroData.styles?.tag_case || 'uppercase'}`}
-              style={{ color: heroData.styles?.tag_color || '#2BBEC9' }}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-brand-gold" />
-              <span>{heroData.tag}</span>
-            </div>
+            <EditableElement elementInfo={{ type: 'text', id: 'hero-badge', sectionId: 'hero', label: 'Etiqueta Hero', data: { text: heroData.tag } }} inline>
+              <div 
+                className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal/20 border border-brand-teal/40 text-xs font-bold tracking-wider backdrop-blur-md ${heroData.styles?.tag_case || 'uppercase'}`}
+                style={{ color: heroData.styles?.tag_color || '#2BBEC9' }}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-brand-gold" />
+                <span>{heroData.tag}</span>
+              </div>
+            </EditableElement>
 
             {/* Handwritten Subheading */}
-            <div 
-              className={`${heroData.styles?.handwritten_font || 'font-handwritten'} ${heroData.styles?.handwritten_size || 'text-4xl sm:text-5xl lg:text-6xl'} ${heroData.styles?.handwritten_weight || 'font-bold'} ${heroData.styles?.handwritten_case || 'normal-case'} tracking-wide drop-shadow-lg rotate-[-1deg] leading-tight ${heroData.styles?.handwritten_align || 'text-left'}`}
-              style={{ color: heroData.styles?.handwritten_color || '#E5A93C' }}
-            >
-              {heroData.handwritten}
-            </div>
+            <EditableElement elementInfo={{ type: 'text', id: 'hero-handwritten', sectionId: 'hero', label: 'Frase Manuscrita', data: { text: heroData.handwritten } }}>
+              <div 
+                className={`${heroData.styles?.handwritten_font || 'font-handwritten'} ${heroData.styles?.handwritten_size || 'text-4xl sm:text-5xl lg:text-6xl'} ${heroData.styles?.handwritten_weight || 'font-bold'} ${heroData.styles?.handwritten_case || 'normal-case'} tracking-wide drop-shadow-lg rotate-[-1deg] leading-tight ${heroData.styles?.handwritten_align || 'text-left'}`}
+                style={{ color: heroData.styles?.handwritten_color || '#E5A93C' }}
+              >
+                {heroData.handwritten}
+              </div>
+            </EditableElement>
 
             {/* Versículo Bíblico Católico de Servicio */}
-            <div className="border-l-4 border-brand-gold/70 pl-4 py-1">
-              <h1 
-                className={`${heroData.styles?.title_font || 'font-serif'} ${heroData.styles?.title_size || 'text-2xl sm:text-3xl lg:text-4xl'} ${heroData.styles?.title_weight || 'font-medium'} ${heroData.styles?.title_italic !== false ? 'italic' : ''} ${heroData.styles?.title_case || 'normal-case'} ${heroData.styles?.title_align || 'text-left'} tracking-tight leading-snug drop-shadow-md`}
-                style={{ color: heroData.styles?.title_color || '#FFFFFF' }}
-              >
-                {heroData.title}
-              </h1>
-              <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-gold/20 text-amber-200 text-xs sm:text-sm font-bold border border-brand-gold/40">
-                <BookOpen className="w-3.5 h-3.5 text-brand-gold" />
-                <span>{heroData.citation}</span>
+            <EditableElement elementInfo={{ type: 'text', id: 'hero-title', sectionId: 'hero', label: 'Título Principal', data: { text: heroData.title } }}>
+              <div className="border-l-4 border-brand-gold/70 pl-4 py-1">
+                <h1 
+                  className={`${heroData.styles?.title_font || 'font-serif'} ${heroData.styles?.title_size || 'text-2xl sm:text-3xl lg:text-4xl'} ${heroData.styles?.title_weight || 'font-medium'} ${heroData.styles?.title_italic !== false ? 'italic' : ''} ${heroData.styles?.title_case || 'normal-case'} ${heroData.styles?.title_align || 'text-left'} tracking-tight leading-snug drop-shadow-md`}
+                  style={{ color: heroData.styles?.title_color || '#FFFFFF' }}
+                >
+                  {heroData.title}
+                </h1>
+                <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-gold/20 text-amber-200 text-xs sm:text-sm font-bold border border-brand-gold/40">
+                  <BookOpen className="w-3.5 h-3.5 text-brand-gold" />
+                  <span>{heroData.citation}</span>
+                </div>
               </div>
-            </div>
+            </EditableElement>
 
             {/* Description */}
-            <p 
-              className={`leading-relaxed max-w-2xl ${heroData.styles?.desc_size || 'text-base sm:text-lg'}`}
-              style={{ color: heroData.styles?.desc_color || '#CBD5E1' }}
-            >
-              {heroData.description}
-            </p>
+            <EditableElement elementInfo={{ type: 'text', id: 'hero-desc', sectionId: 'hero', label: 'Descripción', data: { text: heroData.description } }}>
+              <p 
+                className={`leading-relaxed max-w-2xl ${heroData.styles?.desc_size || 'text-base sm:text-lg'}`}
+                style={{ color: heroData.styles?.desc_color || '#CBD5E1' }}
+              >
+                {heroData.description}
+              </p>
+            </EditableElement>
 
             {/* Botones de Acción Dinámicos y Configurables */}
             <div className="flex flex-wrap items-center gap-3.5 pt-2">
@@ -177,19 +188,20 @@ export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpen
                 };
 
                 return (
-                  <button
-                    key={btn.id}
-                    onClick={handleClick}
-                    className={`inline-flex items-center gap-2 font-extrabold px-6 sm:px-7 py-3.5 sm:py-4 ${shapeClass} ${variantClass} hover:scale-105 transition-all text-sm sm:text-base`}
-                  >
-                    {btn.icon === 'heart' && <Heart className="w-5 h-5 fill-current" />}
-                    {btn.icon === 'users' && <Users className="w-5 h-5 text-current" />}
-                    {btn.icon === 'calendar' && <Calendar className="w-5 h-5 text-current" />}
-                    {btn.icon === 'shop' && <ShoppingBag className="w-5 h-5 text-current" />}
-                    {btn.icon === 'sparkles' && <Sparkles className="w-5 h-5 text-current" />}
-                    <span>{btn.label}</span>
-                    {btn.icon === 'arrow' && <ChevronRight className="w-4 h-4" />}
-                  </button>
+                  <EditableElement key={btn.id} inline elementInfo={{ type: 'button', id: btn.id, sectionId: 'hero', label: `Botón: ${btn.label}`, data: btn, movable: true }}>
+                    <button
+                      onClick={handleClick}
+                      className={`inline-flex items-center gap-2 font-extrabold px-6 sm:px-7 py-3.5 sm:py-4 ${shapeClass} ${variantClass} hover:scale-105 transition-all text-sm sm:text-base`}
+                    >
+                      {btn.icon === 'heart' && <Heart className="w-5 h-5 fill-current" />}
+                      {btn.icon === 'users' && <Users className="w-5 h-5 text-current" />}
+                      {btn.icon === 'calendar' && <Calendar className="w-5 h-5 text-current" />}
+                      {/* {btn.icon === 'shop' && <ShoppingBag className="w-5 h-5 text-current" />} */}
+                      {btn.icon === 'sparkles' && <Sparkles className="w-5 h-5 text-current" />}
+                      <span>{btn.label}</span>
+                      {btn.icon === 'arrow' && <ChevronRight className="w-4 h-4" />}
+                    </button>
+                  </EditableElement>
                 );
               })}
             </div>

@@ -214,7 +214,6 @@ export const ShopSection = ({ onAddToCart, onOpenCart, onBuyNow, onSelectProduct
                     <span>{shop.buyNow || 'Comprar Ahora'}</span>
                   </button>
                 </div>
-                </div>
               </div>
               </EditableElement>
             );

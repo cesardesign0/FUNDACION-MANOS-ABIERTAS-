@@ -49,6 +49,8 @@ export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId: propFe
     return event.period === selectedPeriod;
   });
 
+  const displayedEvents = filteredEvents;
+
   // Ensure high contrast against light background
   const titleColor = (() => {
     const c = retreatsModal.styles?.title_color;

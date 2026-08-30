@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -45,6 +45,7 @@ import {
   Wand2, CheckCircle2, RefreshCw, FolderOpen, DollarSign, Clock, MapPin,
   Tag, Mail, Phone, LogOut, List, Layout, PlusCircle, AlertCircle, Quote,
   CheckCircle, Users, ShieldCheck, GripVertical, ChevronDown, ChevronUp as ChevronUpIcon,
+  TrendingUp,
 } from 'lucide-react';
 
 // ─────────────────────────────────────────────────────────────────────────────

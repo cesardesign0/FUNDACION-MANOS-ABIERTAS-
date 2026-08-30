@@ -147,21 +147,31 @@ export const AdminDataProvider = ({ children }) => {
             },
             ...(parsed.volunteerSection || {})
           },
-          retreatsModal: {
-            ...translations.es.retreatsModal,
-            styles: {
-              title_font: 'font-display',
-              title_size: 'text-4xl',
-              title_color: '#FFFFFF',
-              title_weight: 'font-black',
-              subtitle_color: '#E2E8F0',
-              subtitle_size: 'text-lg',
-              venue_color: '#94A3B8',
-              card_title_color: '#0F172A',
-              card_text_color: '#475569'
-            },
-            ...(parsed.retreatsModal || {})
-          },
+          retreatsModal: (() => {
+            const raw = parsed.retreatsModal || {};
+            const rawStyles = raw.styles || {};
+            const titleColor = (!rawStyles.title_color || rawStyles.title_color.toLowerCase() === '#ffffff' || rawStyles.title_color.toLowerCase() === '#fff' || rawStyles.title_color.toLowerCase() === 'white')
+              ? '#0F172A'
+              : rawStyles.title_color;
+            const subtitleColor = (!rawStyles.subtitle_color || rawStyles.subtitle_color.toLowerCase() === '#e2e8f0' || rawStyles.subtitle_color.toLowerCase() === '#ffffff' || rawStyles.subtitle_color.toLowerCase() === '#fff' || rawStyles.subtitle_color.toLowerCase() === 'white')
+              ? '#475569'
+              : rawStyles.subtitle_color;
+            return {
+              ...translations.es.retreatsModal,
+              ...raw,
+              styles: {
+                title_font: 'font-display',
+                title_size: 'text-4xl',
+                title_weight: 'font-black',
+                venue_color: '#475569',
+                card_title_color: '#0F172A',
+                card_text_color: '#475569',
+                ...rawStyles,
+                title_color: titleColor,
+                subtitle_color: subtitleColor,
+              }
+            };
+          })(),
           shopHeader: {
             badge: "TIENDA SOLIDARIA CATÓLICA",
             title: "Artículos de Fe, Devoción y Formación Cristiana",
@@ -290,8 +300,13 @@ export const AdminDataProvider = ({ children }) => {
         styles: {
           title_font: 'font-display',
           title_size: 'text-4xl',
-          title_color: '#FFFFFF',
-          title_weight: 'font-black'
+          title_color: '#0F172A',
+          title_weight: 'font-black',
+          subtitle_color: '#475569',
+          subtitle_size: 'text-lg',
+          venue_color: '#475569',
+          card_title_color: '#0F172A',
+          card_text_color: '#475569'
         }
       },
       shopHeader: {
@@ -615,11 +630,11 @@ export const AdminDataProvider = ({ children }) => {
         styles: {
           title_font: 'font-display',
           title_size: 'text-4xl',
-          title_color: '#FFFFFF',
+          title_color: '#0F172A',
           title_weight: 'font-black',
-          subtitle_color: '#E2E8F0',
+          subtitle_color: '#475569',
           subtitle_size: 'text-lg',
-          venue_color: '#94A3B8',
+          venue_color: '#475569',
           card_title_color: '#0F172A',
           card_text_color: '#475569'
         }

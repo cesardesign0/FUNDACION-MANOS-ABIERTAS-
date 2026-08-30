@@ -49,7 +49,30 @@ export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId: propFe
     return event.period === selectedPeriod;
   });
 
-  const displayedEvents = filteredEvents;
+  // Ensure high contrast against light background
+  const titleColor = (() => {
+    const c = retreatsModal.styles?.title_color;
+    if (!c || c.toLowerCase() === '#ffffff' || c.toLowerCase() === '#fff' || c.toLowerCase() === 'white' || c.toLowerCase() === '#e2e8f0') {
+      return '#0F172A';
+    }
+    return c;
+  })();
+
+  const subtitleColor = (() => {
+    const c = retreatsModal.styles?.subtitle_color;
+    if (!c || c.toLowerCase() === '#ffffff' || c.toLowerCase() === '#fff' || c.toLowerCase() === 'white' || c.toLowerCase() === '#e2e8f0' || c.toLowerCase() === '#cbd5e1') {
+      return '#475569';
+    }
+    return c;
+  })();
+
+  const venueColor = (() => {
+    const c = retreatsModal.styles?.venue_color;
+    if (!c || c.toLowerCase() === '#ffffff' || c.toLowerCase() === '#fff' || c.toLowerCase() === 'white') {
+      return '#475569';
+    }
+    return c;
+  })();
 
   return (
     <section id="retreats" className="py-24 bg-gradient-to-b from-white via-[#fcfbf9] to-[#faf8f5] relative overflow-hidden border-t border-slate-200/80">
@@ -71,8 +94,8 @@ export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId: propFe
 
           <EditableElement elementInfo={{ type: 'text', id: 'retreats-title', sectionId: 'retreats', label: 'Título Principal', data: { text: retreatsModal.title } }}>
             <h2 
-              className={`${retreatsModal.styles?.title_font || 'font-display'} ${retreatsModal.styles?.title_size || 'text-3xl sm:text-5xl'} ${retreatsModal.styles?.title_weight || 'font-black'} leading-tight mb-4`}
-              style={{ color: retreatsModal.styles?.title_color || '#0F172A' }}
+              className={`${retreatsModal.styles?.title_font || 'font-display'} ${retreatsModal.styles?.title_size || 'text-3xl sm:text-5xl'} ${retreatsModal.styles?.title_weight || 'font-black'} text-slate-900 leading-tight mb-4`}
+              style={{ color: titleColor }}
             >
               {retreatsModal.title || (language === 'es' ? 'Calendario de Actividades y Retiros' : 'Calendar of Activities & Retreats')}
             </h2>
@@ -80,14 +103,17 @@ export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId: propFe
 
           <EditableElement elementInfo={{ type: 'text', id: 'retreats-subtitle', sectionId: 'retreats', label: 'Subtítulo', data: { text: retreatsModal.subtitle } }}>
             <p 
-              className={`leading-relaxed max-w-2xl mx-auto ${retreatsModal.styles?.subtitle_size || 'text-base sm:text-lg'}`}
-              style={{ color: retreatsModal.styles?.subtitle_color || '#475569' }}
+              className={`leading-relaxed max-w-2xl mx-auto text-slate-600 ${retreatsModal.styles?.subtitle_size || 'text-base sm:text-lg'}`}
+              style={{ color: subtitleColor }}
             >
               {retreatsModal.subtitle}
             </p>
           </EditableElement>
 
-          <div className="mt-3 inline-flex items-center gap-1.5 text-xs text-slate-600 bg-white px-3.5 py-1.5 rounded-full border border-slate-200 shadow-xs">
+          <div 
+            className="mt-3 inline-flex items-center gap-1.5 text-xs bg-white px-3.5 py-1.5 rounded-full border border-slate-200 shadow-xs font-medium"
+            style={{ color: venueColor }}
+          >
             <MapPin className="w-3.5 h-3.5 text-brand-coral flex-shrink-0" />
             <span>{retreatsModal.venueNotice}</span>
           </div>

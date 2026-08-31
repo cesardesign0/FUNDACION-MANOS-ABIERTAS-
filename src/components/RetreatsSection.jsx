@@ -191,6 +191,8 @@ export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId: propFe
                 <img
                   src={featuredEvent.image}
                   alt={featuredEvent.title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
@@ -355,6 +357,8 @@ export const RetreatsSection = ({ onOpenRetreatsModal, featuredRetreatId: propFe
                   <img
                     src={event.image}
                     alt={event.title}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />

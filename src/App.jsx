@@ -24,6 +24,7 @@ import { CompletedMissionsModal } from './components/CompletedMissionsModal';
 import { ReviewModal } from './components/ReviewModal';
 import { ChatAssistantModal } from './components/ChatAssistantModal';
 import { AdminDashboard } from './components/admin/AdminDashboard';
+import { WhatsAppButton } from './components/WhatsAppButton';
 import { Heart, ShoppingBag, PlusCircle, MessageSquare, X, Lock } from 'lucide-react';
 import { recordPublicVisit } from './utils/analyticsTracker';
 
@@ -434,6 +435,9 @@ const MainLayout = () => {
         onClose={() => setVolunteerModalState({ isOpen: false, mode: 'volunteer' })}
         initialMode={volunteerModalState.mode}
       />
+
+      {/* Floating WhatsApp Action Button */}
+      <WhatsAppButton />
     </div>
   );
 };

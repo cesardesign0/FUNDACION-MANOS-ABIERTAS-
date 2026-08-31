@@ -7,7 +7,7 @@
  */
 
 export const FOUNDATION_CONFIG = {
-  name: "Fundación Manos Abiertas de Jesús & María",
+  name: "Fundación Manos Abiertas de Jesús y María",
   
   // 👉 CORREO CENTRAL DE LA FUNDACIÓN:
   // Todos los mensajes (contacto, nuevas causas, solicitudes de voluntariado y reseñas) llegan aquí:

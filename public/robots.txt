@@ -1,0 +1,4 @@
+User-agent: *  
+Allow: /  
+Disallow: /#admin  
+Sitemap: https://manos-abiertas-jesus-maria.web.app/sitemap.xml 

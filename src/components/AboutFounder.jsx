@@ -54,7 +54,7 @@ export const AboutFounder = ({ onOpenVolunteer, onSelectElement }) => {
               </div>
             </div>
             <p className="text-[11px] text-slate-500 font-medium">
-              Impulsoras de la Fundación Manos Abiertas de Jesús & María
+              Impulsoras de la Fundación Manos Abiertas de Jesús y María
             </p>
           </div>
         </div>

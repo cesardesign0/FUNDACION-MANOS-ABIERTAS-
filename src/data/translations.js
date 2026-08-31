@@ -61,7 +61,7 @@ export const translations = {
       badge: "✨ ¡APÓYANOS CON TU COMPRA SOLIDARIA CATÓLICA!",
       title: "Cada Artículo Religioso, Rosario o Libro Salva y Transforma Vidas",
       subtitle: "Con tu compra puedes apoyar directamente a esta fundación",
-      description: "En la Fundación Manos Abiertas de Jesús & María ponemos a tu disposición nuestra tienda 100% católica y cristiana de rosarios bendecidos, sagradas biblias, imágenes de santos, denarios, prendas y libros de motivación y crecimiento espiritual. El 100% de los ingresos financia nuestros programas de ayuda humanitaria y retiros de sanación apoyados por el Centro Carismático Católico de NY y el grupo Isha Bethel.",
+      description: "En la Fundación Manos Abiertas de Jesús y María ponemos a tu disposición nuestra tienda 100% católica y cristiana de rosarios bendecidos, sagradas biblias, imágenes de santos, denarios, prendas y libros de motivación y crecimiento espiritual. El 100% de los ingresos financia nuestros programas de ayuda humanitaria y retiros de sanación apoyados por el Centro Carismático Católico de NY y el grupo Isha Bethel.",
       highlightNotice: "🛒 Tu compra es un acto de caridad y fe que bendice a quienes más sufren.",
       btnShop: "Explorar Tienda Solidaria",
       btnContinue: "Continuar al Sitio Web",
@@ -269,7 +269,7 @@ export const translations = {
     },
     shop: {
       badge: "TIENDA 100% CATÓLICA Y CRISTIANA",
-      title: "Tienda Solidaria Manos Abiertas de Jesús & María",
+      title: "Tienda Solidaria Manos Abiertas de Jesús y María",
       subtitle: "Adquiere artículos religiosos católicos bendecidos y libros de motivación espiritual. Con cada compra apoyas directamente a los programas sociales y retiros de nuestra fundación.",
       supportCallout: "✨ El 100% de las ventas se destina a ayuda humanitaria, comedores y retiros espirituales en el Bronx y Nueva York.",
       categories: {
@@ -344,7 +344,7 @@ export const translations = {
         },
         {
           id: 'prod-6',
-          name: "Polo Oficial 'Isha Bethel - Manos Abiertas de Jesús & María'",
+          name: "Polo Oficial 'Isha Bethel - Manos Abiertas de Jesús y María'",
           category: "apparel",
           price: 22.00,
           originalPrice: 28.00,
@@ -379,7 +379,7 @@ export const translations = {
     },
     cart: {
       title: "Tu Carrito Solidario Católico",
-      subtitle: "Cada compra financia directamente la obra misionera de Manos Abiertas de Jesús & María y el Centro Carismático.",
+      subtitle: "Cada compra financia directamente la obra misionera de Manos Abiertas de Jesús y María y el Centro Carismático.",
       emptyTitle: "Tu carrito está vacío",
       emptyDesc: "Explora nuestros artículos católicos, rosarios y libros de motivación cristiana para sumar tu apoyo.",
       subtotal: "Subtotal",
@@ -601,7 +601,7 @@ export const translations = {
       close: "Cerrar"
     },
     footer: {
-      aboutText: "La Fundación Manos Abiertas de Jesús & María es una obra social y espiritual nacida del Centro Carismático Católico de la Ciudad de Nueva York y el Bronx, impulsada por el grupo Isha Bethel para brindar ayuda humanitaria, fe y sanación.",
+      aboutText: "La Fundación Manos Abiertas de Jesús y María es una obra social y espiritual nacida del Centro Carismático Católico de la Ciudad de Nueva York y el Bronx, impulsada por el grupo Isha Bethel para brindar ayuda humanitaria, fe y sanación.",
       quickLinksTitle: "Enlaces Rápidos",
       programsTitle: "Nuestras Misiones",
       newsletterTitle: "Mantente en Contacto",

@@ -90,7 +90,7 @@ export const CartModal = ({ isOpen, onClose, cart, onUpdateQuantity, onRemoveIte
 
               <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-medium flex items-center gap-2 text-left">
                 <Heart className="w-4 h-4 text-brand-coral flex-shrink-0 fill-brand-coral" />
-                <span>Gracias por tu apoyo. Tu compra financia directamente la obra de Manos Amigas.</span>
+                <span>Gracias por tu apoyo. Tu compra financia directamente la obra de Manos Abiertas de Jesús y María.</span>
               </div>
 
               <button
@@ -272,7 +272,7 @@ export const CartModal = ({ isOpen, onClose, cart, onUpdateQuantity, onRemoveIte
 
                     <div className="p-3 rounded-xl bg-amber-50 text-amber-900 text-xs font-medium flex items-center gap-2">
                       <Heart className="w-4 h-4 text-brand-coral flex-shrink-0 fill-brand-coral" />
-                      <span>Con esta compra estás apoyando directamente a Manos Amigas.</span>
+                      <span>Con esta compra estás apoyando directamente a Manos Abiertas de Jesús y María.</span>
                     </div>
 
                     <button

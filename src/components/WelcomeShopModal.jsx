@@ -60,7 +60,7 @@ export const WelcomeShopModal = ({ onOpenShop }) => {
             <div className="bg-white rounded-2xl p-2 shadow-xl border-2 border-white/80 inline-flex items-center">
               <img
                 src="/logo-manos-abiertas.png"
-                alt="Fundación Manos Abiertas de Jesús & María"
+                alt="Fundación Manos Abiertas de Jesús y María"
                 className="h-12 sm:h-14 w-auto object-contain"
               />
             </div>

@@ -26,7 +26,7 @@ export const Footer = ({ onOpenDonate, onOpenVolunteer, onOpenAdmin }) => {
             <div className="flex items-center gap-3">
               <img
                 src="/logo-manos-abiertas.png"
-                alt="Fundación Manos Abiertas"
+                alt="Fundación Manos Abiertas de Jesús y María"
                 className="h-14 w-auto object-contain bg-white rounded-xl p-1 shadow-md"
               />
               <div>
@@ -34,7 +34,7 @@ export const Footer = ({ onOpenDonate, onOpenVolunteer, onOpenAdmin }) => {
                   MANOS ABIERTAS
                 </span>
                 <span className="text-[10px] font-bold text-brand-coral uppercase tracking-wider block">
-                  de Jesús & María
+                  de Jesús y María
                 </span>
               </div>
             </div>
@@ -167,7 +167,7 @@ export const Footer = ({ onOpenDonate, onOpenVolunteer, onOpenAdmin }) => {
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
             <span>
-              © {new Date().getFullYear()} Fundación Manos Abiertas de Jesús & María. {footer.rights}
+              © {new Date().getFullYear()} Fundación Manos Abiertas de Jesús y María. {footer.rights}
             </span>
             <span className="hidden sm:inline text-slate-700">•</span>
             <span className="inline-flex items-center gap-1.5 text-slate-400">

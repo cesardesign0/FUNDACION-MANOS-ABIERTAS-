@@ -75,7 +75,7 @@ export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpen
                   <div className="w-full flex justify-center mb-4">
                     <img
                       src={heroData.logoCardImage || "/logo-manos-abiertas.png"}
-                      alt="Fundación Manos Abiertas de Jesús & María"
+                      alt="Fundación Manos Abiertas de Jesús y María"
                       className="h-32 sm:h-36 w-auto object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>

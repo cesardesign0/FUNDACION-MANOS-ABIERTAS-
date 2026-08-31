@@ -84,7 +84,7 @@ export const DonationModal = ({ isOpen, onClose, preselectedCause }) => {
           <div className="flex items-center gap-2 mb-2">
             <Heart className="w-5 h-5 fill-brand-coral text-brand-coral" />
             <span className="text-xs uppercase font-bold tracking-wider text-teal-200">
-              {language === 'es' ? 'Fundación Manos Abiertas de Jesús & María' : 'Manos Abiertas de Jesús & María Foundation'}
+              {language === 'es' ? 'Fundación Manos Abiertas de Jesús y María' : 'Manos Abiertas de Jesús y María Foundation'}
             </span>
           </div>
 

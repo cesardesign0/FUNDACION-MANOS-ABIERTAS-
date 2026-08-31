@@ -46,7 +46,7 @@ export const Navbar = ({ onOpenDonate, onOpenVolunteer, onOpenCart, cartItemCoun
         <a href="#home" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">
           <img
             src="/logo-manos-abiertas.png"
-            alt="Fundación Manos Abiertas de Jesús & María"
+            alt="Fundación Manos Abiertas de Jesús y María"
             className="h-12 sm:h-14 lg:h-16 w-auto object-contain bg-white rounded-xl p-1 shadow-md group-hover:scale-105 transition-transform"
           />
           <div className="hidden sm:block">

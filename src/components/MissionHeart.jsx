@@ -118,11 +118,11 @@ export const MissionHeart = ({
                 <div className="absolute -inset-1 bg-gradient-to-tr from-brand-coral via-brand-gold to-brand-teal rounded-full blur-md opacity-30 group-hover:opacity-60 transition duration-700 pointer-events-none" />
                 <img
                   src={mission.centerLogoImage || "/logo-manos-abiertas.png"}
-                  alt="Fundación Manos Abiertas de Jesús & María"
+                  alt="Fundación Manos Abiertas de Jesús y María"
                   className="relative z-10 w-full h-auto object-contain max-h-48 drop-shadow-md"
                 />
                 <div className="absolute bottom-4 left-6 right-6 text-center z-10 bg-slate-950/80 backdrop-blur-md rounded-full py-1 px-3 text-white text-[11px] font-bold border border-white/20">
-                  ❤️ Manos Abiertas de Jesús & María
+                  ❤️ Manos Abiertas de Jesús y María
                 </div>
               </div>
 

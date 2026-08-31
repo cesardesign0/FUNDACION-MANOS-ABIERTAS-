@@ -435,9 +435,6 @@ const MainLayout = () => {
         onClose={() => setVolunteerModalState({ isOpen: false, mode: 'volunteer' })}
         initialMode={volunteerModalState.mode}
       />
-
-      {/* Floating WhatsApp Action Button */}
-      <WhatsAppButton />
     </div>
   );
 };

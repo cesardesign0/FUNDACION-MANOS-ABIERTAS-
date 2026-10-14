@@ -9,7 +9,7 @@ export const ChatAssistantModal = ({ isOpen, onClose, onOpenDonate, onOpenNewMis
       id: 1,
       sender: 'bot',
       text: language === 'es' 
-        ? '¡Paz y bien! 🙏 Bienvenido a la Fundación Manos Abiertas de Jesús & María y el Centro Carismático Católico. ¿En qué podemos orientarte o ayudarte hoy?' 
+        ? '¡Paz y bien! 🙏 Bienvenido a la Fundación Manos Abiertas de Jesús & María y el Centro Católico Carismático Bronx de Nueva York. ¿En qué podemos orientarte o ayudarte hoy?' 
         : 'Peace and blessings! 🙏 Welcome to Manos Abiertas de Jesús & María and the Catholic Charismatic Center. How can we assist or guide you today?',
       quickReplies: language === 'es' ? [
         '¿Dónde están ubicados?',
@@ -64,18 +64,18 @@ export const ChatAssistantModal = ({ isOpen, onClose, onOpenDonate, onOpenNewMis
 
       if (lower.includes('donar') || lower.includes('aporte') || lower.includes('donate')) {
         botReply = language === 'es'
-          ? 'Puedes realizar tu donación solidaria segura en línea directamente en nuestra página. El 100% de los fondos se destina a ayuda humanitaria, víveres y retiros espirituales respaldados por el Centro Carismático Católico de NY.'
+          ? 'Puedes realizar tu donación solidaria segura en línea directamente en nuestra página. El 100% de los fondos se destina a ayuda humanitaria, víveres y retiros espirituales respaldados por el Centro Católico Carismático Bronx de Nueva York.'
           : 'You can make a secure donation directly on our website. 100% of proceeds fund humanitarian relief, grocery supplies, and retreats supported by the Catholic Charismatic Center of NY.';
         options = language === 'es' ? ['Abrir formulario de Donación', '¿Dónde están ubicados?', 'Otra pregunta'] : ['Open Donation form', 'Where are you located?', 'Other question'];
       } else if (lower.includes('ubicad') || lower.includes('direcci') || lower.includes('donde') || lower.includes('located') || lower.includes('address')) {
         botReply = language === 'es'
-          ? 'Nuestra sede y cuna espiritual es el Centro Carismático Católico de Nueva York, ubicado en: 📍 826 E. 166th St., Bronx, NY 10459 (Junto a la Parroquia St. Anthony of Padua). Teléfono: (718) 378-1734.'
+          ? 'Nuestra sede y cuna espiritual es el Centro Católico Carismático Bronx de Nueva York, ubicado en: 📍 826 E. 166th St., Bronx, NY 10459 (Junto a la Parroquia St. Anthony of Padua). Teléfono: (718) 378-1734.'
           : 'Our spiritual home and headquarters is the Catholic Charismatic Center of New York, located at: 📍 826 E. 166th St., Bronx, NY 10459 (Next to St. Anthony of Padua Church). Phone: (718) 378-1734.';
         options = language === 'es' ? ['¿Cuándo son los retiros?', '¿Cómo puedo donar?', 'Hablar con un asesor'] : ['When are the retreats?', 'How to donate?', 'Talk to advisor'];
       } else if (lower.includes('retiro') || lower.includes('oraci') || lower.includes('espiritual') || lower.includes('retreat')) {
         botReply = language === 'es'
-          ? 'Organizamos retiros de sanación interior, jornadas de avivamiento carismático y vigilias de oración continua guiadas por la comunidad Isha Bethel y predicadores de la arquidiócesis.'
-          : 'We organize inner healing retreats, charismatic revival days, and continuous prayer vigils guided by the Isha Bethel community.';
+          ? 'Organizamos retiros de sanación interior, jornadas de avivamiento carismático y vigilias de oración continua guiadas por la comunidad Isha-Bethel y predicadores de la arquidiócesis.'
+          : 'We organize inner healing retreats, charismatic revival days, and continuous prayer vigils guided by the Isha-Bethel community.';
         options = language === 'es' ? ['Ver Calendario de Retiros', '¿Cómo puedo donar?', 'Hablar con un asesor'] : ['View Retreats Calendar', 'How to donate?', 'Talk to advisor'];
       } else if (lower.includes('ayuda') || lower.includes('solicitar') || lower.includes('necesit') || lower.includes('alimento') || lower.includes('help')) {
         botReply = language === 'es'

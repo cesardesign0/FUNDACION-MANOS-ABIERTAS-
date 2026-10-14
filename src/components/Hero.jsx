@@ -88,7 +88,7 @@ export const Hero = ({ onOpenDonate, onOpenVolunteer, onOpenHumanitarian, onOpen
                 </span>
                 
                 <h3 className="font-display font-black text-xs sm:text-sm text-brand-coral uppercase tracking-wider mt-1">
-                  Centro Carismático Católico • NY & Bronx
+                  Centro Católico Carismático • Bronx de Nueva York
                 </h3>
 
                 <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-brand-teal group-hover:text-brand-teal-dark transition-colors">

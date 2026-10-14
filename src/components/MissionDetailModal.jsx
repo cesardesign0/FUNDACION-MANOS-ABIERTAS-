@@ -130,7 +130,7 @@ export const MissionDetailModal = ({ isOpen, onClose, mission, onDonate, onVolun
                 </p>
               )}
               <p className="text-slate-600 text-xs leading-relaxed">
-                Esta causa responde directamente al llamado del Evangelio de asistir al desamparado. Coordinada por la pastoral social del Centro Carismático Católico y la comunidad Isha Bethel, garantizamos que cada ayuda llegue a las manos correctas sin intermediarios.
+                Esta causa responde directamente al llamado del Evangelio de asistir al desamparado. Coordinada por la pastoral social del Centro Católico Carismático Bronx de Nueva York y la comunidad Isha-Bethel, garantizamos que cada ayuda llegue a las manos correctas sin intermediarios.
               </p>
 
               <div className="p-4 rounded-2xl bg-amber-50/90 border border-amber-200 text-amber-950 text-xs space-y-2">
@@ -190,7 +190,7 @@ export const MissionDetailModal = ({ isOpen, onClose, mission, onDonate, onVolun
                 <ShieldCheck className="w-6 h-6 text-brand-teal flex-shrink-0 mt-0.5" />
                 <div className="space-y-1">
                   <h5 className="font-display font-bold text-slate-900 text-sm">
-                    Respaldo del Centro Carismático Católico
+                    Respaldo del Centro Católico Carismático Bronx de Nueva York
                   </h5>
                   <p className="text-xs text-slate-600 leading-relaxed">
                     Todos los fondos donados son administrados con estricta supervisión eclesiástica y rendición de cuentas pública en nuestra sede de 826 E. 166th St., Bronx, NY.

@@ -245,7 +245,7 @@ export const DonationModal = ({ isOpen, onClose, preselectedCause }) => {
                     >
                       <option value="all">Donde más se necesite (Misión General)</option>
                       <option value="Alimentos para Familias Vulnerables">Alimentos para Familias Vulnerables</option>
-                      <option value="Retiros de Sanación Espiritual e Isha Bethel">Retiros de Sanación Espiritual e Isha Bethel</option>
+                      <option value="Retiros de Sanación Espiritual e Isha-Bethel">Retiros de Sanación Espiritual e Isha-Bethel</option>
                       <option value="Casa de Ayuda y Centro Carismático Bronx">Casa de Ayuda y Centro Carismático Bronx</option>
                       <option value="Sostenimiento Pastoral y Caridad">Sostenimiento Pastoral y Caridad</option>
                     </select>

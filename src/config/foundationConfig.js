@@ -20,7 +20,7 @@ export const FOUNDATION_CONFIG = {
   phone: "+1 (718) 378-1734",
   
   // Dirección física de nuestra Casa de Ayuda:
-  address: "Centro Carismático Católico, 826 E. 166th St., Bronx, NY 10459",
+  address: "Centro Católico Carismático Bronx de Nueva York, 826 E. 166th St., Bronx, NY 10459",
   
   // Enlaces de redes sociales:
   instagramUrl: "https://www.instagram.com",

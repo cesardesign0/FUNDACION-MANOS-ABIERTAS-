@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso Suspendido Temporalmente (429)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #0A0A0C;
+      color: #F3F4F6;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="max-w-md w-full bg-[#111116] border border-red-500/20 rounded-2xl p-8 text-center shadow-2xl backdrop-blur-xl relative overflow-hidden">
+    <!-- Glow decorativo superior -->
+    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-48 h-48 bg-red-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- Icono de Escudo de Seguridad -->
+    <div class="w-16 h-16 mx-auto mb-6 bg-red-500/10 border border-red-500/30 rounded-2xl flex items-center justify-center">
+      <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+      </svg>
+    </div>
+
+    <!-- Título y Código -->
+    <span class="px-3 py-1 bg-red-500/10 text-red-400 border border-red-500/20 text-xs font-semibold rounded-full uppercase tracking-wider">
+      Código 429 • Demasiadas Peticiones
+    </span>
+    
+    <h1 class="text-2xl font-bold mt-4 mb-2 text-white">Acceso en Pausa por Seguridad</h1>
+    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+      Hemos detectado un volumen inusual de solicitudes provenientes de su conexión en un corto período de tiempo. Para proteger los recursos del servidor y garantizar la estabilidad, el acceso se ha pausado temporalmente.
+    </p>
+
+    <!-- Contador / Tiempo estimado -->
+    <div class="bg-black/40 border border-white/5 rounded-xl p-4 mb-6">
+      <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Tiempo de reanudación estimado</p>
+      <p class="text-lg font-mono font-semibold text-red-400" id="countdown-timer">15:00 minutos</p>
+    </div>
+
+    <!-- Botón de reintento -->
+    <button onclick="checkAndRetry()" class="w-full py-3 px-4 bg-white/10 hover:bg-white/15 border border-white/20 text-white rounded-xl font-medium transition-all duration-200">
+      Verificar y Reintentar Acceso
+    </button>
+  </div>
+
+  <script>
+    function checkAndRetry() {
+      const blockKey = '__shield_blocked_until';
+      const blockedUntil = localStorage.getItem(blockKey);
+      const now = Date.now();
+
+      if (!blockedUntil || now >= parseInt(blockedUntil, 10)) {
+        localStorage.removeItem(blockKey);
+        localStorage.removeItem('__shield_attempts');
+        window.location.replace('/');
+      } else {
+        const remainingSeconds = Math.ceil((parseInt(blockedUntil, 10) - now) / 1000);
+        const mins = Math.floor(remainingSeconds / 60);
+        const secs = remainingSeconds % 60;
+        alert(`Aún debe esperar ${mins} minutos y ${secs} segundos para restablecer el acceso.`);
+      }
+    }
+
+    // Actualizador visual de cuenta regresiva
+    setInterval(() => {
+      const blockedUntil = localStorage.getItem('__shield_blocked_until');
+      if (blockedUntil) {
+        const remaining = Math.max(0, parseInt(blockedUntil, 10) - Date.now());
+        const mins = Math.floor(remaining / 60000);
+        const secs = Math.floor((remaining % 60000) / 1000);
+        document.getElementById('countdown-timer').innerText = 
+          `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')} minutos`;
+        if (remaining <= 0) {
+          localStorage.removeItem('__shield_blocked_until');
+          document.getElementById('countdown-timer').innerText = "Listo para reintentar";
+        }
+      }
+    }, 1000);
+  </script>
+</body>
+</html>

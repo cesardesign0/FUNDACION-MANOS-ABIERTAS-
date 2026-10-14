@@ -8,16 +8,9 @@ export const WelcomeShopModal = ({ onOpenShop }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
-  useEffect(() => {
-    const hasSeenWelcome = sessionStorage.getItem('manos_amigas_welcome_seen');
-    if (!hasSeenWelcome) {
-      // Open after a gentle delay for smooth page entry
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, []);
+  // Modal de bienvenida de la tienda desactivado (no se muestra automáticamente)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {}, []);
 
   const handleClose = () => {
     if (dontShowAgain) {

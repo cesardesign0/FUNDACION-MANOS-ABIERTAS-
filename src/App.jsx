@@ -232,7 +232,7 @@ const MainLayout = () => {
           />
         )}
 
-        {/* La Casa de la Ayuda / Centro Carismático Católico & Grupo Isha Bethel */}
+        {/* La Casa de la Ayuda / Centro Católico Carismático Bronx de Nueva York & Ministerio Católico Isha-Bethel */}
         {(!sectionVisibility || sectionVisibility.about !== false) && (
           <AboutFounder
             onOpenVolunteer={() => handleOpenVolunteer('volunteer')}

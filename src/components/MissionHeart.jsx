@@ -143,19 +143,19 @@ export const MissionHeart = ({
                 </div>
               </button>
 
-              {/* BURBUJA PEQUEÑA 2 (Abajo Derecha): Comunidad Isha Bethel */}
+              {/* BURBUJA PEQUEÑA 2 (Abajo Derecha): Comunidad Isha-Bethel */}
               <button
                 onClick={handleScrollToAbout}
-                title="Haz clic para conocer la Comunidad Isha Bethel y Casa de Ayuda"
+                title="Haz clic para conocer la Comunidad Isha-Bethel y Casa de Ayuda"
                 className="absolute -bottom-4 right-2 sm:right-6 w-32 h-32 sm:w-36 sm:h-36 rounded-full overflow-hidden shadow-2xl border-4 border-white z-20 group hover:scale-110 transition-transform duration-300 cursor-pointer focus:outline-none ring-2 ring-brand-coral/30 hover:ring-brand-coral"
               >
                 <img
                   src={mission.bubbleIshaImage || "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80"}
-                  alt="Comunidad Isha Bethel"
+                  alt="Comunidad Isha-Bethel"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex flex-col items-center justify-end pb-2.5">
-                  <span className="text-white text-[11px] font-black tracking-wide">Isha Bethel</span>
+                  <span className="text-white text-[11px] font-black tracking-wide">Ministerio Católico Isha-Bethel</span>
                   <span className="text-[9px] text-brand-teal-light font-bold">Conocer Más →</span>
                 </div>
               </button>

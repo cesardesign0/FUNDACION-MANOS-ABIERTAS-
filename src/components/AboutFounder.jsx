@@ -18,14 +18,14 @@ export const AboutFounder = ({ onOpenVolunteer, onSelectElement }) => {
         
         {/* Top Centered Logos Banner */}
         <div className="mb-14 p-6 sm:p-8 rounded-3xl bg-white shadow-xl border border-slate-200/90 flex flex-col md:flex-row items-center justify-between gap-8">
-          {/* Logo 1: EL CENTRO (Centro Carismático Católico NY & Bronx) */}
+          {/* Logo 1: EL CENTRO (Centro Católico Carismático Bronx de Nueva York) */}
           <div className="flex flex-col items-center md:items-start gap-2">
             <span className="text-[10px] uppercase font-black tracking-widest text-slate-400">
               {language === 'es' ? 'NUESTRA CASA MATRIZ Y CUNA ESPIRITUAL' : 'OUR SPIRITUAL HOME & CRADLE'}
             </span>
             <img
               src="/logo-el-centro.png"
-              alt="El Centro Carismático Católico - Bronx NY"
+              alt="El Centro Católico Carismático Bronx de Nueva York"
               className="h-12 sm:h-14 w-auto object-contain drop-shadow-sm hover:scale-105 transition-transform"
             />
             <p className="text-[11px] text-slate-500 font-medium">
@@ -35,7 +35,7 @@ export const AboutFounder = ({ onOpenVolunteer, onSelectElement }) => {
 
           <div className="hidden md:block w-px h-16 bg-slate-200" />
 
-          {/* Logo 2: ISHA BETHEL & MANOS ABIERTAS */}
+          {/* Logo 2: ISHA-BETHEL & MANOS ABIERTAS */}
           <div className="flex flex-col items-center md:items-end gap-2 text-center md:text-right">
             <span className="text-[10px] uppercase font-black tracking-widest text-brand-coral">
               {language === 'es' ? 'COMUNIDAD Y PASTORAL MISIONERA' : 'MISSIONARY COMMUNITY & PASTORAL'}
@@ -46,7 +46,7 @@ export const AboutFounder = ({ onOpenVolunteer, onSelectElement }) => {
               </div>
               <div>
                 <span className="font-display font-black text-xl text-slate-900 tracking-tight block">
-                  ISHA BETHEL
+                  ISHA-BETHEL
                 </span>
                 <span className="text-[11px] font-bold text-brand-teal uppercase tracking-wider block">
                   Mujeres y Familias en Fe
@@ -69,7 +69,7 @@ export const AboutFounder = ({ onOpenVolunteer, onSelectElement }) => {
               <div className="col-span-2 relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white group">
                 <img
                   src={about.collageImg1 || "/retreats/seminario-espiritu.jpg"}
-                  alt="Asamblea y Alabanza en el Centro Carismático Católico"
+                  alt="Asamblea y Alabanza en el Centro Católico Carismático Bronx de Nueva York"
                   className="w-full h-64 sm:h-72 object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-transparent flex flex-col justify-end p-5 text-white">
@@ -95,15 +95,15 @@ export const AboutFounder = ({ onOpenVolunteer, onSelectElement }) => {
                 </div>
               </div>
 
-              {/* Photo 2: Community Women Isha Bethel */}
+              {/* Photo 2: Community Women Isha-Bethel */}
               <div className="relative rounded-2xl overflow-hidden shadow-xl border-4 border-white group">
                 <img
                   src={about.collageImg2 || "/retreats/retiro-mujeres.jpg"}
-                  alt="Comunidad de Mujeres Isha Bethel"
+                  alt="Comunidad de Mujeres Isha-Bethel"
                   className="w-full h-44 sm:h-52 object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent flex items-end p-3 text-white">
-                  <span className="text-xs font-black">Comunidad Isha Bethel</span>
+                  <span className="text-xs font-black">Ministerio Católico Isha-Bethel</span>
                 </div>
               </div>
 
@@ -122,7 +122,7 @@ export const AboutFounder = ({ onOpenVolunteer, onSelectElement }) => {
             </div>
           </div>
 
-          {/* Right Column: Narrative of Centro Carismático Católico & Isha Bethel */}
+          {/* Right Column: Narrative of Centro Católico Carismático Bronx de Nueva York & Isha-Bethel */}
           <div className="lg:col-span-6 space-y-6">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-teal-light text-brand-teal font-bold text-xs uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5 text-brand-gold" />
@@ -208,7 +208,7 @@ export const AboutFounder = ({ onOpenVolunteer, onSelectElement }) => {
               </div>
 
               <div className="font-handwritten text-2xl sm:text-3xl text-brand-coral tracking-wider rotate-[-2deg] select-none font-bold">
-                Isha Bethel • NY & Bronx
+                Isha-Bethel • NY & Bronx
               </div>
             </div>
 

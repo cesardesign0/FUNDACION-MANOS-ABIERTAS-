@@ -1,7 +1,7 @@
 export const translations = {
   es: {
     topbar: {
-      address: "Centro Carismático Católico, 826 E. 166th St., Bronx, NY",
+      address: "Centro Católico Carismático Bronx de Nueva York, 826 E. 166th St., Bronx, NY",
       email: "contacto@manosabiertas.org",
       phone: "+1 (718) 378-1734",
       terms: "Términos y Condiciones",
@@ -25,7 +25,7 @@ export const translations = {
       handwritten: "Ayudando a transformar vidas y su futuro",
       title: "«Cada uno ponga al servicio de los demás el don recibido, como buenos servidores de la gracia de Dios»",
       citation: "— 1 Pedro 4, 10",
-      description: "Nacidos del Centro Carismático Católico de Nueva York y el grupo Isha Bethel, en la Fundación Manos Abiertas de Jesús y María brindamos ayuda humanitaria, acompañamiento fraterno y retiros de sanación integral.",
+      description: "Nacidos del Centro Católico Carismático Bronx de Nueva York y el Ministerio Católico Isha-Bethel, en la Fundación Manos Abiertas de Jesús y María brindamos ayuda humanitaria, acompañamiento fraterno y retiros de sanación integral.",
       btnDonate: "Hacer una Donación",
       btnVolunteer: "Únete como Voluntario",
       btnCauses: "Ver Nuestras Misiones",
@@ -61,7 +61,7 @@ export const translations = {
       badge: "✨ ¡APÓYANOS CON TU COMPRA SOLIDARIA CATÓLICA!",
       title: "Cada Artículo Religioso, Rosario o Libro Salva y Transforma Vidas",
       subtitle: "Con tu compra puedes apoyar directamente a esta fundación",
-      description: "En la Fundación Manos Abiertas de Jesús y María ponemos a tu disposición nuestra tienda 100% católica y cristiana de rosarios bendecidos, sagradas biblias, imágenes de santos, denarios, prendas y libros de motivación y crecimiento espiritual. El 100% de los ingresos financia nuestros programas de ayuda humanitaria y retiros de sanación apoyados por el Centro Carismático Católico de NY y el grupo Isha Bethel.",
+      description: "En la Fundación Manos Abiertas de Jesús y María ponemos a tu disposición nuestra tienda 100% católica y cristiana de rosarios bendecidos, sagradas biblias, imágenes de santos, denarios, prendas y libros de motivación y crecimiento espiritual. El 100% de los ingresos financia nuestros programas de ayuda humanitaria y retiros de sanación apoyados por el Centro Católico Carismático Bronx de Nueva York y el Ministerio Católico Isha-Bethel.",
       highlightNotice: "🛒 Tu compra es un acto de caridad y fe que bendice a quienes más sufren.",
       btnShop: "Explorar Tienda Solidaria",
       btnContinue: "Continuar al Sitio Web",
@@ -122,22 +122,39 @@ export const translations = {
       close: "Cerrar"
     },
     retreatsModal: {
-      badge: "CENTRO CARISMÁTICO CATÓLICO NY & GRUPO ISHA BETHEL",
+      badge: "CENTRO CATÓLICO CARISMÁTICO BRONX & MINISTERIO CATÓLICO ISHA-BETHEL",
       title: "Calendario de Retiros y Actividades Espirituales",
-      subtitle: "Espacios de sanación interior, fortaleza mental, oración carismática y renovación profunda en el Espíritu Santo.",
-      venueNotice: "📍 Lugar: Centro Carismático Católico (826 E. 166th St., Bronx, NY) y Casas de Retiro aliadas.",
+      subtitle: "Espacios de sanación interior, fortaleza espiritual, oración carismática y renovación profunda en el Espíritu Santo.",
+      venueNotice: "📍 Lugar: Centro Católico Carismático Bronx de Nueva York (826 E. 166th St.) y Casas de Retiro aliadas.",
       events: [
         {
           id: 'ret-1',
-          date: "24 – 26 de Octubre, 2026",
+          date: "11 – 13 de Septiembre, 2026",
+          title: "Retiro 'Primer Paso': Un Encuentro Personal con Jesús",
+          type: "Retiro de Iniciación",
+          category: "Iniciación y Fe",
+          time: "Viernes a Domingo",
+          schedule: "Viernes – Domingo",
+          cost: "$150 USD",
+          image: "/retreats/retiro-primer-paso.jpg",
+          location: "Centro Católico Carismático Bronx de Nueva York (826 E. 166th St.)",
+          desc: "Una experiencia espiritual diseñada para personas que desean tener un primer encuentro profundo con Dios y comenzar un nuevo camino de fe, sanación y transformación.",
+          leader: "Equipo de Evangelización del Centro Carismático",
+          badgeColor: "bg-brand-teal",
+          period: "current",
+          registrationLink: "https://tickets.centrobronx.com"
+        },
+        {
+          id: 'ret-2',
+          date: "25 – 27 de Septiembre, 2026",
           title: "Retiro de Mujeres: 'Isha-Bethel - Restauradas por su Gracia'",
           type: "Retiro de Mujeres",
           category: "Retiro de Mujeres",
           time: "Viernes 6:30 PM a Domingo 3:00 PM (Misa de Clausura)",
           schedule: "Viernes 6:30 PM – Domingo 3:00 PM",
-          cost: "$65 USD",
+          cost: "$150 USD",
           image: "/retreats/retiro-mujeres.jpg",
-          location: "Centro Carismático Católico (826 E. 166th St., Bronx, NY)",
+          location: "Centro Católico Carismático Bronx de Nueva York (826 E. 166th St.)",
           desc: "Retiro vivencial de fin de semana para mujeres enfocado en la sanación interior, perdón, restauración de la dignidad en Cristo y efusión del Espíritu Santo.",
           leader: "Comunidad de Mujeres Isha-Bethel & Sacerdotes Asesores",
           badgeColor: "bg-brand-coral",
@@ -145,88 +162,71 @@ export const translations = {
           registrationLink: "https://tickets.centrobronx.com"
         },
         {
-          id: 'ret-2',
-          date: "14 – 16 de Noviembre, 2026",
+          id: 'ret-3',
+          date: "9 – 11 de Octubre, 2026",
           title: "Retiro 'Primer Paso': Un Encuentro Personal con Jesús",
           type: "Retiro de Iniciación",
           category: "Iniciación y Fe",
-          time: "Viernes 7:00 PM a Domingo 3:00 PM",
-          schedule: "Viernes 7:00 PM – Domingo 3:00 PM",
-          cost: "$50 USD",
+          time: "Viernes a Domingo",
+          schedule: "Viernes – Domingo",
+          cost: "$150 USD",
           image: "/retreats/retiro-primer-paso.jpg",
-          location: "Auditorio San Antonio de Padua / Centro Carismático",
-          desc: "Diseñado especialmente para quienes realizan su primer retiro espiritual o desean renovar su relación viva con Dios desde el corazón.",
+          location: "Centro Católico Carismático Bronx de Nueva York (826 E. 166th St.)",
+          desc: "Una experiencia espiritual diseñada para personas que desean tener un primer encuentro profundo con Dios y comenzar un nuevo camino de fe, sanación y transformación.",
           leader: "Equipo de Evangelización del Centro Carismático",
           badgeColor: "bg-brand-teal",
           period: "current",
           registrationLink: "https://tickets.centrobronx.com"
         },
         {
-          id: 'ret-3',
-          date: "5 – 7 de Diciembre, 2026",
-          title: "Retiro para Matrimonios y Parejas: 'Un Solo Corazón en Dios'",
-          type: "Retiro Matrimonial",
-          category: "Matrimonios y Parejas",
-          time: "Viernes 6:30 PM a Domingo 2:00 PM",
-          schedule: "Viernes 6:30 PM – Domingo 2:00 PM",
-          cost: "$90 USD por pareja",
-          image: "/retreats/retiro-matrimonios.jpg",
-          location: "Centro Carismático Católico (Bronx, NY)",
-          desc: "Espacio exclusivo para parejas (18+ años) que deseen sanar heridas conyugales, fortalecer la comunicación y renovar su sacramento matrimonial.",
-          leader: "Pastoral Familiar del Centro Carismático",
-          badgeColor: "bg-brand-gold",
-          period: "next",
-          registrationLink: "https://tickets.centrobronx.com"
-        },
-        {
           id: 'ret-4',
-          date: "Sábados 7, 14, 21 y 28 de Febrero, 2026",
-          title: "Seminario de Vida en el Espíritu: 'Bautismo en el Fuego del Espíritu'",
-          type: "Seminario de Formación",
-          category: "Seminario de Formación",
-          time: "9:00 AM a 4:30 PM",
-          schedule: "Sábados 9:00 AM – 4:30 PM",
-          cost: "$20 USD (Sugerido)",
-          image: "/retreats/seminario-espiritu.jpg",
-          location: "Capilla del Santísimo • 826 E. 166th St., Bronx, NY",
-          desc: "Crecimiento espiritual en los carismas, vida en comunidad, oración en lenguas, discernimiento y compromiso misionero.",
-          leader: "Movimiento de la Renovación Carismática Católica de NY",
-          badgeColor: "bg-blue-600",
-          period: "next",
-          registrationLink: "https://tickets.centrobronx.com"
-        },
-        {
-          id: 'ret-5',
-          date: "16 – 18 de Enero, 2026",
-          title: "Retiro de Jóvenes (14-17 y Jóvenes Adultos): 'Llamados a la Santidad'",
+          date: "16 – 18 de Octubre, 2026",
+          title: "Retiro de Jóvenes (14-17 años): 'Llamados a la Santidad'",
           type: "Retiro Juvenil Bilingüe",
           category: "Jóvenes y Adolescentes",
           time: "Viernes 6:00 PM a Domingo 3:00 PM",
           schedule: "Viernes 6:00 PM – Domingo 3:00 PM",
           cost: "$40 USD",
           image: "/retreats/retiro-jovenes.jpg",
-          location: "Casa de Retiros & Centro Carismático Bronx",
+          location: "Casa de Retiros & Centro Católico Carismático Bronx",
           desc: "Encuentro dinámico bilingüe (inglés/español) para jóvenes con alabanza viva, dinámicas, consejería y adoración ante el Santísimo.",
           leader: "Ministerio de Jóvenes Carismáticos NY",
           badgeColor: "bg-purple-600",
-          period: "future",
+          period: "current",
+          registrationLink: "https://tickets.centrobronx.com"
+        },
+        {
+          id: 'ret-5',
+          date: "23 – 25 de Octubre, 2026",
+          title: "Retiro de Servidores (Sanación) 'Unbound'",
+          type: "Retiro de Servidores",
+          category: "Servidores y Sanación",
+          time: "Viernes a Domingo",
+          schedule: "Viernes – Domingo",
+          cost: "$150 USD",
+          image: "/retreats/retiro-servidores.jpg",
+          location: "Centro Católico Carismático Bronx de Nueva York",
+          desc: "Retiro de sanación interior para servidores, con dinámicas de liberación (Unbound), adoración y discernimiento espiritual.",
+          leader: "Equipo Pastoral del Centro Carismático",
+          badgeColor: "bg-indigo-600",
+          period: "current",
           registrationLink: "https://tickets.centrobronx.com"
         },
         {
           id: 'ret-6',
-          date: "21 y 22 de Marzo, 2026",
-          title: "Gran Conferencia Anual de Avivamiento y Sanación 'Renovación R9'",
-          type: "Conferencia Arquidiocesana",
-          category: "Conferencia Arquidiocesana",
-          time: "Sábado 8:00 AM a 6:00 PM",
-          schedule: "Sábado y Domingo 8:00 AM – 6:00 PM",
-          cost: "$30 USD (Entrada General)",
-          image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=85",
-          location: "Centro Carismático Católico & Catedral / Parroquia St. Anthony",
-          desc: "El mayor encuentro carismático de la arquidiócesis de Nueva York con predicadores internacionales, misa por los enfermos y música de alabanza en vivo.",
-          leader: "Monseñor, Sacerdotes Directores y Consejo Arquidiocesano",
-          badgeColor: "bg-amber-600",
-          period: "future",
+          date: "6 – 8 de Noviembre, 2026",
+          title: "Retiro: Seminario de Vida en el Espíritu",
+          type: "Seminario de Formación",
+          category: "Seminario de Formación",
+          time: "Viernes a Domingo",
+          schedule: "Viernes – Domingo",
+          cost: "$20 USD (Sugerido)",
+          image: "/retreats/seminario-espiritu.jpg",
+          location: "Capilla del Santísimo • 826 E. 166th St., Bronx, NY",
+          desc: "Crecimiento espiritual en los carismas, vida en comunidad, oración en lenguas, discernimiento y compromiso misionero.",
+          leader: "Movimiento de la Renovación Carismática Católica de NY",
+          badgeColor: "bg-blue-600",
+          period: "current",
           registrationLink: "https://tickets.centrobronx.com"
         }
       ],
@@ -264,7 +264,7 @@ export const translations = {
       descriptionPlaceholder: "Explica la situación de necesidad, cuántas personas se beneficiarán y los antecedentes...",
       btnSubmit: "Enviar Causa para Evaluación",
       successTitle: "¡Propuesta de Misión Enviada con Éxito!",
-      successDesc: "Hemos recibido los datos de la causa. Nuestro equipo pastoral y social del Centro Carismático Católico e Isha Bethel revisará el caso y te contactará a la brevedad.",
+      successDesc: "Hemos recibido los datos de la causa. Nuestro equipo pastoral y social del Centro Católico Carismático Bronx de Nueva York e Isha-Bethel revisará el caso y te contactará a la brevedad.",
       close: "Cerrar"
     },
     shop: {
@@ -344,14 +344,14 @@ export const translations = {
         },
         {
           id: 'prod-6',
-          name: "Polo Oficial 'Isha Bethel - Manos Abiertas de Jesús y María'",
+          name: "Polo Oficial 'Isha-Bethel - Manos Abiertas de Jesús y María'",
           category: "apparel",
           price: 22.00,
           originalPrice: 28.00,
           rating: 5,
           image: "/shop/polo-isha-bethel.jpg",
           desc: "Camiseta 100% algodón suave con diseño cristiano católico y lema de fraternidad. Tallas S, M, L, XL.",
-          tag: "Isha Bethel"
+          tag: "Isha-Bethel"
         },
         {
           id: 'prod-7',
@@ -361,7 +361,7 @@ export const translations = {
           originalPrice: 20.00,
           rating: 5,
           image: "/shop/libro-sanacion.jpg",
-          desc: "Guía de sanación católica, perdón, fortaleza mental y oración carismática para superar momentos difíciles.",
+          desc: "Guía de sanación católica, perdón, fortaleza espiritual y oración carismática para superar momentos difíciles.",
           tag: "Sanación Espiritual"
         },
         {
@@ -411,13 +411,13 @@ export const translations = {
         stat4Label: "Transparencia con Respaldo del Centro Carismático"
       },
       card2: {
-        tag: "CENTRO CARISMÁTICO BRONX",
+        tag: "CENTRO CATÓLICO CARISMÁTICO BRONX",
         title: "CALENDARIO DE ACTIVIDADES Y RETIROS",
         items: [
-          { name: "Retiro de Mujeres: 'Isha-Bethel'", date: "Próxima Fecha" },
-          { name: "Retiro 'Primer Paso' (Iniciación)", date: "Fin de Sem." },
-          { name: "Retiro de Matrimonios y Parejas", date: "Próx. Mes" },
-          { name: "Seminario de Vida en el Espíritu", date: "Sábados" }
+          { name: "Retiro de Mujeres: 'Isha-Bethel'", date: "25 – 27 Sept" },
+          { name: "Retiro 'Primer Paso' (Iniciación)", date: "11 – 13 Sept" },
+          { name: "Retiro de Matrimonios y Parejas", date: "20 – 22 Nov" },
+          { name: "Seminario de Vida en el Espíritu", date: "6 – 8 Nov" }
         ],
         btnLabel: "Ver Calendario de Retiros"
       },
@@ -431,7 +431,7 @@ export const translations = {
     mission: {
       badge: "NUESTRA MISIÓN",
       title: "Manos Abiertas de Jesús y María: Fe en Acción, Ayuda Humanitaria y Reconstrucción de Vidas",
-      paragraph1: "Nacidos de la espiritualidad carismática católica y del grupo Isha Bethel en Nueva York, creemos firmemente en el poder del amor fraternal de Cristo y el acompañamiento humano.",
+      paragraph1: "Nacidos de la espiritualidad carismática católica y del Ministerio Católico Isha-Bethel en Nueva York, creemos firmemente en el poder del amor fraternal de Cristo y el acompañamiento humano.",
       paragraph2: "Desde la provisión de alimentos y asistencia de emergencia hasta retiros de sanación interior, salud mental y crecimiento espiritual, compartimos cada desafío y celebramos la gracia de cada hermano restaurado.",
       btnMore: "Conoce Nuestra Casa de Ayuda",
       donateLinkText: "Haz una donación o haz tu aporte aquí →",
@@ -446,7 +446,7 @@ export const translations = {
         {
           id: 'about',
           title: "Casa de Ayuda",
-          subtitle: "Centro Carismático NY & Isha Bethel",
+          subtitle: "Centro Católico Carismático Bronx & Ministerio Católico Isha-Bethel",
           icon: "cross"
         },
         {
@@ -477,7 +477,7 @@ export const translations = {
     },
     about: {
       badge: "NUESTRA CASA DE AYUDA Y CUNA",
-      title: "CENTRO CARISMÁTICO CATÓLICO DE NUEVA YORK & EL BRONX",
+      title: "CENTRO CATÓLICO CARISMÁTICO BRONX DE NUEVA YORK",
       subtitle: "El corazón y cuna espiritual donde nace la fundación Manos Abiertas de Jesús y María",
       addressLabel: "Dirección Oficial:",
       address: "826 E. 166th St., Bronx, NY 10459 (Junto a St. Anthony of Padua)",
@@ -486,13 +486,13 @@ export const translations = {
       websiteLabel: "Sitio Web Oficial:",
       websiteUrl: "https://centrobronx.com/",
       websiteBtn: "Visitar Sitio Web Oficial (centrobronx.com)",
-      paragraph1: "Nuestra labor humanitaria nace, se sustenta y se nutre en el Centro Carismático Católico de la Ciudad de Nueva York y el Bronx, a través del grupo de fraternidad y oración Isha Bethel, perteneciente al Movimiento de la Renovación Carismática Católica.",
-      paragraph2: "El Centro Carismático Católico es verdaderamente nuestra Casa de Ayuda: el hogar sagrado donde recibimos el impulso pastoral, el discernimiento espiritual y la fuerza comunitaria para llevar alimentos, abrigo, consuelo y retiros de sanación mental y espiritual a las personas y familias más vulnerables.",
-      quote: "Unidos como hermanos en la fe en el grupo Isha Bethel y el Centro Carismático Católico, llevamos una mano amiga y el amor vivo de Cristo a quienes más lo necesitan.",
-      founderName: "Grupo Isha Bethel & Movimiento Carismático Católico",
-      founderRole: "Centro Carismático Católico • Arquidiócesis de Nueva York",
+      paragraph1: "Nuestra labor humanitaria nace, se sustenta y se nutre en el Centro Católico Carismático Bronx de Nueva York de la Ciudad de Nueva York y el Bronx, a través del grupo de fraternidad y oración Isha-Bethel, perteneciente al Movimiento de la Renovación Carismática Católica.",
+      paragraph2: "El Centro Católico Carismático Bronx de Nueva York es verdaderamente nuestra Casa de Ayuda: el hogar sagrado donde recibimos el impulso pastoral, el discernimiento espiritual y la fuerza comunitaria para llevar alimentos, abrigo, consuelo y retiros de sanación integral a las personas y familias más vulnerables.",
+      quote: "Unidos como hermanos en la fe en el Ministerio Católico Isha-Bethel y el Centro Católico Carismático Bronx de Nueva York, llevamos una mano amiga y el amor vivo de Cristo a quienes más lo necesitan.",
+      founderName: "Ministerio Católico Isha-Bethel \u201cMujer Casa de Dios\u201d & Movimiento Carismático Católico",
+      founderRole: "Centro Católico Carismático Bronx de Nueva York • Arquidiócesis de Nueva York",
       experienceYears: "Fe, Esperanza y Caridad Viva",
-      btnVisit: "Conoce el Centro Carismático Católico"
+      btnVisit: "Conoce el Centro Católico Carismático Bronx de Nueva York"
     },
     programsSection: {
       badge: "NUESTRAS MISIONES",
@@ -539,9 +539,9 @@ export const translations = {
       btnJoin: "Registrarme como Voluntario",
       testimonials: [
         {
-          quote: "Servir en la Fundación Manos Abiertas de Jesús y María junto al grupo Isha Bethel me enseñó que la caridad católica es el amor de Dios puesto en acción.",
+          quote: "Servir en la Fundación Manos Abiertas de Jesús y María junto al Ministerio Católico Isha-Bethel me enseñó que la caridad católica es el amor de Dios puesto en acción.",
           author: "Hermana Carmen Mendoza",
-          role: "Comunidad Isha Bethel - Bronx, NY"
+          role: "Comunidad Isha-Bethel - Bronx, NY"
         },
         {
           quote: "En el retiro espiritual y con la ayuda de alimentos de la fundación, mi familia recuperó la fe, la paz y la esperanza.",
@@ -601,7 +601,7 @@ export const translations = {
       close: "Cerrar"
     },
     footer: {
-      aboutText: "La Fundación Manos Abiertas de Jesús y María es una obra social y espiritual nacida del Centro Carismático Católico de la Ciudad de Nueva York y el Bronx, impulsada por el grupo Isha Bethel para brindar ayuda humanitaria, fe y sanación.",
+      aboutText: "La Fundación Manos Abiertas de Jesús y María es una obra social y espiritual nacida del Centro Católico Carismático Bronx de Nueva York de la Ciudad de Nueva York y el Bronx, impulsada por el Ministerio Católico Isha-Bethel para brindar ayuda humanitaria, fe y sanación.",
       quickLinksTitle: "Enlaces Rápidos",
       programsTitle: "Nuestras Misiones",
       newsletterTitle: "Mantente en Contacto",
@@ -641,7 +641,7 @@ export const translations = {
       handwritten: "Transforming Lives and Guiding Their Future",
       title: "«Each of you should use whatever gift you have received to serve others, as faithful stewards of God’s grace»",
       citation: "— 1 Peter 4:10",
-      description: "Born from the Catholic Charismatic Center of New York and the Isha Bethel prayer community, Manos Abiertas de Jesús & María delivers urgent humanitarian aid, compassionate fraternity, and spiritual wellness retreats.",
+      description: "Born from the Catholic Charismatic Center of New York and the Isha-Bethel prayer community, Manos Abiertas de Jesús & María delivers urgent humanitarian aid, compassionate fraternity, and spiritual wellness retreats.",
       btnDonate: "Make a Donation",
       btnVolunteer: "Join as Volunteer",
       btnCauses: "View Our Missions",
@@ -677,7 +677,7 @@ export const translations = {
       badge: "✨ SUPPORT US WITH YOUR CATHOLIC SOLIDARITY PURCHASE!",
       title: "Every Religious Item, Rosary or Book Transforms Lives",
       subtitle: "With your purchase, you directly support this foundation",
-      description: "Welcome to Manos Abiertas de Jesús & María. We invite you to explore our 100% Catholic and Christian Solidarity Shop featuring blessed rosaries, holy bibles, saints statues, decade beads, apparel, and inspirational books. 100% of proceeds fund our humanitarian aid and spiritual retreats supported by the Catholic Charismatic Center of NYC & the Bronx, and the Isha Bethel group.",
+      description: "Welcome to Manos Abiertas de Jesús & María. We invite you to explore our 100% Catholic and Christian Solidarity Shop featuring blessed rosaries, holy bibles, saints statues, decade beads, apparel, and inspirational books. 100% of proceeds fund our humanitarian aid and spiritual retreats supported by the Catholic Charismatic Center of NYC & the Bronx, and the Isha-Bethel group.",
       highlightNotice: "🛒 Your purchase is a work of mercy and faith that reaches those who need it most.",
       btnShop: "Explore Solidarity Shop",
       btnContinue: "Continue to Website",
@@ -738,20 +738,20 @@ export const translations = {
       close: "Close"
     },
     retreatsModal: {
-      badge: "CATHOLIC CHARISMATIC CENTER NY & ISHA BETHEL",
+      badge: "CATHOLIC CHARISMATIC CENTER BRONX & MINISTRY ISHA-BETHEL",
       title: "Calendar of Retreats & Spiritual Activities",
       subtitle: "Sacred spaces for inner healing, mental strength, charismatic prayer, and profound renewal in the Holy Spirit.",
       venueNotice: "📍 Location: Catholic Charismatic Center (826 E. 166th St., Bronx, NY) and Partner Retreat Houses.",
       events: [
         {
           id: 'ret-1',
-          date: "October 24 – 26, 2026",
+          date: "September 25 – 27, 2026",
           title: "Women's Retreat: 'Isha-Bethel - Restored by His Grace'",
           type: "Women's Retreat",
           category: "Women's Retreat",
           time: "Friday 6:30 PM to Sunday 3:00 PM (Closing Mass)",
           schedule: "Friday 6:30 PM – Sunday 3:00 PM",
-          cost: "$65 USD",
+          cost: "$150 USD",
           image: "/retreats/retiro-mujeres.jpg",
           location: "Catholic Charismatic Center (826 E. 166th St., Bronx, NY)",
           desc: "Weekend experiential retreat for women focused on inner emotional healing, spiritual forgiveness, restoration of dignity in Christ, and Holy Spirit outpouring.",
@@ -762,15 +762,15 @@ export const translations = {
         },
         {
           id: 'ret-2',
-          date: "November 14 – 16, 2026",
+          date: "September 11 – 13, 2026",
           title: "Retreat 'First Step' (Primer Paso): Personal Encounter with Jesus",
           type: "First Encounter Retreat",
           category: "First Step & Faith",
-          time: "Friday 7:00 PM to Sunday 3:00 PM",
-          schedule: "Friday 7:00 PM – Sunday 3:00 PM",
-          cost: "$50 USD",
+          time: "Friday to Sunday",
+          schedule: "Friday – Sunday",
+          cost: "$150 USD",
           image: "/retreats/retiro-primer-paso.jpg",
-          location: "St. Anthony of Padua Auditorium / Charismatic Center",
+          location: "Catholic Charismatic Center Bronx (826 E. 166th St., Bronx, NY)",
           desc: "Designed especially for first-time retreat attendees or those longing to renew a personal, heart-to-heart relationship with the living God.",
           leader: "Charismatic Center Evangelization Team",
           badgeColor: "bg-brand-teal",
@@ -779,15 +779,15 @@ export const translations = {
         },
         {
           id: 'ret-3',
-          date: "December 5 – 7, 2026",
+          date: "November 20 – 22, 2026",
           title: "Marriage & Couples Retreat: 'One Heart in Christ'",
           type: "Marriage Ministry Retreat",
           category: "Marriage & Family",
           time: "Friday 6:30 PM to Sunday 2:00 PM",
           schedule: "Friday 6:30 PM – Sunday 2:00 PM",
-          cost: "$90 USD per couple",
+          cost: "$150 USD",
           image: "/retreats/retiro-matrimonios.jpg",
-          location: "Catholic Charismatic Center (Bronx, NY)",
+          location: "Catholic Charismatic Center Bronx (Bronx, NY)",
           desc: "Exclusive encounter for couples (18+) to heal relationship wounds, enhance Christian communication, and renew their sacred vows.",
           leader: "Charismatic Center Family Pastoral Team",
           badgeColor: "bg-brand-gold",
@@ -880,7 +880,7 @@ export const translations = {
       descriptionPlaceholder: "Describe the situation, how many people will benefit, and background details...",
       btnSubmit: "Submit Cause for Evaluation",
       successTitle: "Mission Proposal Submitted Successfully!",
-      successDesc: "We have received your cause proposal. Our pastoral and social team at the Catholic Charismatic Center and Isha Bethel will review it promptly.",
+      successDesc: "We have received your cause proposal. Our pastoral and social team at the Catholic Charismatic Center and Isha-Bethel will review it promptly.",
       close: "Close"
     },
     shop: {
@@ -960,14 +960,14 @@ export const translations = {
         },
         {
           id: 'prod-6',
-          name: "Official 'Isha Bethel - Manos Abiertas in Christ' T-Shirt",
+          name: "Official 'Isha-Bethel - Manos Abiertas in Christ' T-Shirt",
           category: "apparel",
           price: 22.00,
           originalPrice: 28.00,
           rating: 5,
           image: "/shop/polo-isha-bethel.jpg",
           desc: "100% soft organic cotton t-shirt featuring Catholic community print and faith slogan. Sizes S, M, L, XL.",
-          tag: "Isha Bethel"
+          tag: "Isha-Bethel"
         },
         {
           id: 'prod-7',
@@ -1047,7 +1047,7 @@ export const translations = {
     mission: {
       badge: "OUR MISSION",
       title: "Manos Abiertas de Jesús & María: Faith in Action, Humanitarian Relief & Rebuilding Lives",
-      paragraph1: "Rooted in Catholic charismatic spirituality and the Isha Bethel community in New York, we believe firmly in the power of Christ's brotherly love and compassionate companionship.",
+      paragraph1: "Rooted in Catholic charismatic spirituality and the Isha-Bethel community in New York, we believe firmly in the power of Christ's brotherly love and compassionate companionship.",
       paragraph2: "From emergency food supplies and shelter assistance to inner healing retreats, mental health counseling, and spiritual renewal, we share in every challenge and celebrate every life restored.",
       btnMore: "Discover Our House of Help",
       donateLinkText: "Make a donation or financial gift here →",
@@ -1062,7 +1062,7 @@ export const translations = {
         {
           id: 'about',
           title: "House of Help",
-          subtitle: "Catholic Charismatic Center NY & Isha Bethel",
+          subtitle: "Catholic Charismatic Center NY & Isha-Bethel",
           icon: "cross"
         },
         {
@@ -1102,10 +1102,10 @@ export const translations = {
       websiteLabel: "Official Website:",
       websiteUrl: "https://centrobronx.com/",
       websiteBtn: "Visit Official Website (centrobronx.com)",
-      paragraph1: "Our humanitarian mission was born, is nurtured, and continues to be supported by the Catholic Charismatic Center of New York City and The Bronx, through the Isha Bethel prayer and fellowship community belonging to the Catholic Charismatic Renewal Movement.",
+      paragraph1: "Our humanitarian mission was born, is nurtured, and continues to be supported by the Catholic Charismatic Center of New York City and The Bronx, through the Isha-Bethel prayer and fellowship community belonging to the Catholic Charismatic Renewal Movement.",
       paragraph2: "The Catholic Charismatic Center is truly our House of Help: the sacred sanctuary where we receive pastoral guidance, spiritual discernment, and community strength to deliver warm food, essential shelter, psychological comfort, and spiritual healing retreats to those who need it most.",
-      quote: "United as brothers and sisters in the Isha Bethel group and the Catholic Charismatic Center, we bring Christ's living love and a helping hand to those who suffer most.",
-      founderName: "Isha Bethel Community & Catholic Charismatic Movement",
+      quote: "United as brothers and sisters in the Isha-Bethel group and the Catholic Charismatic Center, we bring Christ's living love and a helping hand to those who suffer most.",
+      founderName: "Isha-Bethel Community & Catholic Charismatic Movement",
       founderRole: "Catholic Charismatic Center • Archdiocese of New York",
       experienceYears: "Faith, Hope & Living Charity",
       btnVisit: "Learn About the Catholic Charismatic Center"
@@ -1155,9 +1155,9 @@ export const translations = {
       btnJoin: "Sign Up as Volunteer",
       testimonials: [
         {
-          quote: "Serving in Manos Abiertas de Jesús & María alongside the Isha Bethel community taught me that Catholic charity is God's love in action.",
+          quote: "Serving in Manos Abiertas de Jesús & María alongside the Isha-Bethel community taught me that Catholic charity is God's love in action.",
           author: "Sister Carmen Mendoza",
-          role: "Isha Bethel Community - Bronx, NY"
+          role: "Isha-Bethel Community - Bronx, NY"
         },
         {
           quote: "Through the spiritual retreat and food support from the foundation, my family rediscovered faith, peace, and hope.",
@@ -1217,7 +1217,7 @@ export const translations = {
       close: "Close"
     },
     footer: {
-      aboutText: "The Manos Abiertas de Jesús & María Foundation is a social and spiritual mission born out of the Catholic Charismatic Center of New York City and The Bronx, championed by the Isha Bethel group to deliver humanitarian relief, faith, and healing.",
+      aboutText: "The Manos Abiertas de Jesús & María Foundation is a social and spiritual mission born out of the Catholic Charismatic Center of New York City and The Bronx, championed by the Isha-Bethel group to deliver humanitarian relief, faith, and healing.",
       quickLinksTitle: "Quick Links",
       programsTitle: "Our Missions",
       newsletterTitle: "Stay Connected",

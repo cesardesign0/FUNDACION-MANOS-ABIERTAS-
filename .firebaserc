@@ -1,5 +1,15 @@
 {
   "projects": {
-    "default": "manos-abiertas-jesus-maria"
-  }
+    "default": "cdesign-studios"
+  },
+  "targets": {
+    "cdesign-studios": {
+      "hosting": {
+        "manos-abiertas": [
+          "fundacion-manos-abiertas"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

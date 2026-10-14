@@ -55,14 +55,14 @@ export const CompletedMissionsModal = ({ isOpen, onClose, onOpenDonate }) => {
       title: language === 'es'
         ? 'Jornadas de Sanación Integral y Salud Emocional para 320 Madres'
         : 'Inner Healing & Emotional Support Days for 320 Mothers',
-      location: 'Centro Carismático Católico (Bronx, NY)',
+      location: 'Centro Católico Carismático Bronx de Nueva York',
       date: 'Ciclo Pastoral Anual',
       raised: '$24,000 USD',
       beneficiaries: '320 mujeres asistidas',
       image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=600&q=80',
       desc: language === 'es'
-        ? 'Talleres de perdón, sanación de duelo, apoyo psicológico cristiano y retiro espiritual guiado por el grupo Isha Bethel.'
-        : 'Workshops on forgiveness, grief counseling, Christian psychological support, and inner healing retreats guided by Isha Bethel.'
+        ? 'Talleres de perdón, sanación de duelo, apoyo psicológico cristiano y retiro espiritual guiado por el Ministerio Católico Isha-Bethel.'
+        : 'Workshops on forgiveness, grief counseling, Christian psychological support, and inner healing retreats guided by Isha-Bethel.'
     }
   ];
 
@@ -90,7 +90,7 @@ export const CompletedMissionsModal = ({ isOpen, onClose, onOpenDonate }) => {
           </h3>
           <p className="text-emerald-100 text-xs sm:text-sm mt-1 max-w-xl">
             {language === 'es' 
-              ? 'Conoce las metas alcanzadas gracias a las donaciones y al voluntariado de nuestra comunidad en el Centro Carismático Católico.'
+              ? 'Conoce las metas alcanzadas gracias a las donaciones y al voluntariado de nuestra comunidad en el Centro Católico Carismático Bronx de Nueva York.'
               : 'Explore the goals achieved thanks to donations and volunteers across our Catholic Charismatic community.'}
           </p>
         </div>
@@ -148,7 +148,7 @@ export const CompletedMissionsModal = ({ isOpen, onClose, onOpenDonate }) => {
         <div className="p-4 sm:p-5 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
           <div className="text-xs text-slate-500 flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-            <span>{language === 'es' ? 'Respaldado por el Centro Carismático Católico de NY' : 'Backed by the Catholic Charismatic Center NY'}</span>
+            <span>{language === 'es' ? 'Respaldado por el Centro Católico Carismático Bronx de Nueva York' : 'Backed by the Catholic Charismatic Center NY'}</span>
           </div>
 
           <div className="flex items-center gap-2">

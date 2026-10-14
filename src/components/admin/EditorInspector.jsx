@@ -156,7 +156,7 @@ export const ImageHub = ({ onApply, onClose }) => {
     { label: 'Logo Manos Abiertas', url: '/logo-manos-abiertas.png' },
     { label: 'Jornada de Alimentos NY', url: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80' },
     { label: 'Retiro y Oración Espiritual', url: 'https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1200&q=80' },
-    { label: 'Comunidad Isha Bethel', url: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80' },
+    { label: 'Comunidad Isha-Bethel', url: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80' },
     { label: 'Ayuda a Familias Vulnerables', url: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1200&q=80' },
     { label: 'Vigilia de Alabanza y Oración', url: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1920&q=85' },
   ];
@@ -718,7 +718,7 @@ export const EditorInspector = ({
         <>
           <CollapsibleHeader id="mhBubbles" label="🫧 Fotos de Burbujas Interactivas">
             <div className="grid grid-cols-2 gap-3">
-              {[['Burbuja Ayuda', 'bubble1Image'], ['Burbuja Isha Bethel', 'bubbleIshaImage']].map(([lbl, field]) => (
+              {[['Burbuja Ayuda', 'bubble1Image'], ['Burbuja Isha-Bethel', 'bubbleIshaImage']].map(([lbl, field]) => (
                 <div key={field} className="p-2 bg-slate-950 rounded-xl text-center space-y-1.5">
                   <span className="text-[10px] text-slate-400 font-bold block">{lbl}</span>
                   <img src={missionHeart?.[field]} alt={lbl} className="w-12 h-12 rounded-full object-cover mx-auto" />
@@ -749,7 +749,7 @@ export const EditorInspector = ({
         <>
           <CollapsibleHeader id="aboutCollage" label="🖼️ Fotos del Collage (Centro)">
             <div className="grid grid-cols-3 gap-2">
-              {[['Principal', 'collageImg1', '/retreats/seminario-espiritu.jpg'], ['Isha Bethel', 'collageImg2', '/retreats/retiro-mujeres.jpg'], ['Comedores', 'collageImg3', 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80']].map(([lbl, field, fallback]) => (
+              {[['Principal', 'collageImg1', '/retreats/seminario-espiritu.jpg'], ['Isha-Bethel', 'collageImg2', '/retreats/retiro-mujeres.jpg'], ['Comedores', 'collageImg3', 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80']].map(([lbl, field, fallback]) => (
                 <div key={field} className="p-2 bg-slate-950 rounded-xl space-y-1 text-center">
                   <span className="text-[10px] text-slate-400 font-bold block">{lbl}</span>
                   <img src={about?.[field] || fallback} alt={lbl} className="w-full h-14 object-cover rounded-lg" />

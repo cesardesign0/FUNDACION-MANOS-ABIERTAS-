@@ -12,9 +12,9 @@ with sync_playwright() as p:
     page.on('console', lambda msg: logs.append(f'[{msg.type}] {msg.text}'))
     page.on('pageerror', lambda err: errors.append(f'{err.name}: {err.message}'))
 
-    # 1. Public Site
-    print('1. Testing Public Site & SEO Tags...')
-    page.goto('https://manos-abiertas-jesus-maria.web.app/', wait_until='networkidle', timeout=30000)
+    # 1. Public Site (Fundación Manos Abiertas en cdesign-studios)
+    print('1. Testing Public Site & SEO Tags on fundacion-manos-abiertas.web.app...')
+    page.goto('https://fundacion-manos-abiertas.web.app/', wait_until='networkidle', timeout=30000)
     page.wait_for_selector('#root > *', timeout=10000)
 
     # Check Title
@@ -32,25 +32,33 @@ with sync_playwright() as p:
         page.wait_for_timeout(1000)
 
     # Take Screenshot of Clean Public Home
-    page.screenshot(path=os.path.join(artifact_dir, 'e2e_clean_public_home.png'), full_page=False)
+    page.screenshot(path=os.path.join(artifact_dir, 'fundacion_clean_home.png'), full_page=False)
 
     # 2. Scroll to Shop & Retreats
     print('2. Testing Shop & Retreats Sections...')
     page.locator('#retreats').scroll_into_view_if_needed()
     page.wait_for_timeout(1000)
-    page.screenshot(path=os.path.join(artifact_dir, 'e2e_retreats_section.png'), full_page=False)
+    page.screenshot(path=os.path.join(artifact_dir, 'fundacion_retreats.png'), full_page=False)
 
     page.locator('#shop').scroll_into_view_if_needed()
     page.wait_for_timeout(1000)
-    page.screenshot(path=os.path.join(artifact_dir, 'e2e_shop_section.png'), full_page=False)
+    page.screenshot(path=os.path.join(artifact_dir, 'fundacion_shop.png'), full_page=False)
 
     # 3. Admin Login & Visual Editor
     print('3. Testing Admin Login and Visual Editor...')
-    page.goto('https://manos-abiertas-jesus-maria.web.app/#admin', wait_until='networkidle', timeout=30000)
+    page.goto('https://fundacion-manos-abiertas.web.app/#admin', wait_until='networkidle', timeout=30000)
     page.locator('input[type=password]').fill('manosabiertas2026')
     page.locator('button', has_text='Ingresar').click()
     page.wait_for_timeout(3000)
-    page.screenshot(path=os.path.join(artifact_dir, 'e2e_admin_editor.png'), full_page=False)
+    page.screenshot(path=os.path.join(artifact_dir, 'fundacion_admin_editor.png'), full_page=False)
+
+    # 4. Check Original cdesign-studios.web.app is Intact
+    print('4. Verifying original cdesign-studios.web.app is intact and untouched...')
+    page.goto('https://cdesign-studios.web.app/', wait_until='networkidle', timeout=30000)
+    page.wait_for_timeout(2000)
+    cdesign_title = page.title()
+    print('CDESIGN STUDIOS PAGE TITLE:', cdesign_title)
+    page.screenshot(path=os.path.join(artifact_dir, 'cdesign_studios_intact.png'), full_page=False)
 
     browser.close()
 

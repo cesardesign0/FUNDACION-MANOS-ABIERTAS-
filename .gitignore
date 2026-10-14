@@ -27,3 +27,6 @@ dist-ssr
 
 # Firebase
 .firebase/
+
+# Local archives
+*.zip

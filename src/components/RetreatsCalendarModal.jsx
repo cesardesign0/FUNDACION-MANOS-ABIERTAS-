@@ -35,7 +35,7 @@ export const RetreatsCalendarModal = ({ isOpen, onClose, initialEventId }) => {
 
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-gold text-slate-950 text-[10px] font-black uppercase tracking-wider mb-2 shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Centro Carismático Católico NY & Grupo Isha Bethel</span>
+            <span>Centro Católico Carismático Bronx & Ministerio Católico Isha-Bethel</span>
           </div>
 
           <h3 className="font-display font-black text-2xl sm:text-3xl text-white">
@@ -120,7 +120,7 @@ export const RetreatsCalendarModal = ({ isOpen, onClose, initialEventId }) => {
                 <span>Inscripciones y Cupos Oficiales</span>
               </div>
               <p className="leading-relaxed text-amber-900">
-                Para garantizar la organización pastoral y cupos limitados por aforo, la reserva e inscripción oficial para este retiro se realiza directamente en la plataforma del <strong>Centro Carismático Católico de Nueva York (Nuestra Casa de Ayuda)</strong>.
+                Para garantizar la organización pastoral y cupos limitados por aforo, la reserva e inscripción oficial para este retiro se realiza directamente en la plataforma del <strong>Centro Católico Carismático Bronx de Nueva York (Nuestra Casa de Ayuda)</strong>.
               </p>
             </div>
           </div>

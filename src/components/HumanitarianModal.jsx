@@ -154,7 +154,7 @@ export const HumanitarianModal = ({ isOpen, onClose, onOpenDonate, onOpenVolunte
                           </div>
                           <div className="p-2.5 rounded-lg bg-white border border-slate-200 flex items-center gap-2">
                             <CheckCircle2 className="w-4 h-4 text-brand-teal flex-shrink-0" />
-                            <span>Supervisión de voluntarios Isha Bethel</span>
+                            <span>Supervisión de voluntarios Isha-Bethel</span>
                           </div>
                         </div>
                       </div>

@@ -189,7 +189,7 @@ export const AdminDataProvider = ({ children }) => {
           missionHeart: {
             badge: "NUESTRA RAZÓN DE SER",
             title: "Amor, Fe y Ayuda en Acción",
-            paragraph1: "Nuestra labor humanitaria nace, se sustenta y se nutre en el Centro Carismático Católico de la Ciudad de Nueva York y el Bronx...",
+            paragraph1: "Nuestra labor humanitaria nace, se sustenta y se nutre en el Centro Católico Carismático Bronx de Nueva York de la Ciudad de Nueva York y el Bronx...",
             paragraph2: "Cada plato de comida caliente, cada abrigo entregado y cada retiro representa la misericordia y la gracia viva de Dios.",
             btnMore: "Conocer la Casa de Ayuda",
             donateLinkText: "¿Deseas hacer un aporte económico directo? Haz clic aquí",
@@ -325,7 +325,7 @@ export const AdminDataProvider = ({ children }) => {
       missionHeart: {
         badge: "NUESTRA RAZÓN DE SER",
         title: "Amor, Fe y Ayuda en Acción",
-        paragraph1: "Nuestra labor humanitaria nace, se sustenta y se nutre en el Centro Carismático Católico de la Ciudad de Nueva York y el Bronx...",
+        paragraph1: "Nuestra labor humanitaria nace, se sustenta y se nutre en el Centro Católico Carismático Bronx de Nueva York de la Ciudad de Nueva York y el Bronx...",
         paragraph2: "Cada plato de comida caliente, cada abrigo entregado y cada retiro representa la misericordia y la gracia viva de Dios.",
         btnMore: "Conocer la Casa de Ayuda",
         donateLinkText: "¿Deseas hacer un aporte económico directo? Haz clic aquí",
@@ -655,7 +655,7 @@ export const AdminDataProvider = ({ children }) => {
       missionHeart: {
         badge: "NUESTRA RAZÓN DE SER",
         title: "Amor, Fe y Ayuda en Acción",
-        paragraph1: "Nuestra labor humanitaria nace, se sustenta y se nutre en el Centro Carismático Católico de la Ciudad de Nueva York y el Bronx...",
+        paragraph1: "Nuestra labor humanitaria nace, se sustenta y se nutre en el Centro Católico Carismático Bronx de Nueva York de la Ciudad de Nueva York y el Bronx...",
         paragraph2: "Cada plato de comida caliente, cada abrigo entregado y cada retiro representa la misericordia y la gracia viva de Dios.",
         btnMore: "Conocer la Casa de Ayuda",
         donateLinkText: "¿Deseas hacer un aporte económico directo? Haz clic aquí",

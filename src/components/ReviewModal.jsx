@@ -75,7 +75,7 @@ export const ReviewModal = ({ isOpen, onClose, onReviewSubmitted }) => {
           </h3>
           <p className="text-slate-300 text-xs sm:text-sm mt-1">
             {language === 'es' 
-              ? 'Comparte cómo la Fundación Manos Abiertas o el Centro Carismático Católico ha bendecido tu vida o la de tu familia.'
+              ? 'Comparte cómo la Fundación Manos Abiertas o el Centro Católico Carismático Bronx de Nueva York ha bendecido tu vida o la de tu familia.'
               : 'Share how Manos Abiertas Foundation or the Catholic Charismatic Center has blessed your life.'}
           </p>
         </div>
@@ -193,7 +193,7 @@ export const ReviewModal = ({ isOpen, onClose, onReviewSubmitted }) => {
                     <option value="Beneficiario de Jornadas de Ayuda">Beneficiario / Ayudado</option>
                     <option value="Voluntario Activo">Voluntario Activo</option>
                     <option value="Donante Solidario">Donante Solidario</option>
-                    <option value="Comunidad Isha Bethel">Comunidad Isha Bethel</option>
+                    <option value="Comunidad Isha-Bethel">Comunidad Isha-Bethel</option>
                     <option value="Asistente a Retiros Espirituales">Asistente a Retiros</option>
                     <option value="Hermano en la Fe">Hermano en la Fe</option>
                   </select>
